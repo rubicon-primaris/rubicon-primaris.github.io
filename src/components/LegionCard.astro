@@ -1,11 +1,20 @@
 ---
+const { image, legion } = Astro.props;
 
-const { image, legion } = Astro.props
+// Imagen y clase predeterminadas si no se define "legion"
+const defaultImage = "images/bg-chaos.jpg";
+const defaultClass = "bg-gray-900";
+const displayImage = image ? image : defaultImage;
+const displayClass = image ? `bg-${legion}-900` : defaultClass;
 ---
 
-<div class={`bg-${legion}-900 rounded-lg p-4 text-white transition-transform duration-900 hover:scale-[1.2]`}>
-    <img src={image}
-        alt={`Legión ${legion}`}
-        class="h-[300px] w-auto object-contain "> 
-
+<div 
+    class={`${displayClass} rounded-lg p-4 text-white transition-transform duration-900 hover:scale-[1.2] flex items-center justify-center h-[250px] max-h-full max-w-full`}
+>
+    <img 
+        src={displayImage}
+        alt={legion ? `Legión ${legion}` : "Legión desconocida"}
+        class="h-full w-full object-cover rounded-md"
+    > 
 </div>
+

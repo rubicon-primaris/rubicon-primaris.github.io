@@ -4,6 +4,7 @@ import LegionCard from '../components/LegionCard.astro'
 
 const legions = [
   { image: "images/legions/1-dark-angles.webp", legion: "i" },
+  { image: null, legion: "ii" },
   { image: "images/legions/3-emperors-children.webp", legion: "iii" },
   { image: "images/legions/4-iron-warriors.webp", legion: "iv" },
   { image: "images/legions/5-white-scars.webp", legion: "v" },
@@ -12,6 +13,7 @@ const legions = [
   { image: "images/legions/8-knight-lords.webp", legion: "viii" },
   { image: "images/legions/9-blood-angles.webp", legion: "ix" },
   { image: "images/legions/10-iron-hands.webp", legion: "x" },
+  { image: null, legion: "xi" },
   { image: "images/legions/12-world-eaters.webp", legion: "xii" },
   { image: "images/legions/13-ultra.webp", legion: "xiii" },
   { image: "images/legions/14-death-guard.webp", legion: "xiv" },
@@ -24,9 +26,9 @@ const legions = [
 ];
 ---
 <Layout>
-    <main class="bg-black text-white w-screen h-screen flex justify-center items-center bg-[url('/images/legions/empire.webp')] bg-contain bg-center bg-no-repeat relative">
+    <main class="bg-black text-white w-screen h-screen flex justify-center bg-[url('/images/legions/empire.webp')] bg-contain bg-center bg-no-repeat relative overflow-auto">
         
-        <section class="grid grid-cols-5 gap-5">
+        <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5 p-5">
             {legions.map(({ image, legion }) => (
                 <LegionCard image={image} legion={legion} />
             ))}
