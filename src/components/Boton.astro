@@ -1,0 +1,30 @@
+<!-- BotonAstro.astro -->
+<a 
+  class="
+    items-center 
+    cursor-pointer 
+    gap-2 
+    transition-all 
+    duration-300 
+    disabled:opacity-50 
+    disabled:cursor-not-allowed 
+    hover:scale-110 
+    w-content 
+    px-3
+    py-2 
+    flex 
+    text-sm 
+    font-bold  
+    rounded-xl 
+    bg--300/90 
+    text-white 
+    shadow-gray-400 
+    hover:shadow-gray-300 
+    hover:bg-gray-800 
+    hover:contrast-125
+  "
+>
+<slot name="before" />
+  <slot>Texto por determinar</slot>
+<slot name="after" />
+</a>

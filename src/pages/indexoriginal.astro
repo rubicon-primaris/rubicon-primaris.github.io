@@ -1,0 +1,42 @@
+---
+import Boton from '../components/Boton.astro';
+import Welcome from '../components/Welcome.astro';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+	<h1 class="text-primary text-white text-center">Hola esto es Anira</h1>
+	<h2 class="text-secondary text-center">By Rolnyr</h2>
+	<!--lo de flex es para que el div tenga un posicionamiento flexible /justify es para centrarlo (solo funciona si es flex, si no no funciona)/  -->
+	<div class="flex justify-center items-center flex-col pb-2 h-80 bg-red-200">
+		
+		<div class="h-20 w-20 bg-green-900 sm:w-32 md:w-40 lg:w-56 xl:w-60"/>
+		<div class="h-20 w-20 bg-secondary"/>
+		<div class="h-20 w-20 bg-red-300"/>
+		<div class="h-20 w-20 bg-green-900"/>
+
+
+		
+	
+	</div>
+	<div class="flex justify-start items-center gap-2 flex-col pt-2 border-2 border-secondary border-dotted h-80 bg-blue-200">
+		<div class="h-20 w-20 bg-secondary rounded-md drop-shadow-xl hover:bg-sky-700"/>
+		<div class="h-20 w-20 bg-blue-300"/>
+	</div>
+	<Boton class="text-white" href="/Razas">
+		<svg
+		slot="after" 
+		fill="none" 
+		stroke="currentColor" 
+		stroke-linecap="round" 
+		stroke-linejoin="round" 
+		width="24" height="24" 
+		stroke-width="2" 
+		>
+		<path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path> 
+		<path d="M12 9h.01"></path> 
+		<path d="M11 12h1v4h1"></path> 
+	</svg> Sobre el proyecto
+	</Boton>
+	
+</Layout>

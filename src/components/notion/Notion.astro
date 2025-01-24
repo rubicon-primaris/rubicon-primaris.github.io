@@ -1,0 +1,35 @@
+---
+import { Client } from '@notionhq/client';
+import NotionRenderer from './NotionRender.astro';
+
+const notion = new Client({ auth: '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' });
+
+const { pageId } = Astro.props;
+
+let blocks: { [x: number]: { rich_text: any; } | { title: any; } | undefined; type: any; }[] = [];
+let error = null;
+
+try {
+  const response = await notion.blocks.children.list({ block_id: pageId });
+  console.log(response)
+  blocks = response.results.map((block) => {
+    const type = (block as { type: any }).type;
+    const richTextKey = block.hasOwnProperty(type) && block[type]?.rich_text ? { rich_text: block[type].rich_text } : undefined;
+
+    return {
+      type,
+      [type]: richTextKey || (block.hasOwnProperty(type) && block[type]?.title ? { title: block[type].title } : undefined),
+    };
+  });
+} catch (err) {
+  error = err;
+  console.error('Error al obtener el contenido de la página de Notion:', error);
+}
+
+---
+
+{error && <p>Error al cargar el contenido: {(error as Error).message}</p>}
+
+<div class="py-10 max-w-4xl w-full m-auto">
+  <NotionRenderer blocks={blocks} />
+</div>
