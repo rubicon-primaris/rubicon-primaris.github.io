@@ -1,10 +1,38 @@
 ---
 import Layout from '../layouts/Layout.astro'
+import LegionCard from '../components/LegionCard.astro'
+
+const legions = [
+  { image: "images/legions/1-dark-angles.webp", legion: "i" },
+  { image: "images/legions/3-emperors-children.webp", legion: "iii" },
+  { image: "images/legions/4-iron-warriors.webp", legion: "iv" },
+  { image: "images/legions/5-white-scars.webp", legion: "v" },
+  { image: "images/legions/6-wolf.webp", legion: "vi" },
+  { image: "images/legions/7-imperial-fists.webp", legion: "vii" },
+  { image: "images/legions/8-knight-lords.webp", legion: "viii" },
+  { image: "images/legions/9-blood-angles.webp", legion: "ix" },
+  { image: "images/legions/10-iron-hands.webp", legion: "x" },
+  { image: "images/legions/12-world-eaters.webp", legion: "xii" },
+  { image: "images/legions/13-ultra.webp", legion: "xiii" },
+  { image: "images/legions/14-death-guard.webp", legion: "xiv" },
+  { image: "images/legions/15-thousand-sons.webp", legion: "xv" },
+  { image: "images/legions/16-sons-of-horus.webp", legion: "xvi" },
+  { image: "images/legions/17-word-eaters.webp", legion: "xvii" },
+  { image: "images/legions/18-salamanders.webp", legion: "xviii" },
+  { image: "images/legions/19-reaven-guard.webp", legion: "xix" },
+  { image: "images/legions/20-alpha-legion.webp", legion: "xx" }
+];
 ---
 <Layout>
     <main class="bg-black text-white w-screen h-screen flex justify-center items-center bg-[url('/images/legions/empire.webp')] bg-contain bg-center bg-no-repeat relative">
-        <div class="absolute inset-0 bg-black opacity-50"></div>
         
-    </main>
+        <section class="grid grid-cols-5 gap-5">
+            {legions.map(({ image, legion }) => (
+            <LegionCard image={image} legion={legion} />
+          ))}
+        </section>
+
+        
+   </main>
   
 </Layout>
