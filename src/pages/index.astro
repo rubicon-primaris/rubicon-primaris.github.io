@@ -1,13 +1,18 @@
 ---
 import Layout from '../layouts/Layout.astro'
+import LegionCard from '../components/LegionCard.astro'
 ---
 <Layout>
-    <main class="bg-black text-white w-screen h-screen flex justify-center items-center bg-[url('/images/legions/empire.webp')] bg-cover bg-center relative group">
-        <!-- Capa de superposición con efecto de desvanecimiento -->
-        <div class="absolute inset-0 bg-black opacity-50 transition-opacity duration-500 group-hover:opacity-0"></div>
+    <main class="bg-black text-white w-screen h-screen flex justify-center items-center bg-[url('/images/legions/empire.webp')] bg-cover bg-center">
         
         <!-- Texto principal -->
         <h1 class="text-4xl relative z-10">Hello, Astro!</h1>
+        <LegionCard image="images/legions/1-dark-angles.webp" legion="i"/>
+        
+        <LegionCard image="images/legions/3-emperors-children.webp" legion="iii"/>
+        
+        <LegionCard image="images/legions/4-iron-warriors.webp" legion="iv"/>
 
+        
     </main>
 </Layout>
