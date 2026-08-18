@@ -78,6 +78,15 @@ import Layout from '../layouts/Layout.astro'
   #gene-root #gene-edges path { transition: opacity .25s }
   #gene-root .gene-x { position: absolute; right: 10px; top: 10px; cursor: pointer; background: transparent; border: none; color: #8a8a92; font-size: 16px }
   #gene-root .gene-x:hover { color: #ffffff }
+  #gene-scroller { -webkit-overflow-scrolling: touch }
+  /* Movil: cabecera compacta y el panel pasa a ser una hoja inferior */
+  @media (max-width: 640px) {
+    #gene-root header { padding: 30px 14px 16px !important; gap: 10px !important }
+    #gene-panel {
+      left: 10px !important; right: 10px !important; top: auto !important; bottom: 10px !important;
+      width: auto !important; max-height: 56vh !important;
+    }
+  }
 </style>
 
 <script>
@@ -144,6 +153,134 @@ import Layout from '../layouts/Layout.astro'
     { n: 'Cráneos Plateados', tag: 'Desconocido' }
   ]
 
+  // Colores heráldicos, descripción y señor de cada capítulo / legión
+  const CHAP_RAW = {
+    'Ángeles Oscuros': [['#25523b'], 'Herederos directos de la I Legión; cazan en secreto a los Caídos desde La Roca.'],
+    'Á. de la Absolución': [['#d8cfae'], 'Creen que los pecados de los Caídos ya fueron absueltos; visten color hueso.'],
+    'Á. de la Redención': [['#8a1f1f', '#111111'], 'Los más fanáticos del linaje en la caza de los Caídos.'],
+    'Á. de la Venganza': [['#111111', '#8a1f1f'], 'Implacables; jamás abandonan una campaña, cueste lo que cueste.'],
+    'Consagradores': [['#111111'], 'Combaten con reliquias y armaduras veneradas de la Gran Cruzada.'],
+    'Discípulos de Caliban': [['#25523b'], 'Fundación tardía en honor al mundo perdido de la legión.'],
+    'Guardianes del Pacto': [['#8a8f96'], 'Monásticos y devotos; juran silencio ante extraños.'],
+    'Ángeles del Desafío': [['#111111', '#d8cfae'], 'Orgullosos y agresivos; los últimos en retirarse.'],
+    'Cicatrices Blancas': [['#e8e6e0'], 'Jinetes de Chogoris; la caza es su credo y la velocidad su arma.'],
+    'Señores de la Tormenta': [['#2a4a8a', '#e8e6e0'], 'Agresivos cazadores de xenos, veteranos de Armageddon.'],
+    'Saqueadores': [['#8a1f1f', '#e8e6e0'], 'Canalizan la furia de la estepa en cargas salvajes.'],
+    'Destructores': [['#3a3a42', '#e8e6e0'], 'Aniquilado en campaña; su nombre fue retirado de los registros.'],
+    'Merodeadores': [['#e8e6e0'], 'Vagan lejos del Imperio en cruzada perpetua.'],
+    'Halcones Solares': [['#c9a227', '#e8e6e0'], 'Escoltas veloces de las flotas de la Franja Oriental.'],
+    'Lobos Espaciales': [['#6b7f8f'], 'Salvajes de Fenris; rechazan el Codex y conservan el espíritu de legión.'],
+    'Hermanos del Lobo': [['#6b7f8f'], 'Único sucesor; su semilla inestable degeneró y fue disuelto.'],
+    'Puños Imperiales': [['#c9a227'], 'Defensores de Terra, maestros del asedio y la fortificación.'],
+    'Puños Carmesíes': [['#1c2a5a'], 'Reconstruidos tras Rynn; disciplina inquebrantable.'],
+    'Templarios Negros': [['#111111'], 'Cruzada eterna; el capítulo más numeroso, repartido en flotas.'],
+    'Excoriadores': [['#b8b4a8'], 'Expían el dolor de Dorn flagelando su propia carne.'],
+    'Puños Ejemplares': [['#c8c6c0'], 'Guardianes del legado táctico de Dorn; perdidos tras la Grieta.'],
+    'Bebedores de Almas': [['#5a2a6a'], 'Cayeron en desgracia y herejía; su historia es una advertencia.'],
+    'Verdugos': [['#111111'], 'Cultura de cazadores de cabezas; ejecutores sin piedad.'],
+    'Martillos de Dorn': [['#c9a227'], 'Puristas del Codex, golpe a golpe.'],
+    'Caballeros de Hierro': [['#8a8f96'], 'Herederos del temple de Dorn en la guerra de asedio.'],
+    'Ángeles Sangrientos': [['#8a1f1f'], 'Nobles artistas guerreros que ocultan la Sed Roja.'],
+    'Desgarradores de Carne': [['#8a1f1f'], 'La Furia Negra casi los consume; salvajes en el asalto.'],
+    'Á. Encarnadinos': [['#8a1f1f', '#e8e6e0'], 'Orgullosos y ceremoniosos; niegan la maldición.'],
+    'Á. Sanguinos': [['#c04a4a', '#c9a227'], 'Custodian la memoria de Sanguinius con fervor.'],
+    'Á. Bermellón': [['#a03030'], 'Sombríos; combaten lejos de miradas imperiales.'],
+    'Bebedores de Sangre': [['#8a1f1f', '#3a3a42'], 'Su nombre alimenta rumores oscuros que no desmienten.'],
+    'Devoradores de Carne': [['#7a2a2a'], 'Marcados por ritos caníbales; vigilados por la Inquisición.'],
+    'Lamentadores': [['#e0b31f'], 'Malditos por la fortuna; heroicos hasta la autodestrucción.'],
+    'Manos de Hierro': [['#111111'], 'La carne es débil: cuerpos de metal, corazones fríos.'],
+    'Garras Rojas': [['#8a1f1f', '#8a8f96'], 'Puristas del aumento biónico, brutales y herméticos.'],
+    'Zarpas de Bronce': [['#b87333', '#111111'], 'Perdieron su mundo; viven en cruzada de venganza.'],
+    'Hijos de Medusa': [['#4a7a3a', '#8a8f96'], 'Nacidos de un cisma tecnológico en M36.'],
+    'Señores de Hierro': [['#3a3a42', '#c9a227'], 'Señores feudales de su sector, fríos estrategas.'],
+    'Ultramarines': [['#1c3a8a'], 'El capítulo ejemplar; su primarca gobierna el Imperio renacido.'],
+    'Novamarines': [['#1c3a8a', '#e8e6e0'], 'Cuarteados en azul y hueso; veteranos de la guerra del vacío.'],
+    'Capítulo Génesis': [['#8a1f1f', '#1c3a8a'], 'Réplica fiel de la legión madre desde la primera fundación.'],
+    'Águilas de la Perdición': [['#8a8f96', '#111111'], 'Sombríos profetas de su propia extinción.'],
+    'Mortifactores': [['#111111', '#d8cfae'], 'Sus ritos mortuorios inquietan al resto del linaje.'],
+    'Cónsules Negros': [['#111111', '#1c3a8a'], 'Aniquilados y refundados; guardianes del este.'],
+    'Cónsules Blancos': [['#e8e6e0'], 'Diplomáticos y protectores de mundos capitales.'],
+    'Pretores de Orfeo': [['#c8c6c0', '#8a1f1f'], 'Custodios del sector Orfeo, arrasado por los necrones.'],
+    'Grifos Aulladores': [['#e0b31f', '#8a1f1f'], 'Sus juramentos son inquebrantables; cuarteados rojo y oro.'],
+    'Capítulo Aurora': [['#4a7a3a'], 'Especialistas en guerra acorazada.'],
+    'Hijos de Orar': [['#e8e6e0', '#8a1f1f'], 'Veneran a Orar, campeón de Guilliman.'],
+    'Guadañas del Emperador': [['#e0b31f', '#111111'], 'Casi exterminados por los tiránidos en Sotha.'],
+    'Águilas Plateadas': [['#c8c6c0', '#1c3a8a'], 'Alas de plata sobre los cielos en guerra.'],
+    'Libadores': [['#25523b', '#c8c6c0'], 'Guardianes ceremoniales del linaje de Macragge.'],
+    'Marines Errantes': [['#1c3a8a', '#e8e6e0'], 'Flota errante que patrulla las rutas comerciales del este.'],
+    'Salamandras': [['#2a7a4a'], 'Forjadores de Nocturne; protegen a la humanidad ante todo.'],
+    'Dragones Negros': [['#111111'], 'Sus mutaciones óseas los hacen parias; feroces cuerpo a cuerpo.'],
+    'Guardia del Cuervo': [['#111111'], 'Golpean desde las sombras y desaparecen.'],
+    'Guardia Negra': [['#111111', '#8a1f1f'], 'Los más sombríos de un linaje ya sombrío.'],
+    'Injuriadores': [['#8a8f96'], 'Guerra psicológica y desprecio absoluto por el enemigo.'],
+    'Raptores': [['#4a5a3a'], 'Pragmáticos; prefieren el camuflaje a la heráldica.'],
+    'Caballeros Grises': [['#8a8f96', '#c8c6c0'], 'Cazadores de demonios del Ordo Malleus; su semilla procede del propio Emperador.'],
+    'Cuervos Sangrientos': [['#7a2a2a', '#d8cfae'], 'Sedientos de saber; se rumorea que descienden de los Mil Hijos.'],
+    'Legión de los Condenados': [['#111111', '#e8e6e0'], 'Aparecen entre llamas espectrales allí donde la derrota es segura.'],
+    'Minotauros': [['#b87333'], 'Arma de choque del Alto Senado de Terra, incluso contra otros Astartes.'],
+    'Escorpiones Rojos': [['#8a8f96', '#8a1f1f'], 'Puristas genéticos de lealtad feroz.'],
+    'Exorcistas': [['#5a5a62', '#8a1f1f'], 'Sus iniciados sobreviven a una posesión ritual.'],
+    'Leones Celestiales': [['#1c3a8a', '#e0b31f'], 'Enemistados con la Inquisición; diezmados una y otra vez.'],
+    'Carcharodons': [['#8a8f96'], 'Surgen del vacío exterior, silenciosos y caníbales.'],
+    'Marines Malevolentes': [['#e0b31f', '#111111'], 'Brutales y despreciados; ningún aliado los llora.'],
+    'Fantasmas Estelares': [['#e8e6e0', '#111111'], 'Reclusos; pagaron con sangre la Guerra de Badab.'],
+    'Cráneos Plateados': [['#c8c6c0', '#8a1f1f'], 'No entran en batalla sin leer antes los presagios.'],
+    'Hijos del Emperador': [['#5a2a6a', '#c9a227'], ''],
+    'Guerreros de Hierro': [['#8a8f96', '#e0b31f'], ''],
+    'Señores de la Noche': [['#1c2a5a'], ''],
+    'Devoradores de Mundos': [['#8a1f1f', '#b87333'], ''],
+    'Guardia de la Muerte': [['#b8b4a8'], ''],
+    'Mil Hijos': [['#1c3a8a', '#c9a227'], ''],
+    'Hijos de Horus': [['#3a5a4a'], ''],
+    'Legión Negra': [['#111111', '#c9a227'], ''],
+    'Portadores de la Palabra': [['#7a2a2a'], ''],
+    'Legión Alfa': [['#2a6a6a', '#4a7a3a'], '']
+  }
+  const MASTERS = {
+    'Ángeles Oscuros': 'Azrael', 'Cicatrices Blancas': 'Jubal Khan', 'Lobos Espaciales': 'Logan Grimnar',
+    'Puños Imperiales': 'Gregor Dessian', 'Ángeles Sangrientos': 'Comandante Dante', 'Manos de Hierro': 'Kardan Stronos',
+    'Ultramarines': 'Marneus Calgar', 'Salamandras': 'Tu’Shan', 'Guardia del Cuervo': 'Kayvaan Shrike',
+    'Puños Carmesíes': 'Pedro Kantor', 'Templarios Negros': 'Helbrecht', 'Desgarradores de Carne': 'Gabriel Seth',
+    'Caballeros Grises': 'Kaldor Draigo', 'Minotauros': 'Asterion Moloc', 'Escorpiones Rojos': 'Carab Culln',
+    'Cuervos Sangrientos': 'Gabriel Angelos', 'Guadañas del Emperador': 'Thracian', 'Lamentadores': 'Malakim Phoros',
+    'Hijos del Emperador': 'Fulgrim', 'Guerreros de Hierro': 'Perturabo', 'Señores de la Noche': 'Bandas dispersas',
+    'Devoradores de Mundos': 'Angron', 'Guardia de la Muerte': 'Mortarion', 'Mil Hijos': 'Magnus el Rojo',
+    'Hijos de Horus': 'Abaddon', 'Legión Negra': 'Abaddon el Saqueador', 'Portadores de la Palabra': 'Erebus y Kor Phaeron',
+    'Legión Alfa': '¿Alpharius?'
+  }
+  const CI = {}
+  for (const k in CHAP_RAW) CI[k] = { c: CHAP_RAW[k][0], d: CHAP_RAW[k][1], m: MASTERS[k] }
+
+  // Destino de cada primarca [estado, relato]
+  const PR = {
+    I: ['Retornado', 'Durmió en secreto en La Roca durante diez mil años. Ha despertado en la Era Indomitus y lidera de nuevo a los suyos.'],
+    II: ['Desconocido', 'Toda mención fue expurgada de los archivos imperiales.'],
+    III: ['Príncipe demonio', 'La búsqueda de la perfección lo entregó a Slaanesh. Serpiente alada, reina entre placeres imposibles.'],
+    IV: ['Príncipe demonio', 'Amargado y brillante, forja máquinas de guerra sin fin desde la fortaleza-mundo de Medrengard.'],
+    V: ['Desaparecido', 'Se adentró en la telaraña persiguiendo a los drukhari. Su capítulo aún espera oír de nuevo su risa.'],
+    VI: ['Desaparecido', 'Partió hacia el Ojo del Terror tras la Herejía. Los Lobos guardan su trono vacío en el Colmillo.'],
+    VII: ['Muerto en combate', 'Cayó abordando la nave Espada de Sacrilegio; solo se recuperó su mano. Su temple sostiene aún los muros del Imperio.'],
+    VIII: ['Asesinado', 'Aceptó su muerte a manos de la asesina M’Shen como última prueba de que el terror engendra justicia.'],
+    IX: ['Mártir de Terra', 'El Ángel murió a manos de Horus defendiendo al Emperador. Su sacrificio es el mito fundacional del Imperio.'],
+    X: ['Muerto en Istvaan V', 'Decapitado por Fulgrim, su hermano más querido. Sus hijos aún arrancan la carne débil en su memoria.'],
+    XI: ['Desconocido', 'Toda mención fue expurgada de los archivos imperiales.'],
+    XII: ['Príncipe demonio', 'Los Clavos Carniceros lo entregaron a Khorne. Desatado de nuevo, solo la sangre lo calma.'],
+    XIII: ['Retornado', 'Resucitado en 999.M41, gobierna como Lord Comandante del Imperio y libra la Cruzada Indomitus.'],
+    XIV: ['Príncipe demonio', 'Señor de la Plaga de Nurgle. Desde el Jardín pestilente dirige sus huestes contra Ultramar.'],
+    XV: ['Príncipe demonio', 'Entregado a Tzeentch, reina sobre el Planeta de los Hechiceros, sabio y condenado a partes iguales.'],
+    XVI: ['Muerto', 'El Emperador borró su alma en el Asedio de Terra. Su cuerpo clonado fue destruido por Abaddon.'],
+    XVII: ['Príncipe demonio', 'El primer hereje medita en Sicarus desde hace milenios, escribiendo el credo del Caos.'],
+    XVIII: ['Desaparecido', 'Un Perpetuo que ha muerto y renacido incontables veces. Nocturne guarda sus nueve reliquias, esperándolo.'],
+    XIX: ['Desaparecido', 'Partió solo hacia el Ojo del Terror. Se rumorea que algo con sombra de cuervo aún caza traidores.'],
+    XX: ['Incierto', 'Alpharius y Omegon, dos cuerpos y un nombre. Uno murió... ¿o los dos? Nadie lo sabe con certeza.']
+  }
+
+  const chapCols = (name) => (CI[name] || {}).c || []
+  const dotsHtml = (cols, size, gap, margin) =>
+    `<div style="display:flex;gap:${gap}px;justify-content:center;${margin}">` +
+    cols.map(c => `<span style="width:${size}px;height:${size}px;border-radius:50%;background:${c};border:1px solid #3a3a42"></span>`).join('') +
+    '</div>'
+
   const state = { sel: null, selChap: null, filter: 'all', zoom: 0.75 }
 
   const scroller = document.getElementById('gene-scroller')
@@ -165,6 +302,23 @@ import Layout from '../layouts/Layout.astro'
     if (meta.dash) p.setAttribute('stroke-dasharray', meta.dash)
     edges.appendChild(p)
     pathMeta.push({ el: p, ...meta })
+  }
+
+  // Iconos reales extraidos de los posters del index (blancos con alfa).
+  // Las legiones expurgadas (II y XI) conservan la marca geometrica censurada.
+  const ICONS = {
+    I: '1-dark-angles', III: '3-emperors-children', IV: '4-iron-warriors', V: '5-white-scars',
+    VI: '6-wolf', VII: '7-imperial-fists', VIII: '8-knight-lords', IX: '9-blood-angles',
+    X: '10-iron-hands', XII: '12-world-eaters', XIII: '13-ultra', XIV: '14-death-guard',
+    XV: '15-thousand-sons', XVI: '16-sons-of-horus', XVII: '17-word-eaters', XVIII: '18-salamanders',
+    XIX: '19-reaven-guard', XX: '20-alpha-legion'
+  }
+
+  function markHtml (l) {
+    if (ICONS[l.id]) {
+      return `<img src="/images/legions/icons/${ICONS[l.id]}.png" alt="" width="44" height="44" style="display:block;margin:0 auto;width:44px;height:44px;object-fit:contain">`
+    }
+    return markSvg(l)
   }
 
   function markSvg (l) {
@@ -191,17 +345,19 @@ import Layout from '../layouts/Layout.astro'
       const badge = l.st === 'traitor' ? 'CAOS' : l.st === 'lost' ? 'EXPURGADA' : ''
       const badgeColor = l.st === 'traitor' ? CHT : '#6a6a72'
       html += `<div class="gene-lg" data-lg="${l.id}" title="${l.en} · ${l.primarch}" style="position:absolute;left:${cx - 44}px;top:${legTop}px;width:88px;text-align:center;cursor:pointer">
-        <span data-mark>${markSvg(l)}</span>
+        <span data-mark>${markHtml(l)}</span>
         <div style="font-family:'Cinzel',serif;font-size:12px;color:#9a9aa2;margin-top:6px">${l.id}</div>
         <div style="font-family:'Cinzel',serif;font-size:11.5px;font-weight:600;line-height:1.25;color:#ffffff;margin-top:2px">${l.name}</div>
         <div style="font-size:8.5px;font-style:italic;color:#7a7a82;margin-top:2px;line-height:1.3">${l.prev ? 'antes ' + l.prev : ''}</div>
         <div style="font-size:8px;letter-spacing:0.24em;margin-top:3px;color:${badgeColor}">${badge}</div>
+        ${dotsHtml(chapCols(l.name), 8, 5, 'margin-top:4px')}
       </div>`
 
       if (l.st === 'traitor') {
         addPath(`M${cx},${legBot} L${cx},${wbY}`, { kind: 'legion', id: l.id, dash: '5 5', col: CH })
         const wname = l.id === 'XVI' ? 'Legión Negra' : l.name
         html += `<div class="gene-wb" data-wb="${l.id}" style="position:absolute;left:${cx - 43}px;top:${wbY}px;width:86px;box-sizing:border-box;padding:6px 4px;text-align:center;background:#100b0b;border:1px dashed #4a2723;border-radius:2px;cursor:pointer">
+          ${dotsHtml(chapCols(wname), 7, 4, 'margin-bottom:3px')}
           <div style="font-size:10px;line-height:1.25;color:#e8e6e0">${wname}</div>
           <div style="font-size:8px;letter-spacing:0.14em;color:${CHT};margin-top:3px">CAOS · M41</div>
         </div>`
@@ -219,6 +375,7 @@ import Layout from '../layouts/Layout.astro'
         l.succ.forEach((s, k) => {
           const col = Math.floor(k / maxRows), row = k % maxRows
           html += `<div class="gene-chap" data-chap="${l.id}" data-name="${s.n}" style="position:absolute;left:${cx - 43 + col * 90}px;top:${rowY0 + row * rowH}px;width:86px;box-sizing:border-box;padding:6px 4px;text-align:center;background:#0c0d10;border:1px solid #2e2e36;border-radius:2px;cursor:pointer">
+            ${dotsHtml(chapCols(s.n), 7, 4, 'margin-bottom:3px')}
             <div style="font-size:10px;line-height:1.25;color:#e8e6e0">${s.n}</div>
             <div style="font-size:8px;letter-spacing:0.14em;color:#6a6a72;margin-top:3px">${s.tag}</div>
           </div>`
@@ -228,6 +385,7 @@ import Layout from '../layouts/Layout.astro'
 
     ORPHANS.forEach((s, i) => {
       html += `<div class="gene-chap" data-orphan="1" data-name="${s.n}" style="position:absolute;left:${323 + i * 118}px;top:1090px;width:86px;box-sizing:border-box;padding:6px 4px;text-align:center;background:#0c0d10;border:1px dashed #2e2e36;border-radius:2px;cursor:pointer">
+        ${dotsHtml(chapCols(s.n), 7, 4, 'margin-bottom:3px')}
         <div style="font-size:10px;line-height:1.25;color:#e8e6e0">${s.n}</div>
         <div style="font-size:8px;letter-spacing:0.14em;color:#6a6a72;margin-top:3px">${s.tag}</div>
       </div>`
@@ -251,7 +409,8 @@ import Layout from '../layouts/Layout.astro'
         sup: 'ADEPTUS ASTARTES', name: 'Origen desconocido', en: 'Founding unknown', prevLine: '',
         primarch: 'Desconocido', world: 'Diversos', statusLabel: 'Leales · linaje sin confirmar', statusColor: '#c8c6c0',
         blurb: 'Decenas de fundaciones se han sucedido a lo largo de diez milenios, y los registros de muchos capítulos se han perdido, censurado o clasificado. De estos guerreros se conoce su servicio, pero no la legión de la que desciende su semilla genética.',
-        succ: ORPHANS.map(o => ({ n: o.n, tag: o.tag })), hasSucc: true
+        succ: ORPHANS.map(o => ({ n: o.n, tag: o.tag, c: chapCols(o.n) })), hasSucc: true,
+        master: 'Sin registros', masterLabel: 'Señor del Capítulo'
       }
     }
     const l = D.find(d => d.id === sel)
@@ -262,7 +421,12 @@ import Layout from '../layouts/Layout.astro'
       primarch: l.primarch, world: l.world,
       statusLabel: l.st === 'loyal' ? 'Leal al Emperador' : l.st === 'traitor' ? 'Traidora — Caos' : 'Desconocida',
       statusColor: l.st === 'traitor' ? CHT : '#c8c6c0',
-      blurb: l.blurb, succ: l.succ, hasSucc: l.succ.length > 0
+      blurb: l.blurb, succ: l.succ.map(s => ({ ...s, c: chapCols(s.n) })), hasSucc: l.succ.length > 0,
+      cols: chapCols(l.name), hasCols: chapCols(l.name).length > 0,
+      master: (CI[l.name] || {}).m || 'Desconocido',
+      masterLabel: l.st === 'traitor' ? 'Señor de la Guerra' : 'Señor del Capítulo',
+      hasPrim: true, primFate: PR[l.id][0], primBlurb: PR[l.id][1],
+      primFateColor: l.st === 'traitor' ? CHT : '#c8c6c0'
     }
   }
 
@@ -270,14 +434,35 @@ import Layout from '../layouts/Layout.astro'
     let p = panelData()
     if (p && state.selChap) {
       const l = D.find(d => d.id === state.sel)
-      p = { ...p, name: state.selChap, en: state.sel === '?' ? 'Capítulo · origen desconocido' : `Capítulo · linaje ${l.name}` }
+      const info = CI[state.selChap] || {}
+      p = {
+        ...p, name: state.selChap,
+        en: state.sel === '?' ? 'Capítulo · origen desconocido' : `Capítulo · linaje ${l.name}`,
+        blurb: info.d || p.blurb, cols: info.c || [], hasCols: (info.c || []).length > 0,
+        master: info.m || 'Sin registros', masterLabel: 'Señor del Capítulo', hasPrim: false
+      }
     }
     if (!p) { panelEl.style.display = 'none'; panelEl.innerHTML = ''; return }
+    let colsHtml = ''
+    if (p.hasCols) {
+      colsHtml = `<div style="display:flex;gap:8px;margin-top:12px;align-items:center">` +
+        p.cols.map(c => `<span style="width:20px;height:20px;border-radius:50%;background:${c};border:1px solid #3a3a42;box-shadow:inset 0 0 5px rgba(0,0,0,0.45)"></span>`).join('') +
+        `<span style="font-size:9.5px;letter-spacing:0.16em;color:#6a6a72">COLORES DEL CAPÍTULO</span></div>`
+    }
+    let primHtml = ''
+    if (p.hasPrim) {
+      primHtml = `<div style="border-top:1px solid #1c1c22;padding-top:14px;margin-bottom:16px">
+        <div style="font-size:10px;letter-spacing:0.2em;color:#6a6a72;margin-bottom:6px">EL PRIMARCA</div>
+        <div style="font-family:'Cinzel',serif;font-size:15px;font-weight:600;color:#ffffff">${p.primarch}</div>
+        <div style="font-size:10.5px;letter-spacing:0.1em;color:${p.primFateColor};text-transform:uppercase;margin:2px 0 8px">${p.primFate}</div>
+        <p style="font-size:12.5px;line-height:1.6;color:#a8a8b0;margin:0;text-wrap:pretty">${p.primBlurb}</p>
+      </div>`
+    }
     let succHtml = ''
     if (p.hasSucc) {
       succHtml = `<div style="font-size:10px;letter-spacing:0.2em;color:#6a6a72;margin-bottom:8px">LINAJE CONOCIDO</div>` +
         p.succ.map(s => `<div style="display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:5px 0;border-bottom:1px solid #1c1c22">
-          <span style="color:#e8e6e0">${s.n}</span><span style="color:#6a6a72;font-size:10px;white-space:nowrap">${s.tag}</span>
+          <span style="display:flex;align-items:center;gap:6px;color:#e8e6e0">${(s.c || []).map(c => `<span style="width:9px;height:9px;border-radius:50%;background:${c};border:1px solid #3a3a42;flex-shrink:0"></span>`).join('')}${s.n}</span><span style="color:#6a6a72;font-size:10px;white-space:nowrap">${s.tag}</span>
         </div>`).join('')
     }
     panelEl.innerHTML = `
@@ -285,13 +470,16 @@ import Layout from '../layouts/Layout.astro'
       <div style="font-family:'Cinzel',serif;font-size:13px;color:#8a8a92">${p.sup}</div>
       <h2 style="font-family:'Cinzel',serif;font-size:21px;font-weight:700;color:#ffffff;margin:4px 0 2px">${p.name}</h2>
       <div style="font-size:11px;letter-spacing:0.12em;color:#6a6a72;text-transform:uppercase">${p.en}</div>
+      ${colsHtml}
       <div style="font-size:12px;font-style:italic;color:#9a9aa2;margin-top:6px">${p.prevLine || ''}</div>
       <div style="display:grid;grid-template-columns:auto 1fr;gap:5px 14px;font-size:12.5px;margin:16px 0;color:#c8c6c0">
         <span style="color:#6a6a72">Primarca</span><span>${p.primarch}</span>
         <span style="color:#6a6a72">Mundo</span><span>${p.world}</span>
         <span style="color:#6a6a72">Lealtad</span><span style="color:${p.statusColor}">${p.statusLabel}</span>
+        <span style="color:#6a6a72">${p.masterLabel}</span><span>${p.master}</span>
       </div>
       <p style="font-size:13px;line-height:1.6;color:#a8a8b0;margin:0 0 16px;text-wrap:pretty">${p.blurb}</p>
+      ${primHtml}
       ${succHtml}`
     panelEl.style.display = 'block'
   }
@@ -321,8 +509,8 @@ import Layout from '../layouts/Layout.astro'
     nodesEl.querySelectorAll('[data-lg]').forEach(el => {
       const id = el.getAttribute('data-lg')
       el.style.opacity = opById[id]
-      const svg = el.querySelector('svg')
-      if (svg) svg.style.filter = sel === id ? 'drop-shadow(0 0 8px rgba(255,255,255,0.7))' : 'none'
+      const mark = el.querySelector('svg, img')
+      if (mark) mark.style.filter = sel === id ? 'drop-shadow(0 0 8px rgba(255,255,255,0.7))' : 'none'
     })
     // bandas de guerra
     nodesEl.querySelectorAll('[data-wb]').forEach(el => {
@@ -366,7 +554,9 @@ import Layout from '../layouts/Layout.astro'
   function setState (patch) { Object.assign(state, patch); update() }
   function fit () {
     const w = Math.min(window.innerWidth - 24, W)
-    setState({ zoom: Math.max(0.4, Math.min(1, w / W)) })
+    // en movil no se baja de 0.55 para que el texto siga legible; el resto se recorre con scroll tactil
+    const minZ = window.innerWidth < 640 ? 0.55 : 0.4
+    setState({ zoom: Math.max(minZ, Math.min(1, w / W)) })
   }
 
   // ---- interacción ----
