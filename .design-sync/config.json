@@ -1,0 +1,15 @@
+{
+  "projectId": "29dce0f6-a488-4e09-bc8c-1a284cc480c4",
+  "shape": "package",
+  "pkg": "anira",
+  "globalName": "RubiconDS",
+  "buildCmd": "pnpm exec tailwindcss -c tailwind.config.mjs -i .design-sync/tailwind.entry.css -o .design-sync/.cache/ds.css",
+  "cssEntry": ".design-sync/.cache/ds.css",
+  "readmeHeader": ".design-sync/conventions.md",
+  "componentSrcMap": {
+    "Button": "src/components/ds/Button.jsx",
+    "Badge": "src/components/ds/Badge.jsx",
+    "Card": "src/components/ds/Card.jsx",
+    "LegionCard": "src/components/ds/LegionCard.jsx"
+  }
+}

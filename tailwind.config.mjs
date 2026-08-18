@@ -1,6 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+	content: [
+		'./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}',
+		'./.design-sync/previews/**/*.tsx',
+	],
 	theme: {
 	
 		extend: {
@@ -227,11 +230,21 @@ export default {
 				  },
 				primary: {
 					DEFAULT: '#252422',
-					
+
 				},
 				secondary: {
 					DEFAULT: '#eb5e28',
-					
+
+				},
+				surface: {
+					DEFAULT: '#000000',   // fondo del sitio
+					raised: '#161513',    // paneles y cards
+					overlay: '#252422',   // capas elevadas (igual que primary)
+				},
+				ink: {
+					DEFAULT: '#ffffff',   // texto principal
+					muted: '#a8a29e',     // texto secundario
+					faint: '#57534e',     // texto deshabilitado / pies
 				}
 			},
 		},
@@ -239,7 +252,10 @@ export default {
 	safelist: [
 		{
 			pattern: /bg-(i|iii|iv|v|vi|vii|viii|ix|x|xii|xiii|xiv|xv|xvi|xvii|xviii|xix|xx)-(50|100|200|300|400|500|600|700|800|900)/,
-		},		
+		},
+		{
+			pattern: /border-t-(i|iii|iv|v|vi|vii|viii|ix|x|xii|xiii|xiv|xv|xvi|xvii|xviii|xix|xx)-500/,
+		},
 	],
 	plugins: [],
 }
