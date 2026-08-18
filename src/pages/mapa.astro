@@ -1,0 +1,419 @@
+---
+import Layout from '../layouts/Layout.astro'
+---
+<Layout>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <div id="gm-root">
+    <div id="gm-vp" style="position:fixed;inset:0;background:radial-gradient(ellipse at center,#060809 0%,#000000 75%);overflow:hidden;cursor:grab;perspective:1100px;user-select:none;-webkit-user-select:none">
+      <div id="gm-world" style="position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d">
+        <div id="gm-disc" class="gm-spin" style="position:absolute;left:-248px;top:-430px;width:1080px;height:848px;transform-origin:248px 430px;transform-style:preserve-3d">
+          <div style="position:absolute;left:160px;top:130px;width:800px;height:600px;border-radius:50%;background:radial-gradient(ellipse,rgba(130,160,170,0.11) 0%,rgba(130,160,170,0.04) 45%,transparent 70%)"></div>
+          <div style="position:absolute;left:180px;top:300px;width:760px;height:260px;border-radius:50%;background:radial-gradient(ellipse,rgba(120,160,170,0.08),transparent 70%);transform:rotate(33deg);filter:blur(16px)"></div>
+          <div style="position:absolute;left:180px;top:300px;width:760px;height:260px;border-radius:50%;background:radial-gradient(ellipse,rgba(120,150,170,0.07),transparent 70%);transform:rotate(123deg);filter:blur(16px)"></div>
+          <div style="position:absolute;left:410px;top:310px;width:300px;height:240px;border-radius:50%;background:radial-gradient(ellipse,rgba(225,234,238,0.16),transparent 68%);filter:blur(8px)"></div>
+          <div style="position:absolute;left:163px;top:345px;width:170px;height:170px;border-radius:50%;background:repeating-conic-gradient(rgba(255,255,255,0.16) 0deg 0.5deg,transparent 0.5deg 4deg);-webkit-mask-image:radial-gradient(circle,rgba(0,0,0,0.9) 0%,transparent 66%);mask-image:radial-gradient(circle,rgba(0,0,0,0.9) 0%,transparent 66%)"></div>
+          <div style="position:absolute;left:220px;top:402px;width:56px;height:56px;border-radius:50%;background:radial-gradient(circle,rgba(255,250,235,0.5),transparent 70%)"></div>
+          <svg id="gm-stars" width="1080" height="848" viewBox="0 0 1080 848" style="position:absolute;left:0;top:0;pointer-events:none"></svg>
+          <svg width="1080" height="848" viewBox="0 0 1080 848" style="position:absolute;left:0;top:0;pointer-events:none;transform:translateZ(0);will-change:transform">
+            <defs>
+              <linearGradient id="riftG" x1="0" y1="0" x2="1" y2="0.5"><stop offset="0%" stop-color="#b3402f" stop-opacity="0.7"></stop><stop offset="45%" stop-color="#c13a6b" stop-opacity="0.85"></stop><stop offset="100%" stop-color="#8a1f4a" stop-opacity="0.65"></stop></linearGradient>
+              <radialGradient id="stormG"><stop offset="0%" stop-color="#1c0510"></stop><stop offset="40%" stop-color="#7a1c42" stop-opacity="0.85"></stop><stop offset="72%" stop-color="#b3402f" stop-opacity="0.4"></stop><stop offset="100%" stop-color="#b3402f" stop-opacity="0"></stop></radialGradient>
+              <filter id="chA" x="-30%" y="-30%" width="160%" height="160%"><feTurbulence type="fractalNoise" baseFrequency="0.011 0.032" numOctaves="4" seed="11" result="n"></feTurbulence><feDisplacementMap in="SourceGraphic" in2="n" scale="70"></feDisplacementMap><feGaussianBlur stdDeviation="4"></feGaussianBlur></filter>
+              <filter id="chB" x="-30%" y="-30%" width="160%" height="160%"><feTurbulence type="fractalNoise" baseFrequency="0.018 0.045" numOctaves="4" seed="23" result="n"></feTurbulence><feDisplacementMap in="SourceGraphic" in2="n" scale="42"></feDisplacementMap><feGaussianBlur stdDeviation="1.6"></feGaussianBlur></filter>
+              <filter id="chC" x="-25%" y="-25%" width="150%" height="150%"><feTurbulence type="fractalNoise" baseFrequency="0.03 0.06" numOctaves="3" seed="41" result="n"></feTurbulence><feDisplacementMap in="SourceGraphic" in2="n" scale="26"></feDisplacementMap><feGaussianBlur stdDeviation="0.8"></feGaussianBlur></filter>
+            </defs>
+            <path d="M248,430 C310,300 440,180 620,10" fill="none" stroke="#7a3430" stroke-width="0.9" opacity="0.45"></path>
+            <path d="M248,430 C180,400 90,350 0,305" fill="none" stroke="#7a3430" stroke-width="0.9" opacity="0.45"></path>
+            <path d="M248,430 C200,560 130,700 60,848" fill="none" stroke="#7a3430" stroke-width="0.9" opacity="0.45"></path>
+            <path d="M248,430 C400,560 560,700 700,848" fill="none" stroke="#7a3430" stroke-width="0.9" opacity="0.45"></path>
+            <circle cx="248" cy="430" r="168" fill="none" stroke="#7a3430" stroke-width="0.8" opacity="0.4" stroke-dasharray="3 5"></circle>
+            <ellipse cx="185" cy="255" rx="82" ry="70" fill="#c13a6b" opacity="0.22" filter="url(#chA)"></ellipse>
+            <ellipse cx="150" cy="310" rx="50" ry="38" fill="#b3402f" opacity="0.18" filter="url(#chA)"></ellipse>
+            <ellipse cx="345" cy="300" rx="38" ry="24" fill="#c13a6b" opacity="0.2" filter="url(#chB)"></ellipse>
+            <ellipse cx="470" cy="618" rx="62" ry="40" fill="#c13a6b" opacity="0.18" filter="url(#chA)"></ellipse>
+            <ellipse cx="880" cy="620" rx="92" ry="72" fill="#c13a6b" opacity="0.2" filter="url(#chA)"></ellipse>
+            <ellipse cx="915" cy="725" rx="70" ry="78" fill="#8a1f4a" opacity="0.22" filter="url(#chA)"></ellipse>
+            <ellipse cx="830" cy="700" rx="58" ry="48" fill="#b3402f" opacity="0.16" filter="url(#chA)"></ellipse>
+            <ellipse cx="830" cy="55" rx="62" ry="34" fill="#c13a6b" opacity="0.2" filter="url(#chA)"></ellipse>
+            <ellipse cx="935" cy="285" rx="36" ry="25" fill="#c13a6b" opacity="0.18" filter="url(#chB)"></ellipse>
+            <path d="M130,205 C240,255 300,320 400,360 C500,400 560,420 640,455 C740,498 880,560 995,650" fill="none" stroke="url(#riftG)" stroke-width="62" stroke-linecap="round" opacity="0.3" filter="url(#chA)"></path>
+            <path d="M130,205 C240,255 300,320 400,360 C500,400 560,420 640,455 C740,498 880,560 995,650" fill="none" stroke="#c13a6b" stroke-width="32" stroke-linecap="round" opacity="0.42" filter="url(#chB)"></path>
+            <path d="M130,205 C240,255 300,320 400,360 C500,400 560,420 640,455 C740,498 880,560 995,650" fill="none" stroke="#160410" stroke-width="15" stroke-linecap="round" opacity="0.95" filter="url(#chC)"></path>
+            <path d="M130,205 C240,255 300,320 400,360 C500,400 560,420 640,455 C740,498 880,560 995,650" fill="none" stroke="#e07898" stroke-width="1.6" opacity="0.3" filter="url(#chB)"></path>
+            <ellipse cx="600" cy="430" rx="92" ry="56" fill="#05070a" opacity="0.9" filter="url(#chB)"></ellipse>
+            <ellipse cx="520" cy="392" rx="42" ry="27" fill="#05070a" opacity="0.85" filter="url(#chC)"></ellipse>
+            <ellipse cx="680" cy="470" rx="52" ry="31" fill="#05070a" opacity="0.85" filter="url(#chC)"></ellipse>
+            <ellipse cx="430" cy="362" rx="30" ry="19" fill="#05070a" opacity="0.8" filter="url(#chC)"></ellipse>
+            <ellipse cx="300" cy="312" rx="26" ry="16" fill="#05070a" opacity="0.8" filter="url(#chC)"></ellipse>
+            <ellipse cx="760" cy="512" rx="35" ry="22" fill="#05070a" opacity="0.8" filter="url(#chC)"></ellipse>
+            <ellipse cx="878" cy="582" rx="40" ry="26" fill="#05070a" opacity="0.85" filter="url(#chC)"></ellipse>
+            <ellipse cx="958" cy="642" rx="30" ry="20" fill="#05070a" opacity="0.8" filter="url(#chC)"></ellipse>
+            <circle cx="176" cy="215" r="38" fill="url(#stormG)" filter="url(#chB)"></circle>
+            <ellipse cx="176" cy="215" rx="15" ry="10" fill="#0a0208" filter="url(#chC)" opacity="0.95"></ellipse>
+            <circle cx="523" cy="468" r="42" fill="url(#stormG)" filter="url(#chB)"></circle>
+            <ellipse cx="523" cy="468" rx="17" ry="11" fill="#0a0208" filter="url(#chC)" opacity="0.95"></ellipse>
+            <circle cx="516" cy="131" r="27" fill="url(#stormG)" filter="url(#chB)"></circle>
+            <circle cx="428" cy="633" r="27" fill="url(#stormG)" filter="url(#chB)"></circle>
+            <circle cx="905" cy="630" r="23" fill="url(#stormG)" filter="url(#chB)"></circle>
+            <circle cx="935" cy="272" r="18" fill="url(#stormG)" filter="url(#chB)"></circle>
+            <circle cx="782" cy="72" r="15" fill="url(#stormG)" filter="url(#chB)"></circle>
+            <path d="M830,565 L945,555 L985,655 L940,735 L845,712 L815,630 Z" fill="rgba(143,208,200,0.05)" stroke="#8fd0c8" stroke-width="1" stroke-dasharray="5 4" opacity="0.6"></path>
+            <path d="M675,690 L775,682 L800,765 L745,808 L672,775 Z" fill="rgba(143,191,90,0.05)" stroke="#8fbf5a" stroke-width="1" stroke-dasharray="4 4" opacity="0.5"></path>
+          </svg>
+          <div id="gm-regions"></div>
+          <div id="gm-nodes"></div>
+        </div>
+      </div>
+
+      <header style="position:fixed;left:28px;top:24px;pointer-events:none">
+        <div style="pointer-events:auto;display:flex;gap:18px">
+          <a href="/genealogia" style="font-size:11px;letter-spacing:0.2em">← GENEALOGÍA ASTARTES</a>
+          <a href="/" style="font-size:11px;letter-spacing:0.2em">PORTADA</a>
+        </div>
+        <h1 style="font-family:'Cinzel',serif;font-size:26px;font-weight:700;letter-spacing:0.1em;color:#ffffff;margin:10px 0 4px">LA GALAXIA · M42</h1>
+        <div style="font-size:11px;letter-spacing:0.24em;color:#8a8a92">IMPERIUM SANCTUS · IMPERIUM NIHILUS</div>
+      </header>
+
+      <div style="position:fixed;right:24px;top:24px;display:flex;gap:8px">
+        <button id="gm-zout" title="Alejar" class="gm-hb" style="cursor:pointer;font-size:15px;width:36px;height:32px;border:1px solid #34343c;background:rgba(8,8,9,0.8);color:#e8e6e0;border-radius:2px">−</button>
+        <button id="gm-zin" title="Acercar" class="gm-hb" style="cursor:pointer;font-size:15px;width:36px;height:32px;border:1px solid #34343c;background:rgba(8,8,9,0.8);color:#e8e6e0;border-radius:2px">+</button>
+        <button id="gm-zfit" class="gm-hb" style="cursor:pointer;font-family:inherit;font-size:11px;letter-spacing:0.12em;padding:0 14px;height:32px;border:1px solid #34343c;background:rgba(8,8,9,0.8);color:#e8e6e0;border-radius:2px">AJUSTAR</button>
+        <button id="gm-play" class="gm-hb" style="cursor:pointer;font-family:inherit;font-size:11px;letter-spacing:0.12em;padding:0 14px;height:32px;border:1px solid #34343c;background:rgba(8,8,9,0.8);color:#e8e6e0;border-radius:2px">❚❚ ÓRBITA</button>
+      </div>
+
+      <div style="position:fixed;left:28px;bottom:24px;display:flex;flex-direction:column;gap:6px;font-size:10.5px;color:#8a8a92;letter-spacing:0.08em;background:rgba(0,0,0,0.5);padding:12px 14px;border:1px solid #1c1c22;border-radius:2px">
+        <span style="display:flex;align-items:center;gap:9px"><span style="width:10px;height:10px;border-radius:50%;background:radial-gradient(circle,#ffffff 30%,transparent 75%);box-shadow:0 0 8px 2px rgba(255,244,214,0.5)"></span>Trono / capital</span>
+        <span style="display:flex;align-items:center;gap:9px"><span style="width:10px;height:10px;border-radius:50%;border:1px solid #dfe3e6;display:flex;align-items:center;justify-content:center"><span style="width:4px;height:4px;border-radius:50%;background:#ffffff"></span></span>Mundo capitular Astartes</span>
+        <span style="display:flex;align-items:center;gap:9px"><span style="width:6px;height:6px;border-radius:50%;background:#cfd6da;margin:0 2px"></span>Mundo imperial</span>
+        <span style="display:flex;align-items:center;gap:9px"><span style="width:9px;height:9px;border-radius:50%;border:1px dashed #c14a72;background:rgba(193,58,107,0.15)"></span><span style="color:#d97a9a">Fenómeno warp / Caos</span></span>
+        <span style="display:flex;align-items:center;gap:9px"><span style="width:8px;height:8px;border:1px solid #8fd0c8;background:rgba(143,208,200,0.2);transform:rotate(45deg);margin:0 1px"></span><span style="color:#8fd0c8">Dominio xenos</span></span>
+        <span style="display:flex;align-items:center;gap:9px"><span style="width:8px;height:8px;border-radius:2px;border:1px solid #8fbf5a;background:rgba(143,191,90,0.2);margin:0 1px"></span><span style="color:#a5c97a">Imperio orko</span></span>
+        <span style="display:flex;align-items:center;gap:9px"><span style="width:8px;height:8px;border:1px solid #9fb8a8;background:rgba(159,184,168,0.15);margin:0 1px"></span><span style="color:#b8ccbf">Dinastía necrona</span></span>
+        <span style="display:flex;align-items:center;gap:9px"><span style="width:8px;height:8px;border-radius:50%;border:1px solid #8a8a92;margin:0 1px"></span>Mundo muerto / destruido</span>
+      </div>
+
+      <div style="position:fixed;right:24px;bottom:24px;font-size:10px;color:#55555c;text-align:right;line-height:1.6;max-width:320px"><span id="gm-lod" style="color:#8a8a92"></span><br />Arrastra para desplazarte · rueda para zoom · click en un mundo<br />Mapa no oficial creado por fans · Warhammer 40,000 © Games Workshop</div>
+
+      <div id="gm-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.72);align-items:center;justify-content:center;z-index:50;backdrop-filter:blur(3px)">
+        <div id="gm-modal-card" style="width:min(460px,90vw);background:#0c0d10;border:1px solid #34343c;border-radius:3px;padding:28px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.8)"></div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style is:global>
+  /* Página a pantalla completa: anula el centrado flex y el height fijo del Layout */
+  body:has(#gm-root) { display: block; height: auto; overflow: hidden }
+  #gm-root a { color: #c8c6c0; text-decoration: none }
+  #gm-root a:hover { color: #ffffff }
+  #gm-root .gm-hb:hover { border-color: #ffffff !important }
+  #gm-root .gm-node { transition: opacity .4s }
+  #gm-root .gm-node:hover { opacity: 1 !important }
+  #gm-root .gm-region { transition: opacity .4s }
+  #gm-root .gm-x { position: absolute; right: 12px; top: 12px; cursor: pointer; background: transparent; border: none; color: #8a8a92; font-size: 17px }
+  #gm-root .gm-x:hover { color: #ffffff }
+  /* El plano rotado del disco gana el hit-test 3D a sus hijos: se desactiva entero
+     y solo los nodos (via JS segun LOD) vuelven a recibir clics */
+  #gm-disc { pointer-events: none }
+  #gm-root .gm-spin { animation: gmspin 420s linear infinite }
+  #gm-root .gm-spinrev { animation: gmspinrev 420s linear infinite }
+  #gm-vp.gm-paused .gm-spin, #gm-vp.gm-paused .gm-spinrev { animation-play-state: paused }
+  @keyframes gmspin { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
+  @keyframes gmspinrev { from { transform: rotate(0deg) } to { transform: rotate(-360deg) } }
+</style>
+
+<script>
+  // Port a JS vanilla del diseño "Mapa Galactico.dc.html" (Claude Design)
+  const TILT = 48 // inclinación del plano galáctico (grados)
+
+  // t: 0 siempre visible, 1 zoom medio, 2 zoom alto
+  const WORLDS = [
+    { name: 'Sagrada Terra', x: 244, y: 428, k: 'capital', t: 0, type: 'Mundo Trono', seg: 'Solar', fac: 'Imperium', blurb: 'Corazón del Imperio y sede del Trono Dorado. Desde el Palacio Imperial, la luz del Astronomican guía toda travesía por el warp, y en sus salones el Emperador vela por la humanidad desde hace diez mil años.' },
+    { name: 'Marte', x: 272, y: 448, k: 'world', t: 1, type: 'Mundo Forja', seg: 'Solar', fac: 'Adeptus Mechanicus', blurb: 'Dominio del Adeptus Mechanicus y forja primigenia del Imperio. Sus fábricas-catedral producen desde bólters hasta titanes, y bajo su superficie duermen secretos de la Era Oscura de la Tecnología.' },
+    { name: 'Ojo del Terror', x: 176, y: 215, k: 'warp', t: 0, type: 'Tormenta warp', seg: 'Obscurus', fac: 'Caos', blurb: 'Herida permanente entre la disformidad y la realidad, nacida de la Caída de los Aeldari. Desde la Herejía es el refugio de las legiones traidoras y el punto de partida de las Cruzadas Negras.' },
+    { name: 'Cadia', x: 196, y: 256, k: 'dead', t: 0, type: 'Mundo Fortaleza · destruido', seg: 'Obscurus', fac: 'Imperium (perdido)', blurb: 'Durante diez milenios guardó la Puerta Cadiana, la única ruta estable desde el Ojo del Terror. Fue destruido por Abaddon en la 13ª Cruzada Negra (999.M41). Sus supervivientes repiten un juramento: Cadia resiste.' },
+    { name: 'Vigilus', x: 222, y: 302, k: 'world', t: 1, type: 'Mundo Centinela', seg: 'Obscurus', fac: 'Imperium', blurb: 'Guardián del Pasaje de Nachmund, una de las pocas rutas estables a través de la Gran Grieta. Por ello es uno de los mundos más disputados del Imperium Nihilus.' },
+    { name: 'Fenris', x: 345, y: 294, k: 'astartes', t: 0, type: 'Mundo Capitular', seg: 'Obscurus', fac: 'Lobos Espaciales', blurb: 'Mundo de hielo cuyos mares se tragan continentes cada invierno. De sus tribus guerreras el Colmillo recluta a los Lobos Espaciales, los ejecutores del Emperador.' },
+    { name: 'Medusa', x: 296, y: 272, k: 'astartes', t: 1, type: 'Mundo Capitular', seg: 'Obscurus', fac: 'Manos de Hierro', blurb: 'Planeta volcánico y hostil recorrido por ciudades-oruga. Sus clanes forjan a las Manos de Hierro, que reemplazan la carne débil por bendito metal.' },
+    { name: 'Valhalla', x: 476, y: 183, k: 'world', t: 1, type: 'Mundo de Hielo', seg: 'Obscurus', fac: 'Imperium', blurb: 'Mundo helado tras el impacto de un cometa. Sus regimientos de la Guardia Imperial son legendarios por resistir cualquier asedio sin ceder un palmo de hielo.' },
+    { name: 'Deliverance', x: 640, y: 205, k: 'astartes', t: 1, type: 'Mundo Capitular', seg: 'Ultima', fac: 'Guardia del Cuervo', blurb: 'Luna penitenciaria de Kiavahr liberada por Corvus Corax. Hoy es la fortaleza de la Guardia del Cuervo, maestros de la sombra y la guerra encubierta.' },
+    { name: 'Baal', x: 640, y: 239, k: 'astartes', t: 0, type: 'Mundo Capitular', seg: 'Ultima', fac: 'Ángeles Sangrientos', blurb: 'Mundo radiactivo orbitado por las lunas Baal Primus y Secundus. Hogar de los Ángeles Sangrientos, devastado por la Flota Enjambre Leviatán y salvado con la llegada de la Gran Grieta.' },
+    { name: 'Chogoris', x: 940, y: 410, k: 'astartes', t: 1, type: 'Mundo Capitular', seg: 'Ultima', fac: 'Cicatrices Blancas', blurb: 'Mundo de estepas infinitas y tribus jinetes. De sus llanuras Jaghatai Khan forjó a las Cicatrices Blancas y su arte de la guerra relámpago.' },
+    { name: 'Armageddon', x: 312, y: 331, k: 'world', t: 0, type: 'Mundo Colmena', seg: 'Solar', fac: 'Imperium', blurb: 'Colmena industrial escenario de tres guerras apocalípticas: la invasión demoníaca de Angron y dos Waaagh! del kaudillo orko Ghazghkull Thraka. Sigue en guerra.' },
+    { name: 'La Roca', x: 383, y: 361, k: 'astartes', t: 1, type: 'Fortaleza errante', seg: 'Solar', fac: 'Ángeles Oscuros', blurb: 'Todo lo que queda de Caliban, el mundo natal de los Ángeles Oscuros destruido al final de la Herejía. Convertida en nave-monasterio errante, guarda en sus celdas los secretos de los Caídos.' },
+    { name: 'Prospero', x: 386, y: 401, k: 'dead', t: 1, type: 'Mundo muerto', seg: 'Solar', fac: 'Abandonado', blurb: 'Ciudad de la sabiduría de los Mil Hijos, arrasada por los Lobos Espaciales en vísperas de la Herejía. Sobre sus ruinas de cristal flota ahora el Planeta de los Hechiceros.' },
+    { name: 'El Maelstrom', x: 523, y: 468, k: 'warp', t: 0, type: 'Tormenta warp', seg: 'Ultima', fac: 'Caos', blurb: 'Vasta tormenta warp en el corazón galáctico, nido de piratas, renegados y señores de guerra. Desde la Guerra de Badab es el feudo de Huron Blackheart y sus Corsarios Rojos.' },
+    { name: 'Cicatrix Maledictum', x: 610, y: 442, k: 'warp', t: 0, type: 'La Gran Grieta', seg: '—', fac: 'Caos', blurb: 'La cicatriz warp que partió la galaxia en dos tras la caída de Cadia (999.M41), separando el Imperium Sanctus del Imperium Nihilus, donde la luz del Astronomican apenas llega.' },
+    { name: 'Catachan', x: 429, y: 475, k: 'world', t: 1, type: 'Mundo Letal', seg: 'Ultima', fac: 'Imperium', blurb: 'La jungla más letal del Imperio: aquí todo, flora y fauna, intenta matarte. Sus supervivientes forman los regimientos de combate selvático más duros de la Guardia.' },
+    { name: 'Necromunda', x: 287, y: 520, k: 'world', t: 1, type: 'Mundo Colmena', seg: 'Solar', fac: 'Imperium', blurb: 'Colmena industrial de miles de millones de almas apiladas en ciudades verticales. Sus profundidades son territorio de bandas, y sus fundiciones alimentan los ejércitos del Imperio.' },
+    { name: 'Krieg', x: 185, y: 564, k: 'world', t: 1, type: 'Mundo devastado', seg: 'Solar', fac: 'Imperium', blurb: 'Arrasado por guerra atómica civil durante quinientos años. Sus regimientos de asedio, los Korps de la Muerte, combaten con máscara antigás y absoluto desprecio por la propia vida.' },
+    { name: 'Ophelia VII', x: 263, y: 592, k: 'world', t: 1, type: 'Mundo Cardenalicio', seg: 'Tempestus', fac: 'Eclesiarcado', blurb: 'Segundo corazón del Culto Imperial tras Terra: un mundo entero de catedrales, conventos y peregrinos. Sede de importantes órdenes del Adepta Sororitas.' },
+    { name: 'Nocturne', x: 491, y: 598, k: 'astartes', t: 0, type: 'Mundo Capitular', seg: 'Ultima', fac: 'Salamandras', blurb: 'Mundo volcánico castigado por su luna Prometheus. Sus herreros-guerreros, las Salamandras, son los mejores forjadores del Adeptus Astartes y protectores de su pueblo.' },
+    { name: 'Badab', x: 509, y: 533, k: 'dead', t: 1, type: 'Mundo capitular · perdido', seg: 'Ultima', fac: 'Renegados', blurb: 'Epicentro de la Guerra de Badab (901–912.M41), la rebelión del Tirano Lufgt Huron que enfrentó a capítulos Astartes entre sí. Huron cayó al Maelstrom y renació como Blackheart.' },
+    { name: 'Rynn’s World', x: 516, y: 688, k: 'astartes', t: 1, type: 'Mundo Capitular', seg: 'Tempestus', fac: 'Puños Carmesíes', blurb: 'Mundo agrícola y fortaleza de los Puños Carmesíes, casi aniquilados cuando la Waaagh! de Snagrod destruyó su monasterio. Su reconstrucción es leyenda de tenacidad.' },
+    { name: 'Macragge', x: 802, y: 684, k: 'astartes', t: 0, type: 'Mundo Capitular', seg: 'Ultima', fac: 'Ultramarines', blurb: 'Capital de los Quinientos Mundos de Ultramar y hogar de los Ultramarines. Aquí despertó Roboute Guilliman en 999.M41 para asumir el mando del Imperio como Lord Comandante.' },
+    { name: 'Imperio T’au', x: 885, y: 598, k: 'xenos', t: 0, type: 'Dominio xenos', seg: 'Ultima', fac: 'T’au', blurb: 'Joven imperio alienígena en rápida expansión por el Fringe Oriental. Predica el Bien Supremo y absorbe mundos humanos fronterizos mediante diplomacia... o fuego de rieles.' },
+    { name: 'Tormenta de la Ira', x: 516, y: 131, k: 'warp', t: 1, type: 'Tormenta warp', seg: 'Obscurus', fac: 'Caos', blurb: 'La Tormenta de la Ira del Emperador aísla del Astronomican a sistemas enteros del Segmentum Obscurus desde tiempos de la Herejía.' },
+    { name: 'Tormenta de la Sirena', x: 428, y: 633, k: 'warp', t: 1, type: 'Tormenta warp', seg: 'Tempestus', fac: 'Caos', blurb: 'Tormenta warp cuyo canto atrae naves hacia su interior. Ninguna ha vuelto para explicar qué encontró.' },
+    { name: 'Anomalía Hadex', x: 905, y: 630, k: 'warp', t: 1, type: 'Anomalía warp', seg: 'Ultima', fac: 'Caos', blurb: 'Anomalía warp que arde sobre el sector Charadon. Los astrópatas afirman que susurra, y que lo que susurra está vivo.' },
+    { name: 'Dinastía Mephrit', x: 618, y: 290, k: 'necron', t: 1, type: 'Dinastía necrona', seg: 'Ultima', fac: 'Necrones', blurb: 'Dinastía necrona despertada en el norte del Ultima Segmentum. Sus mundos tumba despiertan uno a uno, y sus arcas solares apagan estrellas.' },
+    { name: 'Dinastía Sautekh', x: 790, y: 617, k: 'necron', t: 1, type: 'Dinastía necrona', seg: 'Ultima', fac: 'Necrones', blurb: 'La más agresiva de las dinastías necronas, gobernada por Imotekh el Señor de la Tormenta, que expande su imperio mundo tumba a mundo tumba.' },
+    { name: 'Dinastía Nihilakh', x: 712, y: 780, k: 'necron', t: 1, type: 'Dinastía necrona', seg: 'Tempestus', fac: 'Necrones', blurb: 'Dinastía necrona que atesora las reliquias de su antiguo imperio y no cede un solo mundo de los que reclama.' },
+    { name: 'Imperio de Charadon', x: 722, y: 728, k: 'ork', t: 1, type: 'Imperio orko', seg: 'Ultima', fac: 'Orkos', blurb: 'El imperio orko más antiguo de la galaxia. Sus Waaagh! periódicas asolan los sectores vecinos desde hace milenios.' },
+    { name: 'Golgotha', x: 487, y: 410, k: 'ork', t: 2, type: 'Mundo orko', seg: 'Ultima', fac: 'Orkos', blurb: 'Mundo desértico en poder de los orkos. Aquí la Waaagh! de Ghazghkull derrotó y capturó al Comisario Yarrick, que escapó jurando venganza.' },
+    { name: 'Kar Duniash', x: 830, y: 381, k: 'world', t: 1, type: 'Base naval', seg: 'Ultima', fac: 'Imperium', blurb: 'Cuartel general de la Flota Imperial del Ultima Segmentum y uno de los grandes astilleros del este galáctico.' },
+    { name: 'Hydraphur', x: 152, y: 330, k: 'world', t: 1, type: 'Base naval', seg: 'Pacificus', fac: 'Imperium', blurb: 'Gran fondeadero de la Flota Pacificus: un sistema entero de astilleros, arsenales y catedrales navales.' },
+    { name: 'Estrellas Azote', x: 888, y: 658, k: 'warp', t: 1, type: 'Dominio del Caos', seg: 'Ultima', fac: 'Caos — Nurgle', blurb: 'Tres sistemas podridos conquistados por Mortarion tras la Gran Grieta: el feudo de la Guardia de la Muerte en el espacio real.' },
+    { name: 'Cypra Mundi', x: 285, y: 178, k: 'world', t: 1, type: 'Mundo Forja', seg: 'Obscurus', fac: 'Adeptus Mechanicus', blurb: 'Mundo forja y cuartel general de la Flota Obscurus, ancla industrial del norte imperial.' },
+    { name: 'Mordian', x: 322, y: 202, k: 'world', t: 2, type: 'Mundo Colmena', seg: 'Obscurus', fac: 'Imperium', blurb: 'Mundo de noche perpetua. Su Guardia de Hierro es célebre por una disciplina inquebrantable.' },
+    { name: 'Piscina', x: 327, y: 254, k: 'world', t: 2, type: 'Mundo de reclutamiento', seg: 'Obscurus', fac: 'Ángeles Oscuros', blurb: 'Mundo de reclutamiento de los Ángeles Oscuros, defendido por la Ala de Muerte contra la Waaagh! de Ghazghkull.' },
+    { name: 'Belis Corona', x: 270, y: 254, k: 'world', t: 2, type: 'Base naval', seg: 'Obscurus', fac: 'Imperium', blurb: 'Puerto naval clave en la defensa de la Puerta Cadiana.' },
+    { name: 'Agripinaa', x: 188, y: 288, k: 'world', t: 2, type: 'Mundo Forja', seg: 'Obscurus', fac: 'Adeptus Mechanicus', blurb: 'Mundo forja frente al Ojo del Terror; bastión de los supervivientes tras la caída de Cadia.' },
+    { name: 'Chinchare', x: 128, y: 258, k: 'world', t: 2, type: 'Sistema minero', seg: 'Obscurus', fac: 'Imperium', blurb: 'Sistema minero del borde del sector cadiano.' },
+    { name: 'Alaric', x: 516, y: 248, k: 'world', t: 2, type: 'Mundo Caballero', seg: 'Obscurus', fac: 'Imperium', blurb: 'Mundo caballero cuyas casas nobles cabalgan armaduras titánicas desde hace milenios.' },
+    { name: 'Molov', x: 525, y: 297, k: 'world', t: 2, type: 'Mundo Fortaleza', seg: 'Obscurus', fac: 'Imperium', blurb: 'Mundo fortaleza que vigila las rutas centrales del Segmentum Obscurus.' },
+    { name: 'Sable', x: 703, y: 275, k: 'world', t: 2, type: 'Mundo imperial', seg: 'Ultima', fac: 'Imperium', blurb: 'Estación de paso en las rutas del norte galáctico, hoy en la penumbra del Nihilus.' },
+    { name: 'Dimmamar', x: 455, y: 85, k: 'world', t: 2, type: 'Mundo Santuario', seg: 'Obscurus', fac: 'Eclesiarcado', blurb: 'Mundo santuario y cuna de santos imperiales.' },
+    { name: 'Naogeddon', x: 525, y: 68, k: 'dead', t: 2, type: 'Mundo muerto', seg: 'Obscurus', fac: 'Desconocido', blurb: 'Mundo muerto. Los equipos de excavación que perforaron sus criptas nunca informaron de vuelta.' },
+    { name: 'New Dreekport', x: 785, y: 14, k: 'world', t: 2, type: 'Puerto franco', seg: 'Ultima', fac: 'Imperium', blurb: 'Puerto franco del extremo norte, medio perdido en la oscuridad del Nihilus.' },
+    { name: 'Sistec Prime', x: 730, y: 38, k: 'world', t: 2, type: 'Mundo Colmena', seg: 'Ultima', fac: 'Imperium', blurb: 'Colmena aislada del Imperium Nihilus que resiste sin ver la luz del Astronomican.' },
+    { name: 'Malfactus', x: 828, y: 42, k: 'ork', t: 2, type: 'Mundo orko', seg: 'Ultima', fac: 'Orkos', blurb: 'Mundo infestado de orkos que corta las rutas del norte.' },
+    { name: 'Lunaphage', x: 782, y: 74, k: 'warp', t: 2, type: 'Anomalía', seg: 'Ultima', fac: 'Caos', blurb: 'Luna errante rodeada de fenómenos warp. Las cartas de navegación ordenan evitarla.' },
+    { name: 'Quisto’rol', x: 712, y: 90, k: 'world', t: 2, type: 'Mundo minero', seg: 'Ultima', fac: 'Imperium', blurb: 'Mundo minero del norte galáctico.' },
+    { name: 'Angelis', x: 800, y: 148, k: 'ork', t: 2, type: 'Mundo orko', seg: 'Ultima', fac: 'Orkos', blurb: 'Mundo desértico dominado por tribus orkas que guerrean entre sí sobre los restos de una nave imperial.' },
+    { name: 'Coelia', x: 822, y: 185, k: 'world', t: 2, type: 'Mundo imperial', seg: 'Ultima', fac: 'Imperium', blurb: 'Mundo imperial menor del Ultima Segmentum.' },
+    { name: 'Desperation', x: 1010, y: 176, k: 'world', t: 2, type: 'Colonia fronteriza', seg: 'Ultima', fac: 'Imperium', blurb: 'Colonia al borde de las Estrellas Ghoul. Su nombre no invita al optimismo.' },
+    { name: 'Nexus III', x: 765, y: 243, k: 'world', t: 2, type: 'Estación astropática', seg: 'Ultima', fac: 'Imperium', blurb: 'Estación astropática que intenta mantener el hilo psíquico entre el Nihilus y Terra.' },
+    { name: 'Asylus', x: 865, y: 253, k: 'world', t: 2, type: 'Mundo refugio', seg: 'Ultima', fac: 'Imperium', blurb: 'Refugio de flotas dispersas tras la apertura de la Gran Grieta.' },
+    { name: 'Estrellas Somnium', x: 940, y: 272, k: 'warp', t: 2, type: 'Región warp', seg: 'Ultima', fac: 'Caos', blurb: 'Cúmulo envuelto en sueños warp. Sus colonos duermen y no despiertan.' },
+    { name: 'Formund', x: 945, y: 318, k: 'world', t: 2, type: 'Mundo agrícola', seg: 'Ultima', fac: 'Imperium', blurb: 'Mundo agrícola del extremo oriental.' },
+    { name: 'Hexos', x: 795, y: 338, k: 'world', t: 2, type: 'Mundo comercial', seg: 'Ultima', fac: 'Imperium', blurb: 'Mundo comercial en las rutas de Kar Duniash.' },
+    { name: 'Corinthe', x: 795, y: 436, k: 'world', t: 2, type: 'Mundo imperial', seg: 'Ultima', fac: 'Imperium', blurb: 'De aquí partió la Cruzada de Corinthe, que quebró el imperio orko de Charadon durante setenta años.' },
+    { name: 'Attila', x: 855, y: 458, k: 'world', t: 2, type: 'Mundo de estepa', seg: 'Ultima', fac: 'Imperium', blurb: 'Mundo de estepas; sus Jinetes Salvajes sirven como caballería de la Guardia Imperial.' },
+    { name: 'Vengeance', x: 935, y: 483, k: 'world', t: 2, type: 'Puesto avanzado', seg: 'Ultima', fac: 'Imperium', blurb: 'Puesto avanzado del Fringe Oriental.' },
+    { name: 'Monolito Ymga', x: 850, y: 499, k: 'necron', t: 2, type: 'Megaestructura', seg: 'Ultima', fac: 'Desconocido', blurb: 'Megaestructura de origen necrón, inerte... por ahora.' },
+    { name: 'Schindelgheist', x: 785, y: 553, k: 'world', t: 2, type: 'Mundo fronterizo', seg: 'Ultima', fac: 'Imperium', blurb: 'Frontera viva entre el Imperio y la esfera de expansión T’au.' },
+    { name: 'Cirillo Prime', x: 729, y: 491, k: 'world', t: 2, type: 'Mundo Colmena', seg: 'Ultima', fac: 'Imperium', blurb: 'Colmena del este, escala habitual de las flotas que van hacia Ultramar.' },
+    { name: 'Lastrati', x: 563, y: 388, k: 'dead', t: 2, type: 'Mundo purgado', seg: 'Solar', fac: 'Imperium', blurb: 'Purgado por fuego hasta el lecho de roca; su población entera fue declarada excommunicate traitoris.' },
+    { name: 'Ryza', x: 411, y: 428, k: 'world', t: 2, type: 'Mundo Forja', seg: 'Ultima', fac: 'Adeptus Mechanicus', blurb: 'Mundo forja famoso por sus reactores de plasma, sitiado una y otra vez por las Waaagh! orkas.' },
+    { name: 'Elysia', x: 370, y: 331, k: 'world', t: 2, type: 'Mundo civilizado', seg: 'Solar', fac: 'Imperium', blurb: 'Cuna de los regimientos de asalto aerotransportado elisianos.' },
+    { name: 'Gathalamor', x: 287, y: 485, k: 'world', t: 2, type: 'Mundo Cardenalicio', seg: 'Solar', fac: 'Eclesiarcado', blurb: 'Mundo cardenalicio de catacumbas sagradas y peregrinaciones interminables.' },
+    { name: 'Macharia', x: 152, y: 533, k: 'world', t: 2, type: 'Mundo imperial', seg: 'Pacificus', fac: 'Imperium', blurb: 'Mundo natal del Lord Solar Macharius, el mayor conquistador desde la Gran Cruzada.' },
+    { name: 'Ultima Macharia', x: 77, y: 548, k: 'world', t: 2, type: 'Mundo fronterizo', seg: 'Pacificus', fac: 'Imperium', blurb: 'Límite de la Cruzada Macharia: aquí los ejércitos del Lord Solar se negaron a seguir avanzando hacia lo desconocido.' },
+    { name: 'Luther McIntyre', x: 287, y: 564, k: 'world', t: 2, type: 'Sistema', seg: 'Solar', fac: 'Imperium', blurb: 'Sistema de nueve soles del Segmentum Solar.' },
+    { name: 'Chiros', x: 103, y: 588, k: 'world', t: 2, type: 'Mundo reconquistado', seg: 'Pacificus', fac: 'Imperium', blurb: 'Perdido ante el Caos y reconquistado a un precio que aún se paga.' },
+    { name: 'Tallarn', x: 364, y: 577, k: 'world', t: 1, type: 'Mundo desértico', seg: 'Solar', fac: 'Imperium', blurb: 'Escenario de la mayor batalla de blindados de la historia, librada contra los Guerreros de Hierro tras un bombardeo viral que mató al planeta.' },
+    { name: 'V’run', x: 318, y: 616, k: 'world', t: 2, type: 'Mundo agrícola', seg: 'Tempestus', fac: 'Imperium', blurb: 'Mundo agrícola del corazón imperial.' },
+    { name: 'Aleusis', x: 322, y: 656, k: 'world', t: 2, type: 'Mundo Santuario', seg: 'Tempestus', fac: 'Eclesiarcado', blurb: 'Mundo santuario del Segmentum Tempestus.' },
+    { name: 'Solstice', x: 263, y: 673, k: 'world', t: 2, type: 'Mundo Colmena', seg: 'Tempestus', fac: 'Imperium', blurb: 'Colmena menor del Tempestus.' },
+    { name: 'Balor', x: 591, y: 602, k: 'world', t: 2, type: 'Mundo Fortaleza', seg: 'Ultima', fac: 'Imperium', blurb: 'Fortaleza que guarda las rutas hacia Ultramar.' },
+    { name: 'Bane’s Landing', x: 626, y: 662, k: 'world', t: 2, type: 'Mundo imperial', seg: 'Ultima', fac: 'Imperium', blurb: 'Aquí reposa una Fortaleza Negra de origen anterior al Imperio, que nadie ha logrado despertar. Todavía.' },
+    { name: 'Agrax', x: 585, y: 716, k: 'world', t: 2, type: 'Mundo feudal', seg: 'Tempestus', fac: 'Imperium', blurb: 'Mundo feudal reconsagrado tras una plaga de no muertos.' },
+    { name: 'Antagonis', x: 531, y: 747, k: 'dead', t: 2, type: 'Mundo perdido', seg: 'Tempestus', fac: 'Imperium (perdido)', blurb: 'Colmena arrasada por la plaga zombi de la Cruz Oscura.' },
+    { name: 'San Leor', x: 591, y: 764, k: 'world', t: 2, type: 'Mundo Santuario', seg: 'Tempestus', fac: 'Eclesiarcado', blurb: 'Mundo natal de las Hijas del Emperador, precursoras del Adepta Sororitas.' },
+    { name: 'Bakka', x: 355, y: 738, k: 'world', t: 2, type: 'Mundo Forja naval', seg: 'Tempestus', fac: 'Adeptus Mechanicus', blurb: 'Sus astilleros arman a la Flota Tempestus desde hace milenios.' },
+    { name: 'Gryphonne IV', x: 317, y: 764, k: 'dead', t: 2, type: 'Mundo Forja · devorado', seg: 'Tempestus', fac: 'Perdido — Tiránidos', blurb: 'Mundo forja devorado por la Flota Enjambre Leviatán. Sus titanes no bastaron.' },
+    { name: 'Illustris', x: 250, y: 786, k: 'world', t: 2, type: 'Mundo imperial', seg: 'Tempestus', fac: 'Imperium', blurb: 'Mundo imperial al borde de la Región Velada.' },
+    { name: 'Ichar IV', x: 800, y: 650, k: 'world', t: 2, type: 'Mundo Colmena', seg: 'Ultima', fac: 'Imperium', blurb: 'Colmena donde los Ultramarines quebraron el avance de la Flota Enjambre Kraken.' },
+    { name: 'Black Reach', x: 812, y: 735, k: 'world', t: 1, type: 'Mundo imperial', seg: 'Ultima', fac: 'Imperium', blurb: 'Aquí los Ultramarines decapitaron la Waaagh! de Zanzag en una campaña relámpago.' },
+    { name: 'Perdus', x: 710, y: 737, k: 'world', t: 2, type: 'Sistema fronterizo', seg: 'Ultima', fac: 'Disputado', blurb: 'Sistema fronterizo disputado con la esfera T’au.' },
+    { name: 'False Hope', x: 764, y: 785, k: 'world', t: 2, type: 'Mundo Letal', seg: 'Ultima', fac: 'Imperium', blurb: 'Mundo letal cuyo nombre lo dice todo.' },
+    { name: 'Salem', x: 805, y: 806, k: 'world', t: 2, type: 'Colonia', seg: 'Ultima', fac: 'Imperium', blurb: 'Colonia austral de la frontera sureste.' }
+  ]
+
+  const K = {
+    capital: { mw: 14, br: '50%', bd: 'none', bg: 'radial-gradient(circle,#ffffff 30%,rgba(255,255,255,0) 72%)', sh: '0 0 18px 6px rgba(255,244,214,0.5)', iw: 0, mrot: 0, lc: '#ffffff', fs: 10.5, fw: 700, tc: '#e8d5b0' },
+    astartes: { mw: 12, br: '50%', bd: '1px solid #dfe3e6', bg: 'transparent', sh: 'none', iw: 4, mrot: 0, lc: '#e8e6e0', fs: 9.5, fw: 600, tc: '#c8c6c0' },
+    world: { mw: 5, br: '50%', bd: 'none', bg: '#cfd6da', sh: 'none', iw: 0, mrot: 0, lc: '#c8c6c0', fs: 9, fw: 400, tc: '#c8c6c0' },
+    dead: { mw: 8, br: '50%', bd: '1px solid #8a8a92', bg: 'transparent', sh: 'none', iw: 0, mrot: 0, lc: '#9a9aa2', fs: 9, fw: 400, tc: '#9a9aa2' },
+    warp: { mw: 13, br: '50%', bd: '1.5px dashed #c14a72', bg: 'rgba(193,58,107,0.15)', sh: '0 0 26px 10px rgba(193,58,107,0.2)', iw: 0, mrot: 0, lc: '#d97a9a', fs: 9.5, fw: 600, tc: '#d97a9a' },
+    xenos: { mw: 8, br: '1px', bd: '1px solid #8fd0c8', bg: 'rgba(143,208,200,0.2)', sh: 'none', iw: 0, mrot: 45, lc: '#8fd0c8', fs: 9.5, fw: 600, tc: '#8fd0c8' },
+    ork: { mw: 8, br: '2px', bd: '1px solid #8fbf5a', bg: 'rgba(143,191,90,0.2)', sh: 'none', iw: 0, mrot: 0, lc: '#a5c97a', fs: 9.5, fw: 600, tc: '#a5c97a' },
+    necron: { mw: 8, br: '0', bd: '1px solid #9fb8a8', bg: 'rgba(159,184,168,0.15)', sh: 'none', iw: 0, mrot: 0, lc: '#b8ccbf', fs: 9.5, fw: 600, tc: '#b8ccbf' }
+  }
+
+  const REGIONS = [
+    { t: 'SEGMENTUM OBSCURUS', x: 325, y: 85, s: 18, c: '#3c444c', rot: 0, tier: 0 },
+    { t: 'SEGMENTUM SOLAR', x: 210, y: 380, s: 14, c: '#3c444c', rot: 0, tier: 0 },
+    { t: 'SEGMENTUM TEMPESTUS', x: 300, y: 712, s: 18, c: '#3c444c', rot: 0, tier: 0 },
+    { t: 'SEGMENTUM PACIFICUS', x: 70, y: 462, s: 13, c: '#3c444c', rot: 90, tier: 0 },
+    { t: 'ULTIMA SEGMENTUM', x: 820, y: 300, s: 18, c: '#3c444c', rot: 0, tier: 0 },
+    { t: 'IMPERIUM NIHILUS', x: 740, y: 152, s: 26, c: '#242b31', rot: 16, tier: 0 },
+    { t: 'IMPERIUM SANCTUS', x: 400, y: 556, s: 26, c: '#242b31', rot: 16, tier: 0 },
+    { t: 'CICATRIX MALEDICTUM', x: 452, y: 336, s: 12.5, c: '#d86a8a', rot: 24, tier: 0 },
+    { t: 'ESTRELLAS HALO', x: 108, y: 98, s: 11, c: '#9a4a3a', rot: -28, tier: 1 },
+    { t: 'ESTRELLAS GHOUL', x: 915, y: 105, s: 11, c: '#9a4a3a', rot: 22, tier: 1 },
+    { t: 'FRANJA ORIENTAL', x: 1000, y: 480, s: 12, c: '#9a4a3a', rot: 73, tier: 1 },
+    { t: 'LA REGIÓN VELADA', x: 352, y: 772, s: 11, c: '#9a4a3a', rot: -8, tier: 1 },
+    { t: 'SECTOR GÓTICO', x: 458, y: 166, s: 9, c: '#8a4a44', rot: 0, tier: 1 },
+    { t: 'SECTOR SCARUS', x: 198, y: 120, s: 9, c: '#8a4a44', rot: 0, tier: 1 },
+    { t: 'SECTOR CALIXIS', x: 127, y: 148, s: 9, c: '#8a4a44', rot: 0, tier: 1 },
+    { t: 'SECTOR FINIAL', x: 204, y: 157, s: 9, c: '#8a4a44', rot: 0, tier: 2 },
+    { t: 'SECTOR UHULIS', x: 160, y: 592, s: 9, c: '#8a4a44', rot: 0, tier: 2 },
+    { t: 'SECTOR CHARADON', x: 735, y: 652, s: 9, c: '#8a4a44', rot: 0, tier: 1 },
+    { t: 'SECTOR NEPHILIM', x: 628, y: 700, s: 9, c: '#8a4a44', rot: 0, tier: 2 },
+    { t: 'SECTOR REDUCTUS', x: 462, y: 708, s: 9, c: '#8a4a44', rot: 0, tier: 2 },
+    { t: 'CONDUCTO ASTROTELEPÁTICO', x: 888, y: 222, s: 8.5, c: '#9a4a3a', rot: 14, tier: 2 }
+  ]
+
+  const state = { zoom: 0.85, panX: 0, panY: 0, sel: null, playing: true, dragging: false }
+
+  const vp = document.getElementById('gm-vp')
+  const world = document.getElementById('gm-world')
+  const starsSvg = document.getElementById('gm-stars')
+  const regionsEl = document.getElementById('gm-regions')
+  const nodesEl = document.getElementById('gm-nodes')
+  const modalEl = document.getElementById('gm-modal')
+  const modalCard = document.getElementById('gm-modal-card')
+  const lodEl = document.getElementById('gm-lod')
+  const playBtn = document.getElementById('gm-play')
+
+  // ---- estrellas (PRNG con semilla fija, como el original) ----
+  function buildStars () {
+    let s = 1337
+    const rnd = () => { s = (s * 16807) % 2147483647; return s / 2147483647 }
+    const pts = []
+    for (let arm = 0; arm < 2; arm++) {
+      for (let i = 0; i < 150; i++) {
+        const t = i / 149, th = t * 7.5 + arm * Math.PI + (rnd() - 0.5) * 0.35
+        const r = 42 * Math.exp(0.3 * t * 7.5) * (1 + (rnd() - 0.5) * 0.24)
+        if (r > 390) continue
+        const px = 560 + r * Math.cos(th), py = 435 + r * Math.sin(th) * 0.78
+        if (px < 6 || px > 1074 || py < 6 || py > 842) continue
+        pts.push({ x: px, y: py, sz: 0.4 + rnd() * 1.1, o: 0.25 + rnd() * 0.55 })
+      }
+    }
+    for (let i = 0; i < 190; i++) pts.push({ x: 8 + rnd() * 1064, y: 8 + rnd() * 832, sz: 0.3 + rnd() * 1.2, o: 0.12 + rnd() * 0.45 })
+    starsSvg.innerHTML = pts.map((p, i) =>
+      `<circle cx="${p.x}" cy="${p.y}" r="${p.sz}" fill="${i % 17 === 0 ? '#e8d5b0' : i % 23 === 0 ? '#9fd8d4' : '#cfd6da'}" opacity="${p.o}"></circle>`
+    ).join('')
+  }
+
+  // ---- construcción de etiquetas de región y nodos ----
+  const regionRefs = [] // { el, tier }
+  const nodeRefs = []   // { el (clickable), tier }
+
+  function build () {
+    REGIONS.forEach(r => {
+      const outer = document.createElement('div')
+      outer.style.cssText = `position:absolute;left:${r.x}px;top:${r.y}px;width:0;height:0`
+      outer.innerHTML = `<div class="gm-spinrev"><div class="gm-region" style="position:absolute;left:-180px;top:-10px;width:360px;text-align:center;font-family:'Cinzel',serif;font-size:${r.s}px;letter-spacing:0.32em;color:${r.c};white-space:nowrap;pointer-events:none;transform:rotate(${r.rot}deg)">${r.t}</div></div>`
+      regionsEl.appendChild(outer)
+      regionRefs.push({ el: outer.querySelector('.gm-region'), tier: r.tier })
+    })
+
+    WORLDS.forEach(w => {
+      const k = K[w.k]
+      const outer = document.createElement('div')
+      outer.style.cssText = `position:absolute;left:${w.x}px;top:${w.y}px;width:0;height:0;transform-style:preserve-3d;z-index:3`
+      outer.innerHTML = `<div class="gm-spinrev" style="transform-style:preserve-3d">
+        <div class="gm-node" data-name="${w.name.replace(/"/g, '&quot;')}" style="position:absolute;left:-55px;top:-7px;width:110px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transform-origin:55px 7px">
+          <div style="width:15px;height:15px;display:flex;align-items:center;justify-content:center">
+            <div style="width:${k.mw}px;height:${k.mw}px;border-radius:${k.br};border:${k.bd};background:${k.bg};box-shadow:${k.sh};transform:rotate(${k.mrot}deg);display:flex;align-items:center;justify-content:center">
+              <div style="width:${k.iw}px;height:${k.iw}px;border-radius:50%;background:#ffffff"></div>
+            </div>
+          </div>
+          <div style="font-size:${k.fs}px;font-weight:${k.fw};letter-spacing:0.1em;color:${k.lc};text-align:center;line-height:1.2;text-shadow:0 1px 4px #000000">${w.name}</div>
+        </div>
+      </div>`
+      nodesEl.appendChild(outer)
+      nodeRefs.push({ el: outer.querySelector('.gm-node'), tier: w.t })
+    })
+  }
+
+  // ---- estado → estilos ----
+  function minZoom () {
+    return Math.max(0.55, Math.min(1.3, Math.min(window.innerWidth / 1150, window.innerHeight / 950)))
+  }
+
+  function renderModal () {
+    const w = WORLDS.find(x => x.name === state.sel)
+    if (!w) { modalEl.style.display = 'none'; return }
+    const tc = K[w.k].tc
+    modalCard.innerHTML = `
+      <button class="gm-x" data-close>✕</button>
+      <div style="font-size:10px;letter-spacing:0.26em;color:${tc};text-transform:uppercase">${w.type}</div>
+      <h2 style="font-family:'Cinzel',serif;font-size:24px;font-weight:700;color:#ffffff;margin:6px 0 14px">${w.name}</h2>
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:13px;color:#c8c6c0;margin-bottom:16px">
+        <span style="color:#6a6a72">Segmentum</span><span>${w.seg}</span>
+        <span style="color:#6a6a72">Control</span><span style="color:${tc}">${w.fac}</span>
+      </div>
+      <p style="font-size:13.5px;line-height:1.65;color:#a8a8b0;margin:0;text-wrap:pretty">${w.blurb}</p>`
+    modalEl.style.display = 'flex'
+  }
+
+  function update () {
+    const { zoom, panX, panY, playing, dragging } = state
+    const t1 = zoom >= 0.95, t2 = zoom >= 1.5
+    const showT = (t) => t === 0 || (t === 1 && t1) || (t === 2 && t2)
+    const invZoom = Math.min(1.7, Math.max(0.5, 1 / zoom)).toFixed(3)
+
+    world.style.transform = `translate(${panX}px,${panY}px) scale(${zoom}) rotateX(${TILT}deg)`
+    world.style.transition = dragging ? 'none' : 'transform 0.18s ease-out'
+    vp.classList.toggle('gm-paused', !playing)
+    playBtn.textContent = playing ? '❚❚ ÓRBITA' : '▶ ÓRBITA'
+    lodEl.textContent = t2 ? 'detalle máximo' : t1 ? 'acerca más para ver todos los mundos' : 'acerca para ver más mundos y sectores'
+
+    nodeRefs.forEach(n => {
+      const on = showT(n.tier)
+      n.el.style.opacity = on ? 0.92 : 0
+      n.el.style.pointerEvents = on ? 'auto' : 'none'
+      n.el.style.transform = `rotateX(${-TILT}deg) translateZ(3px) scale(${invZoom})`
+    })
+    regionRefs.forEach(r => { r.el.style.opacity = showT(r.tier) ? 1 : 0 })
+
+    renderModal()
+  }
+
+  function setState (patch) { Object.assign(state, patch); update() }
+  function fit () { setState({ zoom: minZoom(), panX: 0, panY: 40 }) }
+
+  // ---- interacción ----
+  nodesEl.addEventListener('click', (e) => {
+    const node = e.target.closest('.gm-node')
+    if (node) { e.stopPropagation(); setState({ sel: node.getAttribute('data-name') }) }
+  })
+
+  modalEl.addEventListener('click', (e) => {
+    if (e.target === modalEl || e.target.closest('[data-close]')) setState({ sel: null })
+  })
+
+  document.getElementById('gm-zin').addEventListener('click', () => {
+    const z = Math.min(3.2, state.zoom * 1.18), f = z / state.zoom
+    setState({ zoom: z, panX: f * state.panX, panY: f * state.panY })
+  })
+  document.getElementById('gm-zout').addEventListener('click', () => {
+    const z = Math.max(minZoom(), state.zoom / 1.18), f = z / state.zoom
+    setState({ zoom: z, panX: f * state.panX, panY: f * state.panY })
+  })
+  document.getElementById('gm-zfit').addEventListener('click', fit)
+  playBtn.addEventListener('click', () => setState({ playing: !state.playing }))
+
+  vp.addEventListener('wheel', (e) => {
+    e.preventDefault()
+    const z = Math.min(3.2, Math.max(minZoom(), state.zoom * (e.deltaY < 0 ? 1.07 : 1 / 1.07)))
+    const f = z / state.zoom
+    const cx = e.clientX - window.innerWidth / 2, cy = e.clientY - window.innerHeight / 2
+    setState({ zoom: z, panX: state.panX + (1 - f) * (cx - state.panX), panY: state.panY + (1 - f) * (cy - state.panY) })
+  }, { passive: false })
+
+  vp.addEventListener('mousedown', (e) => {
+    const sx = e.clientX, sy = e.clientY, px = state.panX, py = state.panY
+    const mv = (ev) => setState({ panX: px + ev.clientX - sx, panY: py + ev.clientY - sy, dragging: true })
+    const up = () => {
+      window.removeEventListener('mousemove', mv)
+      window.removeEventListener('mouseup', up)
+      vp.style.cursor = 'grab'
+      setState({ dragging: false })
+    }
+    vp.style.cursor = 'grabbing'
+    window.addEventListener('mousemove', mv)
+    window.addEventListener('mouseup', up)
+  })
+
+  buildStars()
+  build()
+  fit()
+</script>
