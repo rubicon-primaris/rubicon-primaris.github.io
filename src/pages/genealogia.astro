@@ -33,26 +33,26 @@ import Layout from '../layouts/Layout.astro'
 
     <div id="gene-scroller" style="overflow-x:auto;padding:8px 0 40px;cursor:grab">
       <div id="gene-sizer" style="margin:0 auto;position:relative">
-        <div id="gene-canvas" style="position:absolute;left:0;top:0;width:1320px;height:2460px;transform-origin:top left">
-          <svg id="gene-edges" width="1320" height="2460" viewBox="0 0 1320 2460" style="position:absolute;left:0;top:0;pointer-events:none"></svg>
+        <div id="gene-canvas" style="position:absolute;left:0;top:0;width:1320px;height:2650px;transform-origin:top left">
+          <svg id="gene-edges" width="1320" height="2650" viewBox="0 0 1320 2650" style="position:absolute;left:0;top:0;pointer-events:none"></svg>
           <!-- banda superior (legiones I–X): las lineas de epoca se alejan del centro -->
-          <div style="position:absolute;left:40px;top:745px;width:1240px;border-top:1px solid #26262c"></div>
-          <div style="position:absolute;left:48px;top:726px;font-size:11px;letter-spacing:0.3em;color:#6a6a72;background:#080809;padding:0 8px">M31 · 2ª FUNDACIÓN — CODEX ASTARTES</div>
-          <div style="position:absolute;left:40px;top:890px;width:1240px;border-top:1px solid #26262c"></div>
-          <div style="position:absolute;left:48px;top:871px;font-size:11px;letter-spacing:0.3em;color:#6a6a72;background:#080809;padding:0 8px">M31 · HEREJÍA DE HORUS</div>
+          <div style="position:absolute;left:40px;top:805px;width:1240px;border-top:1px solid #26262c"></div>
+          <div style="position:absolute;left:48px;top:786px;font-size:11px;letter-spacing:0.3em;color:#6a6a72;background:#080809;padding:0 8px">M31 · 2ª FUNDACIÓN — CODEX ASTARTES</div>
+          <div style="position:absolute;left:40px;top:950px;width:1240px;border-top:1px solid #26262c"></div>
+          <div style="position:absolute;left:48px;top:931px;font-size:11px;letter-spacing:0.3em;color:#6a6a72;background:#080809;padding:0 8px">M31 · HEREJÍA DE HORUS</div>
           <!-- banda inferior (legiones XI–XX) -->
-          <div style="position:absolute;left:40px;top:1550px;width:1240px;border-top:1px solid #26262c"></div>
-          <div style="position:absolute;left:48px;top:1555px;font-size:11px;letter-spacing:0.3em;color:#6a6a72;background:#080809;padding:0 8px">M31 · HEREJÍA DE HORUS</div>
-          <div style="position:absolute;left:40px;top:1695px;width:1240px;border-top:1px solid #26262c"></div>
-          <div style="position:absolute;left:48px;top:1700px;font-size:11px;letter-spacing:0.3em;color:#6a6a72;background:#080809;padding:0 8px">M31 · 2ª FUNDACIÓN — CODEX ASTARTES</div>
-          <div style="position:absolute;left:40px;top:2430px;width:1240px;border-top:1px solid #26262c"></div>
-          <div style="position:absolute;left:48px;top:2435px;font-size:11px;letter-spacing:0.3em;color:#6a6a72;background:#080809;padding:0 8px">M42 · FUNDACIÓN ULTIMA — CAPÍTULOS PRIMARIS EN TODOS LOS LINAJES LEALES</div>
+          <div style="position:absolute;left:40px;top:1654px;width:1240px;border-top:1px solid #26262c"></div>
+          <div style="position:absolute;left:48px;top:1659px;font-size:11px;letter-spacing:0.3em;color:#6a6a72;background:#080809;padding:0 8px">M31 · HEREJÍA DE HORUS</div>
+          <div style="position:absolute;left:40px;top:1799px;width:1240px;border-top:1px solid #26262c"></div>
+          <div style="position:absolute;left:48px;top:1804px;font-size:11px;letter-spacing:0.3em;color:#6a6a72;background:#080809;padding:0 8px">M31 · 2ª FUNDACIÓN — CODEX ASTARTES</div>
+          <div style="position:absolute;left:40px;top:2604px;width:1240px;border-top:1px solid #26262c"></div>
+          <div style="position:absolute;left:48px;top:2609px;font-size:11px;letter-spacing:0.3em;color:#6a6a72;background:#080809;padding:0 8px">M42 · FUNDACIÓN ULTIMA — CAPÍTULOS PRIMARIS EN TODOS LOS LINAJES LEALES</div>
           <!-- franja central: el Emperador y los capitulos sin linaje confirmado -->
-          <div style="position:absolute;left:594px;top:1188px;width:132px;text-align:center;color:#ffffff;background:#080809;padding:6px 0;z-index:2">
+          <div style="position:absolute;left:594px;top:1248px;width:132px;text-align:center;color:#ffffff;background:#080809;padding:6px 0;z-index:2">
             <div style="font-family:'Cinzel',serif;font-size:16px;letter-spacing:0.2em">TERRA</div>
             <div style="font-size:10px;letter-spacing:0.24em;color:#8a8a92;margin-top:2px">EL EMPERADOR</div>
           </div>
-          <div style="position:absolute;left:500px;top:1252px;width:320px;text-align:center;font-size:9px;letter-spacing:0.16em;line-height:1.7;color:#6a6a72;background:#080809;padding:0 6px;z-index:2">CAPÍTULOS SIN LINAJE CONFIRMADO<br />REGISTROS PERDIDOS O CLASIFICADOS</div>
+          <div style="position:absolute;left:880px;top:1366px;width:300px;text-align:left;font-size:9px;letter-spacing:0.16em;line-height:1.8;color:#6a6a72;z-index:2">CAPÍTULOS SIN LINAJE CONFIRMADO<br />REGISTROS PERDIDOS O CLASIFICADOS</div>
           <div id="gene-nodes"></div>
         </div>
       </div>
@@ -69,22 +69,49 @@ import Layout from '../layouts/Layout.astro'
 <style is:global>
   /* El Layout centra el body con flex y fija height:100%; esta página es más alta que la ventana */
   body:has(#gene-root) { display: block; height: auto }
+  #gene-root { user-select: none; -webkit-user-select: none }
   #gene-root a { color: #e8e6e0 }
   #gene-root a:hover { color: #ffffff }
   #gene-root ::-webkit-scrollbar { height: 10px; width: 10px }
   #gene-root ::-webkit-scrollbar-track { background: #0a0a0c }
   #gene-root ::-webkit-scrollbar-thumb { background: #2a2a30; border-radius: 5px }
   #gene-root .gene-hb:hover { border-color: #ffffff !important }
-  #gene-root .gene-lg { transition: opacity .25s }
-  #gene-root .gene-lg:hover { opacity: 1 !important }
-  #gene-root .gene-chap { transition: opacity .25s }
-  #gene-root .gene-chap:hover { border-color: #ffffff !important }
-  #gene-root .gene-wb { transition: opacity .25s }
-  #gene-root .gene-wb:hover { border-color: #c96a5a !important }
+  #gene-root .gene-lg { transition: opacity .25s, transform .18s ease }
+  #gene-root .gene-lg:hover { opacity: 1 !important; transform: scale(1.06); z-index: 5 }
+  #gene-root .gene-lg:hover [data-mark] { filter: drop-shadow(0 0 9px rgba(255, 255, 255, 0.55)) }
+  #gene-root .gene-chap { transition: opacity .25s, transform .18s ease, box-shadow .18s ease, background .18s ease }
+  #gene-root .gene-chap:hover {
+    border-color: #ffffff !important; transform: scale(1.08); z-index: 5;
+    background: #15171d !important;
+    box-shadow: 0 8px 26px rgba(0, 0, 0, 0.75), 0 0 14px rgba(255, 255, 255, 0.09);
+  }
+  #gene-root .gene-wb { transition: opacity .25s, transform .18s ease, box-shadow .18s ease, background .18s ease }
+  #gene-root .gene-wb:hover {
+    border-color: #c96a5a !important; transform: scale(1.08); z-index: 5;
+    background: #1c0f0e !important;
+    box-shadow: 0 8px 26px rgba(0, 0, 0, 0.75), 0 0 16px rgba(193, 58, 107, 0.28);
+  }
   #gene-root .gene-term { transition: opacity .25s }
   #gene-root #gene-edges path { transition: opacity .25s }
+  #gene-root .gene-cust { transition: opacity .25s, transform .18s ease, box-shadow .18s ease }
+  #gene-root .gene-cust:hover {
+    border-color: #e0b31f !important; transform: scale(1.08); z-index: 5;
+    box-shadow: 0 8px 26px rgba(0, 0, 0, 0.75), 0 0 16px rgba(201, 162, 39, 0.3);
+  }
   #gene-root .gene-x { position: absolute; right: 10px; top: 10px; cursor: pointer; background: transparent; border: none; color: #8a8a92; font-size: 16px }
   #gene-root .gene-x:hover { color: #ffffff }
+  /* animacion de apertura del panel al pulsar una tarjeta */
+  #gene-panel.gene-panel-in { animation: genePanelIn .3s cubic-bezier(0.2, 0.75, 0.25, 1) }
+  @keyframes genePanelIn {
+    from { opacity: 0; transform: translateX(28px) scale(0.97) }
+    to { opacity: 1; transform: none }
+  }
+  @media (max-width: 640px) {
+    @keyframes genePanelIn {
+      from { opacity: 0; transform: translateY(32px) }
+      to { opacity: 1; transform: none }
+    }
+  }
   #gene-scroller { -webkit-overflow-scrolling: touch }
   /* Movil: cabecera compacta y el panel pasa a ser una hoja inferior */
   @media (max-width: 640px) {
@@ -102,10 +129,10 @@ import Layout from '../layouts/Layout.astro'
   const LINE_BASE = 0.4
   // Reloj de arena: el Emperador en el centro, legiones I–X hacia arriba y XI–XX hacia abajo.
   // Cada banda tiene su propio bus; los capitulos sin linaje flotan en la franja central.
-  const W = 1320, H = 2460
+  const W = 1320, H = 2650
   const colW = 124, mL = 40
-  const CY1 = 1100, CY2 = 1340   // bus superior (banda I–X) y bus inferior (banda XI–XX)
-  const rowH = 76
+  const CY1 = 1160, CY2 = 1444   // bus superior (banda I–X) y bus inferior (banda XI–XX)
+  const rowH = 84, cardH = 72    // paso y altura FIJA de tarjeta: separacion uniforme
   const CH = '#b3402f', CHT = '#c96a5a'
   const x = (i) => mL + i * colW + colW / 2
 
@@ -138,7 +165,7 @@ import Layout from '../layouts/Layout.astro'
     { id: 'IV', name: 'Guerreros de Hierro', en: 'Iron Warriors', st: 'traitor', mark: M.hazard, primarch: 'Perturabo', world: 'Olympia', blurb: 'Maestros del asedio, amargados por la falta de gloria. Traicionaron al Imperio y perfeccionan la guerra de trincheras al servicio del Caos.', succ: [] },
     { id: 'V', name: 'Cicatrices Blancas', en: 'White Scars', st: 'loyal', mark: M.bolt, primarch: 'Jaghatai Khan', world: 'Chogoris', blurb: 'Jinetes veloces de las estepas de Chogoris. La guerra relámpago es su arte; ningún enemigo escapa a su caza.', succ: [S('Cicatrices Blancas', 'Capítulo'), S('Señores de la Tormenta'), S('Saqueadores'), S('Destructores', '2ª F · destruido'), S('Merodeadores'), S('Halcones Solares')] },
     { id: 'VI', name: 'Lobos Espaciales', en: 'Space Wolves', st: 'loyal', mark: M.fangs, primarch: 'Leman Russ', world: 'Fenris', blurb: 'Los ejecutores del Emperador, salvajes e indomables. Rechazaron dividirse; solo un capítulo sucesor fue creado, y acabó en tragedia.', succ: [S('Lobos Espaciales', 'Capítulo'), S('Hermanos del Lobo', '2ª F · disuelto')] },
-    { id: 'VII', name: 'Puños Imperiales', en: 'Imperial Fists', st: 'loyal', mark: M.fist, primarch: 'Rogal Dorn', world: 'Terra', blurb: 'Defensores de Terra durante el Asedio. Maestros de la fortificación y padres de algunos de los capítulos más célebres del Imperio.', succ: [S('Puños Imperiales', 'Capítulo'), S('Puños Carmesíes'), S('Templarios Negros'), S('Excoriadores'), S('Puños Ejemplares'), S('Bebedores de Almas'), S('Verdugos'), S('Martillos de Dorn', 'Posterior'), S('Caballeros de Hierro')] },
+    { id: 'VII', name: 'Puños Imperiales', en: 'Imperial Fists', st: 'loyal', mark: M.fist, primarch: 'Rogal Dorn', world: 'Terra', blurb: 'Defensores de Terra durante el Asedio. Maestros de la fortificación y padres de algunos de los capítulos más célebres del Imperio.', succ: [S('Puños Imperiales', 'Capítulo'), S('Puños Carmesíes'), S('Templarios Negros'), S('Excoriadores'), S('Puños Ejemplares'), S('Bebedores de Almas'), S('Verdugos'), S('Martillos de Dorn', 'Posterior'), S('Caballeros de Hierro'), S('Retribuidores', 'Posterior')] },
     { id: 'VIII', name: 'Señores de la Noche', en: 'Night Lords', st: 'traitor', mark: M.terror, primarch: 'Konrad Curze', world: 'Nostramo', blurb: 'Impusieron el orden mediante el terror hasta que el terror fue su único credo. Hoy aterrorizan la galaxia como saqueadores sin dios.', succ: [] },
     { id: 'IX', name: 'Ángeles Sangrientos', en: 'Blood Angels', st: 'loyal', mark: M.drop, primarch: 'Sanguinius', world: 'Baal', blurb: 'Nobles y trágicos, marcados por la muerte de Sanguinius. Su linaje hereda la Sed Roja y la Furia Negra.', succ: [S('Ángeles Sangrientos', 'Capítulo'), S('Desgarradores de Carne'), S('Á. Encarnadinos'), S('Á. Sanguinos'), S('Á. Bermellón'), S('Bebedores de Sangre'), S('Devoradores de Carne'), S('Lamentadores', '21ª Fundación')] },
     { id: 'X', name: 'Manos de Hierro', en: 'Iron Hands', st: 'loyal', mark: M.hand, primarch: 'Ferrus Manus', world: 'Medusa', blurb: 'La carne es débil. Tras perder a su primarca en Istvaan V, reemplazan cuerpo y compasión por hierro frío.', succ: [S('Manos de Hierro', 'Capítulo'), S('Garras Rojas'), S('Zarpas de Bronce'), S('Hijos de Medusa', 'M36 · cisma'), S('Señores de Hierro')] },
@@ -160,7 +187,12 @@ import Layout from '../layouts/Layout.astro'
     { n: 'Escorpiones Rojos', tag: 'Desconocido' }, { n: 'Exorcistas', tag: 'Ordo Malleus' },
     { n: 'Leones Celestiales', tag: 'Disputado' }, { n: 'Carcharodons', tag: 'Rumor: XIX' },
     { n: 'Marines Malevolentes', tag: 'Desconocido' }, { n: 'Fantasmas Estelares', tag: 'Desconocido' },
-    { n: 'Cráneos Plateados', tag: 'Desconocido' }
+    { n: 'Cráneos Plateados', tag: 'Desconocido' },
+    // sin linaje confirmado... y caidos al Caos
+    { n: 'Garras Astrales', tag: 'Renegados · Badab', fallen: true },
+    { n: 'Sables Carmesíes', tag: 'Caos · M41', fallen: true },
+    { n: 'Hijos de la Malicia', tag: 'Excomulgados', fallen: true },
+    { n: 'Hijos de la Venganza', tag: 'Renegados', fallen: true }
   ]
 
   // Colores heráldicos, descripción y señor de cada capítulo / legión
@@ -190,6 +222,8 @@ import Layout from '../layouts/Layout.astro'
     'Verdugos': [['#111111'], 'Cultura de cazadores de cabezas; ejecutores sin piedad.'],
     'Martillos de Dorn': [['#c9a227'], 'Puristas del Codex, golpe a golpe.'],
     'Caballeros de Hierro': [['#8a8f96'], 'Herederos del temple de Dorn en la guerra de asedio.'],
+    'Retribuidores': [['#8a8f96'], 'Memoria larga y juicio severo: castigan la traición con el puño implacable de Dorn.'],
+    'Hijos de la Venganza': [['#3a3a42', '#c9a227'], 'Capítulo leal caído en desgracia; hoy banda de guerra renegada al servicio de los Dioses Oscuros.'],
     'Ángeles Sangrientos': [['#8a1f1f'], 'Nobles artistas guerreros que ocultan la Sed Roja.'],
     'Desgarradores de Carne': [['#8a1f1f'], 'La Furia Negra casi los consume; salvajes en el asalto.'],
     'Á. Encarnadinos': [['#8a1f1f', '#e8e6e0'], 'Orgullosos y ceremoniosos; niegan la maldición.'],
@@ -235,6 +269,9 @@ import Layout from '../layouts/Layout.astro'
     'Marines Malevolentes': [['#e0b31f', '#111111'], 'Brutales y despreciados; ningún aliado los llora.'],
     'Fantasmas Estelares': [['#e8e6e0', '#111111'], 'Reclusos; pagaron con sangre la Guerra de Badab.'],
     'Cráneos Plateados': [['#c8c6c0', '#8a1f1f'], 'No entran en batalla sin leer antes los presagios.'],
+    'Garras Astrales': [['#8a8f96', '#1c2a5a'], 'El capítulo del Tirano de Badab. Lufgt Huron se alzó contra el Imperio; derrotado, huyó al Maelstrom y renació como los Corsarios Rojos.'],
+    'Sables Carmesíes': [['#8a1f1f', '#c8c6c0'], 'Puristas obsesionados con su honor. Purgaron un mundo sin saber que las voces que oían eran demonios: hoy son la Matanza Carmesí.'],
+    'Hijos de la Malicia': [['#111111', '#e8e6e0'], 'Excomulgados por sus ritos sangrientos; adoran a una potestad oscura que odia al propio Caos.'],
     'Hijos del Emperador': [['#5a2a6a', '#c9a227'], ''],
     'Guerreros de Hierro': [['#8a8f96', '#e0b31f'], ''],
     'Señores de la Noche': [['#1c2a5a'], ''],
@@ -249,7 +286,8 @@ import Layout from '../layouts/Layout.astro'
   const MASTERS = {
     'Ángeles Oscuros': 'Azrael', 'Cicatrices Blancas': 'Jubal Khan', 'Lobos Espaciales': 'Logan Grimnar',
     'Puños Imperiales': 'Gregor Dessian', 'Ángeles Sangrientos': 'Comandante Dante', 'Manos de Hierro': 'Kardan Stronos',
-    'Ultramarines': 'Marneus Calgar', 'Salamandras': 'Tu’Shan', 'Guardia del Cuervo': 'Kayvaan Shrike',
+    'Ultramarines': 'Marneus Calgar', 'Salamandras': 'Tu’Shan', 'Guardia del Cuervo': 'Aethon Shaan',
+    'Garras Astrales': 'Lufgt Huron — hoy Huron Blackheart', 'Sables Carmesíes': 'Sevastus Kranon', 'Hijos de la Malicia': 'Lord Kathal',
     'Puños Carmesíes': 'Pedro Kantor', 'Templarios Negros': 'Helbrecht', 'Desgarradores de Carne': 'Gabriel Seth',
     'Caballeros Grises': 'Kaldor Draigo', 'Minotauros': 'Asterion Moloc', 'Escorpiones Rojos': 'Carab Culln',
     'Cuervos Sangrientos': 'Gabriel Angelos', 'Guadañas del Emperador': 'Thracian', 'Lamentadores': 'Malakim Phoros',
@@ -284,6 +322,30 @@ import Layout from '../layouts/Layout.astro'
     XIX: ['Desaparecido', 'Partió solo hacia el Ojo del Terror. Se rumorea que algo con sombra de cuervo aún caza traidores.'],
     XX: ['Incierto', 'Alpharius y Omegon, dos cuerpos y un nombre. Uno murió... ¿o los dos? Nadie lo sabe con certeza.']
   }
+
+  // Estado Primaris de cada capitulo tras la Cruzada Indomitus.
+  // Solo se listan las excepciones; el resto de capitulos leales son mixtos.
+  const PRIMARIS = {
+    'Guadañas del Emperador': 'Mayoría Primaris — reconstruidos tras Sotha con refuerzos de la Fundación Ultima',
+    'Puños Carmesíes': 'Mayoría Primaris — reconstruidos tras la Waaagh! de Snagrod',
+    'Templarios Negros': 'Mixto — aceptaron el Rubicón tras un largo recelo',
+    'Lobos Espaciales': 'Mixto — los Primaris adoptan las sagas de Fenris',
+    'Ultramarines': 'Mixto — el mayor contingente Primaris del Imperio',
+    'Ángeles Sangrientos': 'Mixto — los refuerzos Primaris salvaron al capítulo tras Baal',
+    'Desgarradores de Carne': 'Mixto — Seth aceptó Primaris tras la Devastación de Baal',
+    'Caballeros Grises': 'Sin Primaris — su forja de guerreros es un secreto del Ordo Malleus',
+    'Exorcistas': 'Desconocido — sus ritos de iniciación complican el Rubicón',
+    'Dragones Negros': 'Escasos — su semilla mutada hace peligroso el Rubicón',
+    'Legión de los Condenados': 'Ninguno — lo que sean, no reclutan',
+    'Hermanos del Lobo': 'Ninguno — disuelto milenios antes del Rubicón',
+    'Destructores': 'Ninguno — destruido antes de la era Primaris',
+    'Puños Ejemplares': 'Desconocido — perdidos tras la Gran Grieta',
+    'Garras Astrales': 'Ninguno — renegados mucho antes del Rubicón',
+    'Sables Carmesíes': 'Ninguno — cayeron al Caos en 926.M41',
+    'Hijos de la Malicia': 'Ninguno — excomulgados milenios antes del Rubicón',
+    'Hijos de la Venganza': 'Ninguno — renegados al servicio del Caos'
+  }
+  const primarisOf = (name) => PRIMARIS[name] || 'Mixto — Firstborn y refuerzos Primaris de la Cruzada Indomitus'
 
   const chapCols = (name) => (CI[name] || {}).c || []
   const dotsHtml = (cols, size, gap, margin) =>
@@ -372,8 +434,8 @@ import Layout from '../layouts/Layout.astro'
       if (l.st === 'traitor') {
         addPath(`M${cx},${Y(180)} L${cx},${Y(270)}`, { kind: 'legion', id: l.id, dash: '5 5', col: CH })
         const wname = l.id === 'XVI' ? 'Legión Negra' : l.name
-        const wbTop = up ? BUS - 328 : BUS + 270
-        html += `<div class="gene-wb" data-wb="${l.id}" style="position:absolute;left:${cx - 55}px;top:${wbTop}px;width:110px;box-sizing:border-box;padding:8px 6px;text-align:center;background:#100b0b;border:1px dashed #4a2723;border-radius:2px;cursor:pointer">
+        const wbTop = up ? BUS - 270 - cardH : BUS + 270
+        html += `<div class="gene-wb" data-wb="${l.id}" style="position:absolute;left:${cx - 55}px;top:${wbTop}px;width:110px;height:${cardH}px;box-sizing:border-box;padding:6px 4px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:#100b0b;border:1px dashed #4a2723;border-radius:2px;cursor:pointer">
           ${dotsHtml(chapCols(wname), 8, 4, 'margin-bottom:4px')}
           <div style="font-size:12px;line-height:1.3;color:#e8e6e0">${wname}</div>
           <div style="font-size:9px;letter-spacing:0.14em;color:${CHT};margin-top:4px">CAOS · M41</div>
@@ -385,15 +447,15 @@ import Layout from '../layouts/Layout.astro'
       } else {
         const maxRows = 9
         const n0 = Math.min(l.succ.length, maxRows)
-        addPath(`M${cx},${Y(180)} L${cx},${Y(400 + (n0 - 1) * rowH + 28)}`, { kind: 'legion', id: l.id })
+        addPath(`M${cx},${Y(180)} L${cx},${Y(400 + (n0 - 1) * rowH + cardH / 2)}`, { kind: 'legion', id: l.id })
         if (l.succ.length > maxRows) {
           const n1 = l.succ.length - maxRows
-          addPath(`M${cx},${Y(382)} L${cx + 116},${Y(382)} L${cx + 116},${Y(400 + (n1 - 1) * rowH + 28)}`, { kind: 'legion', id: l.id })
+          addPath(`M${cx},${Y(382)} L${cx + 116},${Y(382)} L${cx + 116},${Y(400 + (n1 - 1) * rowH + cardH / 2)}`, { kind: 'legion', id: l.id })
         }
         l.succ.forEach((s, k) => {
           const col = Math.floor(k / maxRows), row = k % maxRows
-          const top = up ? BUS - 456 - row * rowH : BUS + 400 + row * rowH
-          html += `<div class="gene-chap" data-chap="${l.id}" data-name="${s.n}" style="position:absolute;left:${cx - 55 + col * 116}px;top:${top}px;width:110px;box-sizing:border-box;padding:8px 6px;text-align:center;background:#0c0d10;border:1px solid #2e2e36;border-radius:2px;cursor:pointer">
+          const top = up ? BUS - (400 + cardH) - row * rowH : BUS + 400 + row * rowH
+          html += `<div class="gene-chap" data-chap="${l.id}" data-name="${s.n}" style="position:absolute;left:${cx - 55 + col * 116}px;top:${top}px;width:110px;height:${cardH}px;box-sizing:border-box;padding:6px 4px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:#0c0d10;border:1px solid #2e2e36;border-radius:2px;cursor:pointer">
             ${dotsHtml(chapCols(s.n), 8, 4, 'margin-bottom:4px')}
             <div style="font-size:12px;line-height:1.3;color:#e8e6e0">${s.n}</div>
             <div style="font-size:9px;letter-spacing:0.14em;color:#6a6a72;margin-top:4px">${s.tag}</div>
@@ -402,21 +464,35 @@ import Layout from '../layouts/Layout.astro'
       }
     })
 
-    // huerfanos en la franja central: 6 a la izquierda y 5 a la derecha del Emperador
+    // huerfanos en la franja central: leales a la izquierda y arriba-derecha;
+    // los caidos al Caos, abajo a la derecha del Emperador
     const ORPH_POS = [
-      [118, CY1 + 35], [242, CY1 + 35], [366, CY1 + 35],
-      [118, CY1 + 111], [242, CY1 + 111], [366, CY1 + 111],
-      [844, CY1 + 35], [968, CY1 + 35], [1092, CY1 + 35],
-      [906, CY1 + 111], [1030, CY1 + 111]
+      [56, CY1 + 30], [180, CY1 + 30], [304, CY1 + 30], [428, CY1 + 30],
+      [56, CY1 + 114], [180, CY1 + 114], [304, CY1 + 114], [428, CY1 + 114],
+      [56, CY1 + 198], [180, CY1 + 198], [304, CY1 + 198],
+      [880, CY1 + 30], [1004, CY1 + 30],
+      [880, CY1 + 114], [1004, CY1 + 114]
     ]
     ORPHANS.forEach((s, i) => {
       const [left, top] = ORPH_POS[i]
-      html += `<div class="gene-chap" data-orphan="1" data-name="${s.n}" style="position:absolute;left:${left}px;top:${top}px;width:110px;box-sizing:border-box;padding:8px 6px;text-align:center;background:#0c0d10;border:1px dashed #2e2e36;border-radius:2px;cursor:pointer">
+      const cls = s.fallen ? 'gene-wb' : 'gene-chap'
+      const box = s.fallen ? 'background:#100b0b;border:1px dashed #4a2723' : 'background:#0c0d10;border:1px dashed #2e2e36'
+      const tagColor = s.fallen ? CHT : '#6a6a72'
+      html += `<div class="${cls}" data-orphan="1" ${s.fallen ? 'data-fallen="1"' : ''} data-name="${s.n}" style="position:absolute;left:${left}px;top:${top}px;width:110px;height:${cardH}px;box-sizing:border-box;padding:6px 4px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;${box};border-radius:2px;cursor:pointer">
         ${dotsHtml(chapCols(s.n), 8, 4, 'margin-bottom:4px')}
         <div style="font-size:12px;line-height:1.3;color:#e8e6e0">${s.n}</div>
-        <div style="font-size:9px;letter-spacing:0.14em;color:#6a6a72;margin-top:4px">${s.tag}</div>
+        <div style="font-size:9px;letter-spacing:0.14em;color:${tagColor};margin-top:4px">${s.tag}</div>
       </div>`
     })
+
+    // Adeptus Custodes: a la derecha del Emperador. No son Astartes — son la
+    // guardia personal del Emperador, creados por su propia mano.
+    addPath(`M${W / 2},${CY1 + 120} L740,${CY1 + 120}`, { kind: 'root', col: '#8a6f2a' })
+    html += `<div class="gene-cust" data-custodes="1" style="position:absolute;left:734px;top:${CY1 + 84}px;width:110px;height:${cardH}px;box-sizing:border-box;padding:6px 4px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:#14100a;border:1px solid #8a6f2a;border-radius:2px;cursor:pointer">
+      ${dotsHtml(['#c9a227', '#8a1f1f'], 8, 4, 'margin-bottom:4px')}
+      <div style="font-size:12px;line-height:1.3;color:#e8d5a0">Adeptus Custodes</div>
+      <div style="font-size:9px;letter-spacing:0.14em;color:#a08432;margin-top:4px">LOS DIEZ MIL</div>
+    </div>`
 
     nodesEl.innerHTML = html
   }
@@ -431,13 +507,26 @@ import Layout from '../layouts/Layout.astro'
 
   function panelData () {
     const sel = state.sel
+    if (sel === 'CUSTODES') {
+      return {
+        sup: 'AGENTES DEL TRONO', name: 'Adeptus Custodes', en: 'Legio Custodes · Los Diez Mil', prevLine: '',
+        primarch: 'Ninguno — obra del propio Emperador', world: 'Terra — Palacio Imperial',
+        statusLabel: 'Leales · Guardia del Emperador', statusColor: '#e8d5a0',
+        master: 'Trajann Valoris', masterLabel: 'Capitán General',
+        cols: ['#c9a227', '#8a1f1f'], hasCols: true,
+        primaris: 'No aplica — los Custodes no son Astartes',
+        blurb: 'No son Astartes: cada Custodio es una obra única, forjada por la ciencia del propio Emperador y superior a cualquier marine espacial. Durante diez milenios custodiaron el Trono Dorado sin abandonar Terra; tras la apertura de la Gran Grieta, Trajann Valoris los ha devuelto a los campos de batalla de la galaxia.',
+        succ: [], hasSucc: false
+      }
+    }
     if (sel === '?') {
       return {
         sup: 'ADEPTUS ASTARTES', name: 'Origen desconocido', en: 'Founding unknown', prevLine: '',
         primarch: 'Desconocido', world: 'Diversos', statusLabel: 'Leales · linaje sin confirmar', statusColor: '#c8c6c0',
         blurb: 'Decenas de fundaciones se han sucedido a lo largo de diez milenios, y los registros de muchos capítulos se han perdido, censurado o clasificado. De estos guerreros se conoce su servicio, pero no la legión de la que desciende su semilla genética.',
         succ: ORPHANS.map(o => ({ n: o.n, tag: o.tag, c: chapCols(o.n) })), hasSucc: true,
-        master: 'Sin registros', masterLabel: 'Señor del Capítulo'
+        master: 'Sin registros', masterLabel: 'Señor del Capítulo',
+        primaris: 'Variable — la mayoría recibió refuerzos de la Cruzada Indomitus'
       }
     }
     const l = D.find(d => d.id === sel)
@@ -452,24 +541,32 @@ import Layout from '../layouts/Layout.astro'
       cols: chapCols(l.name), hasCols: chapCols(l.name).length > 0,
       master: (CI[l.name] || {}).m || 'Desconocido',
       masterLabel: l.st === 'traitor' ? 'Señor de la Guerra' : 'Señor del Capítulo',
+      primaris: l.st === 'loyal' ? 'Mixto — refuerzos de la Cruzada Indomitus en todo el linaje'
+        : l.st === 'traitor' ? 'Ninguno — las legiones traidoras no cruzaron el Rubicón' : undefined,
       hasPrim: true, primFate: PR[l.id][0], primBlurb: PR[l.id][1],
       primFateColor: l.st === 'traitor' ? CHT : '#c8c6c0'
     }
   }
+
+  let lastPanelKey = null
 
   function renderPanel () {
     let p = panelData()
     if (p && state.selChap) {
       const l = D.find(d => d.id === state.sel)
       const info = CI[state.selChap] || {}
+      const fallen = !!(ORPHANS.find(o => o.n === state.selChap) || {}).fallen
       p = {
         ...p, name: state.selChap,
         en: state.sel === '?' ? 'Capítulo · origen desconocido' : `Capítulo · linaje ${l.name}`,
         blurb: info.d || p.blurb, cols: info.c || [], hasCols: (info.c || []).length > 0,
-        master: info.m || 'Sin registros', masterLabel: 'Señor del Capítulo', hasPrim: false
+        master: info.m || 'Sin registros', masterLabel: fallen ? 'Señor de la Guerra' : 'Señor del Capítulo', hasPrim: false,
+        primaris: primarisOf(state.selChap),
+        statusLabel: fallen ? 'Renegado — Caos' : p.statusLabel,
+        statusColor: fallen ? CHT : p.statusColor
       }
     }
-    if (!p) { panelEl.style.display = 'none'; panelEl.innerHTML = ''; return }
+    if (!p) { panelEl.style.display = 'none'; panelEl.innerHTML = ''; lastPanelKey = null; return }
     let colsHtml = ''
     if (p.hasCols) {
       colsHtml = `<div style="display:flex;gap:8px;margin-top:12px;align-items:center">` +
@@ -504,11 +601,20 @@ import Layout from '../layouts/Layout.astro'
         <span style="color:#6a6a72">Mundo</span><span>${p.world}</span>
         <span style="color:#6a6a72">Lealtad</span><span style="color:${p.statusColor}">${p.statusLabel}</span>
         <span style="color:#6a6a72">${p.masterLabel}</span><span>${p.master}</span>
+        ${p.primaris ? `<span style="color:#6a6a72">Primaris</span><span>${p.primaris}</span>` : ''}
       </div>
       <p style="font-size:13px;line-height:1.6;color:#a8a8b0;margin:0 0 16px;text-wrap:pretty">${p.blurb}</p>
       ${primHtml}
       ${succHtml}`
     panelEl.style.display = 'block'
+    // reanima la entrada del panel cada vez que cambia la seleccion
+    const key = state.sel + '|' + (state.selChap || '')
+    if (key !== lastPanelKey) {
+      panelEl.classList.remove('gene-panel-in')
+      void panelEl.offsetWidth
+      panelEl.classList.add('gene-panel-in')
+      lastPanelKey = key
+    }
   }
 
   function update () {
@@ -555,12 +661,18 @@ import Layout from '../layouts/Layout.astro'
       el.style.opacity = opById[id]
       el.style.borderColor = sel === id ? '#c8c6c0' : '#2e2e36'
     })
-    // capítulos huérfanos
-    const orphOp = sel ? (sel === '?' ? 1 : 0.12) : (filter === 'traitor' ? 0.15 : 1)
+    // capítulos huérfanos (los caidos siguen el filtro de traidoras)
     nodesEl.querySelectorAll('[data-orphan]').forEach(el => {
-      el.style.opacity = orphOp
-      el.style.borderColor = sel === '?' ? '#c8c6c0' : '#2e2e36'
+      const fallen = el.hasAttribute('data-fallen')
+      el.style.opacity = sel ? (sel === '?' ? 1 : 0.12) : (filter === (fallen ? 'loyal' : 'traitor') ? 0.15 : 1)
+      el.style.borderColor = sel === '?' ? (fallen ? CHT : '#c8c6c0') : (fallen ? '#4a2723' : '#2e2e36')
     })
+    // Adeptus Custodes
+    const custEl = nodesEl.querySelector('[data-custodes]')
+    if (custEl) {
+      custEl.style.opacity = sel ? (sel === 'CUSTODES' ? 1 : 0.12) : (filter === 'traitor' ? 0.15 : 1)
+      custEl.style.borderColor = sel === 'CUSTODES' ? '#e0b31f' : '#8a6f2a'
+    }
 
     // botones de filtro
     document.querySelectorAll('.gene-fbtn').forEach(b => {
@@ -595,8 +707,10 @@ import Layout from '../layouts/Layout.astro'
     if (W * state.zoom > scroller.clientWidth) {
       scroller.scrollLeft = (W / 2) * state.zoom - scroller.clientWidth / 2
     }
+    // entrada cinematica: desde la cabecera, scroll suave hasta dejar a Terra en el centro
     const topPage = scroller.getBoundingClientRect().top + window.scrollY + 8 + ((CY1 + CY2) / 2) * state.zoom
-    window.scrollTo({ top: Math.max(0, topPage - window.innerHeight * 0.5) })
+    const target = Math.max(0, topPage - window.innerHeight * 0.5)
+    setTimeout(() => window.scrollTo({ top: target, behavior: 'smooth' }), 350)
   }
 
   // Centra suavemente la legion seleccionada (dejando sitio al panel en escritorio)
@@ -640,6 +754,8 @@ import Layout from '../layouts/Layout.astro'
     }
     const orph = e.target.closest('[data-orphan]')
     if (orph) { setState({ sel: '?', selChap: orph.getAttribute('data-name') }); e.stopPropagation(); return }
+    const cust = e.target.closest('[data-custodes]')
+    if (cust) { setState({ sel: 'CUSTODES', selChap: null }); e.stopPropagation(); return }
     setState({ sel: null, selChap: null })
   })
 
@@ -654,9 +770,20 @@ import Layout from '../layouts/Layout.astro'
   document.getElementById('gene-zout').addEventListener('click', () => setState({ zoom: Math.max(0.3, state.zoom - 0.12) }))
   document.getElementById('gene-zfit').addEventListener('click', fit)
 
+  // arrastre en ambos ejes: horizontal sobre el lienzo y vertical sobre la pagina.
+  // Zona muerta de 5px para no confundir un click con un arrastre.
+  let dragMoved = false
   scroller.addEventListener('mousedown', (e) => {
-    const sx = e.clientX, sl = scroller.scrollLeft
-    const mv = (ev) => { scroller.scrollLeft = sl - (ev.clientX - sx) }
+    const sx = e.clientX, sy = e.clientY
+    const sl = scroller.scrollLeft, st = window.scrollY
+    dragMoved = false
+    const mv = (ev) => {
+      const dx = ev.clientX - sx, dy = ev.clientY - sy
+      if (!dragMoved && Math.abs(dx) < 5 && Math.abs(dy) < 5) return
+      dragMoved = true
+      scroller.scrollLeft = sl - dx
+      window.scrollTo(0, st - dy)
+    }
     const up = () => {
       window.removeEventListener('mousemove', mv)
       window.removeEventListener('mouseup', up)
@@ -666,6 +793,10 @@ import Layout from '../layouts/Layout.astro'
     window.addEventListener('mousemove', mv)
     window.addEventListener('mouseup', up)
   })
+  // tras un arrastre real, el click resultante no debe seleccionar ni deseleccionar nada
+  scroller.addEventListener('click', (e) => {
+    if (dragMoved) { e.stopPropagation(); dragMoved = false }
+  }, true)
 
   build()
   initView()
