@@ -1,14 +1,18 @@
 ---
 // Mapa galáctico interactivo (port del diseño "Mapa Galactico.dc.html" de Claude Design).
 // mode="page": ocupa el contenedor y la rueda siempre hace zoom (página /mapa).
-// mode="embed": incrustado en otra página; la rueda solo hace zoom tras un clic,
-// y la cabecera enlaza a la versión a pantalla completa.
+// mode="embed": incrustado en otra página; la rueda sola siempre desplaza la página
+// y el zoom exige Ctrl/⌘ + rueda (o pinch de trackpad), como los mapas embebidos
+// de Google. En táctil, un dedo desplaza la página y dos gestionan el mapa.
 const { mode = 'page' } = Astro.props
 ---
 <div id="gm-root" style="position:absolute;inset:0">
-  <div id="gm-vp" data-wheel={mode === 'embed' ? 'click' : 'always'} style="position:absolute;inset:0;background:radial-gradient(ellipse at center,#060809 0%,#000000 75%);overflow:hidden;cursor:grab;perspective:1100px;user-select:none;-webkit-user-select:none">
-    <div id="gm-world" style="position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d">
-      <div id="gm-disc" class="gm-spin" style="position:absolute;left:-248px;top:-430px;width:1080px;height:848px;transform-origin:248px 430px;transform-style:preserve-3d">
+  <div id="gm-vp" data-wheel={mode === 'embed' ? 'ctrl' : 'free'} style={`position:absolute;inset:0;background:radial-gradient(ellipse at center,#060809 0%,#000000 75%);overflow:hidden;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:${mode === 'embed' ? 'pan-y' : 'none'}`}>
+    <div id="gm-world" style="position:absolute;left:50%;top:50%;width:0;height:0;will-change:transform">
+      <div id="gm-disc" style="position:absolute;left:-560px;top:-430px;width:1080px;height:848px;transform-origin:560px 430px;will-change:transform">
+        <!-- Estrellas exteriores: cubren el círculo que barre la órbita para que la
+             rotación nunca deje ver vacío sin estrellas en los bordes del encuadre -->
+        <svg id="gm-stars-outer" width="1460" height="1460" viewBox="0 0 1460 1460" style="position:absolute;left:-170px;top:-300px;pointer-events:none"></svg>
         <div style="position:absolute;left:160px;top:130px;width:800px;height:600px;border-radius:50%;background:radial-gradient(ellipse,rgba(130,160,170,0.11) 0%,rgba(130,160,170,0.04) 45%,transparent 70%)"></div>
         <div style="position:absolute;left:180px;top:300px;width:760px;height:260px;border-radius:50%;background:radial-gradient(ellipse,rgba(120,160,170,0.08),transparent 70%);transform:rotate(33deg);filter:blur(16px)"></div>
         <div style="position:absolute;left:180px;top:300px;width:760px;height:260px;border-radius:50%;background:radial-gradient(ellipse,rgba(120,150,170,0.07),transparent 70%);transform:rotate(123deg);filter:blur(16px)"></div>
@@ -62,12 +66,17 @@ const { mode = 'page' } = Astro.props
           <path d="M830,565 L945,555 L985,655 L940,735 L845,712 L815,630 Z" fill="rgba(143,208,200,0.05)" stroke="#8fd0c8" stroke-width="1" stroke-dasharray="5 4" opacity="0.6"></path>
           <path d="M675,690 L775,682 L800,765 L745,808 L672,775 Z" fill="rgba(143,191,90,0.05)" stroke="#8fbf5a" stroke-width="1" stroke-dasharray="4 4" opacity="0.5"></path>
         </svg>
-        <div id="gm-regions"></div>
-        <div id="gm-nodes"></div>
       </div>
     </div>
 
-    <header style="position:absolute;left:28px;top:24px;pointer-events:none">
+    <!-- Overlay 2D: labels y marcadores proyectados a coordenadas de pantalla por JS.
+         Fuera del plano inclinado: texto nítido y de tamaño constante a cualquier zoom -->
+    <div id="gm-overlay" style="position:absolute;inset:0;pointer-events:none">
+      <div id="gm-regions"></div>
+      <div id="gm-nodes"></div>
+    </div>
+
+    <header data-hud style="position:absolute;left:28px;top:24px;pointer-events:none">
       <div style="pointer-events:auto;display:flex;gap:18px">
         {mode === 'embed' ? (
           <a href="/mapa" style="font-size:11px;letter-spacing:0.2em">⛶ PANTALLA COMPLETA</a>
@@ -83,14 +92,14 @@ const { mode = 'page' } = Astro.props
       <div style="font-size:11px;letter-spacing:0.24em;color:#8a8a92">IMPERIUM SANCTUS · IMPERIUM NIHILUS</div>
     </header>
 
-    <div style="position:absolute;right:24px;top:24px;display:flex;gap:8px">
+    <div data-hud style="position:absolute;right:24px;top:24px;display:flex;gap:8px">
       <button id="gm-zout" title="Alejar" class="gm-hb" style="cursor:pointer;font-size:15px;width:36px;height:32px;border:1px solid #34343c;background:rgba(8,8,9,0.8);color:#e8e6e0;border-radius:2px">−</button>
       <button id="gm-zin" title="Acercar" class="gm-hb" style="cursor:pointer;font-size:15px;width:36px;height:32px;border:1px solid #34343c;background:rgba(8,8,9,0.8);color:#e8e6e0;border-radius:2px">+</button>
       <button id="gm-zfit" class="gm-hb" style="cursor:pointer;font-family:inherit;font-size:11px;letter-spacing:0.12em;padding:0 14px;height:32px;border:1px solid #34343c;background:rgba(8,8,9,0.8);color:#e8e6e0;border-radius:2px">AJUSTAR</button>
       <button id="gm-play" class="gm-hb" style="cursor:pointer;font-family:inherit;font-size:11px;letter-spacing:0.12em;padding:0 14px;height:32px;border:1px solid #34343c;background:rgba(8,8,9,0.8);color:#e8e6e0;border-radius:2px">❚❚ ÓRBITA</button>
     </div>
 
-    <div style="position:absolute;left:28px;bottom:24px;display:flex;flex-direction:column;gap:6px;font-size:10.5px;color:#8a8a92;letter-spacing:0.08em;background:rgba(0,0,0,0.5);padding:12px 14px;border:1px solid #1c1c22;border-radius:2px">
+    <div id="gm-legend" data-hud style="position:absolute;left:28px;bottom:24px;display:flex;flex-direction:column;gap:6px;font-size:10.5px;color:#8a8a92;letter-spacing:0.08em;background:rgba(0,0,0,0.5);padding:12px 14px;border:1px solid #1c1c22;border-radius:2px">
       <span style="display:flex;align-items:center;gap:9px"><span style="width:10px;height:10px;border-radius:50%;background:radial-gradient(circle,#ffffff 30%,transparent 75%);box-shadow:0 0 8px 2px rgba(255,244,214,0.5)"></span>Trono / capital</span>
       <span style="display:flex;align-items:center;gap:9px"><span style="width:10px;height:10px;border-radius:50%;border:1px solid #dfe3e6;display:flex;align-items:center;justify-content:center"><span style="width:4px;height:4px;border-radius:50%;background:#ffffff"></span></span>Mundo capitular Astartes</span>
       <span style="display:flex;align-items:center;gap:9px"><span style="width:6px;height:6px;border-radius:50%;background:#cfd6da;margin:0 2px"></span>Mundo imperial</span>
@@ -101,14 +110,14 @@ const { mode = 'page' } = Astro.props
       <span style="display:flex;align-items:center;gap:9px"><span style="width:8px;height:8px;border-radius:50%;border:1px solid #8a8a92;margin:0 1px"></span>Mundo muerto / destruido</span>
     </div>
 
-    <div style="position:absolute;right:24px;bottom:24px;font-size:10px;color:#55555c;text-align:right;line-height:1.6;max-width:320px"><span id="gm-lod" style="color:#8a8a92"></span><br />Arrastra para desplazarte · rueda para zoom · click en un mundo<br />Mapa no oficial creado por fans · Warhammer 40,000 © Games Workshop</div>
+    <div data-hud style="position:absolute;right:24px;bottom:24px;font-size:10px;color:#55555c;text-align:right;line-height:1.6;max-width:320px"><span id="gm-lod" style="color:#8a8a92"></span><br />{mode === 'embed' ? 'Arrastra para desplazarte · Ctrl + rueda para zoom · click en un mundo' : 'Arrastra para desplazarte · rueda para zoom · click en un mundo'}<br />Mapa no oficial creado por fans · Warhammer 40,000 © Games Workshop</div>
 
     {mode === 'embed' && (
-      <div id="gm-hint" style="position:absolute;left:50%;bottom:20px;transform:translateX(-50%);pointer-events:none;font-size:10.5px;letter-spacing:0.18em;color:#c8c6c0;background:rgba(8,8,9,0.75);border:1px solid #34343c;border-radius:2px;padding:8px 16px;transition:opacity .4s;white-space:nowrap">HAZ CLIC PARA ACTIVAR EL ZOOM CON LA RUEDA</div>
+      <div id="gm-hint" style="position:absolute;left:50%;bottom:20px;transform:translateX(-50%);pointer-events:none;font-size:10.5px;letter-spacing:0.18em;color:#c8c6c0;background:rgba(8,8,9,0.75);border:1px solid #34343c;border-radius:2px;padding:8px 16px;transition:opacity .4s;white-space:nowrap;opacity:0">USA CTRL + RUEDA (⌘ EN MAC) PARA HACER ZOOM</div>
     )}
 
     <div id="gm-modal" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.72);align-items:center;justify-content:center;z-index:50;backdrop-filter:blur(3px)">
-      <div id="gm-modal-card" style="width:min(460px,90vw);background:#0c0d10;border:1px solid #34343c;border-radius:3px;padding:28px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.8)"></div>
+      <div id="gm-modal-card" role="dialog" aria-modal="true" style="width:min(460px,90vw);background:#0c0d10;border:1px solid #34343c;border-radius:3px;padding:28px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.8)"></div>
     </div>
   </div>
 </div>
@@ -122,19 +131,24 @@ const { mode = 'page' } = Astro.props
   #gm-root .gm-region { transition: opacity .4s }
   #gm-root .gm-x { position: absolute; right: 12px; top: 12px; cursor: pointer; background: transparent; border: none; color: #8a8a92; font-size: 17px }
   #gm-root .gm-x:hover { color: #ffffff }
-  /* El plano rotado del disco gana el hit-test 3D a sus hijos: se desactiva entero
-     y solo los nodos (via JS segun LOD) vuelven a recibir clics */
+  /* El arte del disco es decorativo; toda la interacción vive en el overlay 2D */
   #gm-disc { pointer-events: none }
-  #gm-root .gm-spin { animation: gmspin 420s linear infinite }
-  #gm-root .gm-spinrev { animation: gmspinrev 420s linear infinite }
-  #gm-vp.gm-paused .gm-spin, #gm-vp.gm-paused .gm-spinrev { animation-play-state: paused }
-  @keyframes gmspin { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
-  @keyframes gmspinrev { from { transform: rotate(0deg) } to { transform: rotate(-360deg) } }
+  @media (max-width: 860px), (max-height: 560px) { #gm-legend { display: none } }
 </style>
 
 <script>
-  // Port a JS vanilla del diseño "Mapa Galactico.dc.html" (Claude Design)
-  const TILT = 48 // inclinación del plano galáctico (grados)
+  // Port a JS vanilla del diseño "Mapa Galactico.dc.html" (Claude Design).
+  // La inclinación del disco es una proyección afín 2D (scaleY = cos TILT), no una
+  // rotación 3D con perspectiva: la magnificación es uniforme en todo el mapa, el
+  // zoom-al-cursor es exacto, y labels/marcadores viven en un overlay plano en
+  // coordenadas de pantalla (texto nítido y de tamaño constante a cualquier zoom).
+  const TILT = 48 // inclinación visual del plano galáctico (grados)
+  const K_TILT = Math.cos((TILT * Math.PI) / 180)
+  const GC_X = 560, GC_Y = 430 // núcleo galáctico (centro del arte y de la órbita)
+  const SPIN = (2 * Math.PI) / 420000 // velocidad de la órbita (rad/ms)
+  // Extensión del disco desde el núcleo (coords del arte, 1080×848): el mapa está
+  // "contenido" — el viewport nunca sale de estos límites
+  const EXT = { left: 560, right: 520, up: 430, down: 418 }
 
   // t: 0 siempre visible, 1 zoom medio, 2 zoom alto
   const WORLDS = [
@@ -266,10 +280,16 @@ const { mode = 'page' } = Astro.props
     { t: 'CONDUCTO ASTROTELEPÁTICO', x: 888, y: 222, s: 8.5, c: '#9a4a3a', rot: 14, tier: 2 }
   ]
 
-  const state = { zoom: 0.85, panX: 0, panY: 0, sel: null, playing: true, dragging: false }
+  const state = { zoom: 1, panX: 0, panY: 40, sel: null, playing: true }
+  let theta = 0            // ángulo actual de la órbita (rad)
+  let dirty = true         // hay que reproyectar transform y overlay
+  let needCollide = true   // hay que recalcular colisiones de labels
+  let tween = null         // animación de zoom de los botones
+  let modalTrigger = null  // nodo que abrió el modal, para devolverle el foco
 
   const vp = document.getElementById('gm-vp')
   const world = document.getElementById('gm-world')
+  const disc = document.getElementById('gm-disc')
   const starsSvg = document.getElementById('gm-stars')
   const regionsEl = document.getElementById('gm-regions')
   const nodesEl = document.getElementById('gm-nodes')
@@ -277,19 +297,18 @@ const { mode = 'page' } = Astro.props
   const modalCard = document.getElementById('gm-modal-card')
   const lodEl = document.getElementById('gm-lod')
   const playBtn = document.getElementById('gm-play')
-
-  // En modo incrustado la rueda solo hace zoom tras interactuar, para no
-  // secuestrar el scroll de la página que lo contiene
-  const wheelGated = vp.dataset.wheel === 'click'
   const hintEl = document.getElementById('gm-hint')
-  let wheelActive = !wheelGated
-  function setWheelActive (on) {
-    wheelActive = !wheelGated || on
-    if (hintEl) hintEl.style.opacity = wheelActive ? '0' : '1'
-  }
-  if (wheelGated) {
-    vp.addEventListener('pointerdown', () => setWheelActive(true))
-    vp.addEventListener('mouseleave', () => setWheelActive(false))
+
+  // En modo incrustado la rueda sola SIEMPRE desplaza la página (nunca se
+  // secuestra el scroll); el zoom exige Ctrl/⌘ + rueda. El pinch de trackpad
+  // llega como wheel con ctrlKey=true, así que funciona sin tecla.
+  const wheelNeedsKey = vp.dataset.wheel === 'ctrl'
+  let hintTimer = null
+  function showHint () {
+    if (!hintEl) return
+    hintEl.style.opacity = '1'
+    clearTimeout(hintTimer)
+    hintTimer = setTimeout(() => { hintEl.style.opacity = '0' }, 1600)
   }
 
   // ---- estrellas (PRNG con semilla fija, como el original) ----
@@ -311,51 +330,190 @@ const { mode = 'page' } = Astro.props
     starsSvg.innerHTML = pts.map((p, i) =>
       `<circle cx="${p.x}" cy="${p.y}" r="${p.sz}" fill="${i % 17 === 0 ? '#e8d5b0' : i % 23 === 0 ? '#9fd8d4' : '#cfd6da'}" opacity="${p.o}"></circle>`
     ).join('')
+
+    // Estrellas exteriores (misma densidad de fondo, fuera del rectángulo del disco).
+    // El canvas exterior es 1460×1460 centrado en el núcleo; el disco ocupa
+    // [170..1250]×[300..1148] en sus coordenadas.
+    const outerSvg = document.getElementById('gm-stars-outer')
+    const opts = []
+    for (let i = 0; i < 440; i++) {
+      const x = rnd() * 1460, y = rnd() * 1460
+      if (x > 170 && x < 1250 && y > 300 && y < 1148) continue
+      opts.push({ x, y, sz: 0.3 + rnd() * 1.1, o: 0.1 + rnd() * 0.38 })
+    }
+    outerSvg.innerHTML = opts.map((p, i) =>
+      `<circle cx="${p.x}" cy="${p.y}" r="${p.sz}" fill="${i % 19 === 0 ? '#e8d5b0' : '#cfd6da'}" opacity="${p.o}"></circle>`
+    ).join('')
   }
 
-  // ---- construcción de etiquetas de región y nodos ----
-  const regionRefs = [] // { el, tier }
-  const nodeRefs = []   // { el (clickable), tier }
+  // ---- construcción del overlay 2D (regiones y nodos) ----
+  const regionRefs = [] // { el (wrap posicionado), inner (texto), tier, s, x, y }
+  const nodeRefs = []   // { el (wrap), btn, labelEl, tier, x, y, sx, sy, lw, lh, on }
 
   function build () {
     REGIONS.forEach(r => {
-      const outer = document.createElement('div')
-      outer.style.cssText = `position:absolute;left:${r.x}px;top:${r.y}px;width:0;height:0`
-      outer.innerHTML = `<div class="gm-spinrev"><div class="gm-region" style="position:absolute;left:-180px;top:-10px;width:360px;text-align:center;font-family:'Cinzel',serif;font-size:${r.s}px;letter-spacing:0.32em;color:${r.c};white-space:nowrap;pointer-events:none;transform:rotate(${r.rot}deg)">${r.t}</div></div>`
-      regionsEl.appendChild(outer)
-      regionRefs.push({ el: outer.querySelector('.gm-region'), tier: r.tier })
+      const wrap = document.createElement('div')
+      wrap.style.cssText = 'position:absolute;left:0;top:0'
+      wrap.innerHTML = `<div class="gm-region" style="position:absolute;transform:translate(-50%,-50%) rotate(${r.rot}deg);font-family:'Cinzel',serif;letter-spacing:0.32em;color:${r.c};white-space:nowrap">${r.t}</div>`
+      regionsEl.appendChild(wrap)
+      regionRefs.push({ el: wrap, inner: wrap.firstChild, tier: r.tier, s: r.s, x: r.x, y: r.y })
     })
 
     WORLDS.forEach(w => {
       const k = K[w.k]
-      const outer = document.createElement('div')
-      outer.style.cssText = `position:absolute;left:${w.x}px;top:${w.y}px;width:0;height:0;transform-style:preserve-3d;z-index:3`
-      outer.innerHTML = `<div class="gm-spinrev" style="transform-style:preserve-3d">
-        <div class="gm-node" data-name="${w.name.replace(/"/g, '&quot;')}" style="position:absolute;left:-55px;top:-7px;width:110px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transform-origin:55px 7px">
-          <div style="width:15px;height:15px;display:flex;align-items:center;justify-content:center">
-            <div style="width:${k.mw}px;height:${k.mw}px;border-radius:${k.br};border:${k.bd};background:${k.bg};box-shadow:${k.sh};transform:rotate(${k.mrot}deg);display:flex;align-items:center;justify-content:center">
-              <div style="width:${k.iw}px;height:${k.iw}px;border-radius:50%;background:#ffffff"></div>
-            </div>
-          </div>
-          <div style="font-size:${k.fs}px;font-weight:${k.fw};letter-spacing:0.1em;color:${k.lc};text-align:center;line-height:1.2;text-shadow:0 1px 4px #000000">${w.name}</div>
-        </div>
-      </div>`
-      nodesEl.appendChild(outer)
-      nodeRefs.push({ el: outer.querySelector('.gm-node'), tier: w.t })
+      const name = w.name.replace(/"/g, '&quot;')
+      const wrap = document.createElement('div')
+      wrap.style.cssText = 'position:absolute;left:0;top:0'
+      wrap.innerHTML = `<button type="button" class="gm-node" data-name="${name}" aria-label="${name}" aria-haspopup="dialog" style="position:absolute;transform:translate(-50%,-7.5px);display:flex;flex-direction:column;align-items:center;gap:3px;width:max-content;max-width:110px;padding:0;margin:0;background:none;border:none;font:inherit;cursor:pointer;pointer-events:auto">
+        <span style="width:15px;height:15px;display:flex;align-items:center;justify-content:center">
+          <span style="width:${k.mw}px;height:${k.mw}px;border-radius:${k.br};border:${k.bd};background:${k.bg};box-shadow:${k.sh};transform:rotate(${k.mrot}deg);display:flex;align-items:center;justify-content:center">
+            <span style="width:${k.iw}px;height:${k.iw}px;border-radius:50%;background:#ffffff"></span>
+          </span>
+        </span>
+        <span style="font-size:${k.fs}px;font-weight:${k.fw};letter-spacing:0.1em;color:${k.lc};text-align:center;line-height:1.2;text-shadow:0 1px 4px #000000">${w.name}</span>
+      </button>`
+      nodesEl.appendChild(wrap)
+      const btn = wrap.querySelector('.gm-node')
+      nodeRefs.push({ el: wrap, btn, labelEl: btn.lastElementChild, tier: w.t, x: w.x, y: w.y, sx: 0, sy: 0, lw: 60, lh: 12, on: true })
+    })
+    // medir los labels una vez para el pase de colisiones
+    nodeRefs.forEach(n => { n.lw = n.labelEl.offsetWidth + 6; n.lh = n.labelEl.offsetHeight })
+  }
+
+  // ---- vista: proyección, límites y LOD ----
+  // Mapa contenido: el zoom mínimo es el que hace que la galaxia cubra el viewport
+  // (nunca se ve el vacío alrededor del disco)
+  function minZoom () {
+    return Math.max(vp.clientWidth / (EXT.left + EXT.right), vp.clientHeight / ((EXT.up + EXT.down) * K_TILT))
+  }
+  function maxZoom () { return minZoom() * 2.5 }
+
+  // El viewport nunca sale de los límites del disco
+  function clampPan () {
+    const z = state.zoom
+    const xMin = vp.clientWidth / 2 - EXT.right * z, xMax = EXT.left * z - vp.clientWidth / 2
+    const yMin = vp.clientHeight / 2 - EXT.down * z * K_TILT, yMax = EXT.up * z * K_TILT - vp.clientHeight / 2
+    state.panX = xMin > xMax ? (xMin + xMax) / 2 : Math.max(xMin, Math.min(xMax, state.panX))
+    state.panY = yMin > yMax ? (yMin + yMax) / 2 : Math.max(yMin, Math.min(yMax, state.panY))
+  }
+
+  function setView (zoom, panX, panY) {
+    const z = Math.max(minZoom(), Math.min(maxZoom(), zoom))
+    const zoomChanged = z !== state.zoom
+    state.zoom = z
+    state.panX = panX
+    state.panY = panY
+    clampPan()
+    if (zoomChanged) updateLod() // el LOD y el tamaño de las regiones solo dependen del zoom
+    dirty = true
+  }
+
+  // Zoom multiplicativo anclado a un punto de pantalla (relativo al centro del vp)
+  function zoomAt (factor, ax, ay) {
+    const z = Math.max(minZoom(), Math.min(maxZoom(), state.zoom * factor))
+    const f = z / state.zoom
+    setView(z, ax - f * (ax - state.panX), ay - f * (ay - state.panY))
+  }
+
+  // Los umbrales de LOD son relativos al zoom de ajuste: misma densidad
+  // inicial en cualquier tamaño de pantalla
+  function updateLod () {
+    const mz = minZoom()
+    const t1 = state.zoom >= mz * 1.3, t2 = state.zoom >= mz * 1.9
+    const showT = (t) => t === 0 || (t === 1 && t1) || (t === 2 && t2)
+    lodEl.textContent = t2 ? 'detalle máximo' : t1 ? 'acerca más para ver todos los mundos' : 'acerca para ver más mundos y sectores'
+    nodeRefs.forEach(n => {
+      n.on = showT(n.tier)
+      n.btn.style.opacity = n.on ? 0.92 : 0
+      n.btn.style.pointerEvents = n.on ? 'auto' : 'none'
+      n.btn.tabIndex = n.on ? 0 : -1
+    })
+    regionRefs.forEach(r => {
+      r.inner.style.opacity = showT(r.tier) ? 1 : 0
+      r.inner.style.fontSize = (r.s * state.zoom).toFixed(2) + 'px'
+    })
+    needCollide = true
+  }
+
+  function applyFrame () {
+    const { zoom, panX, panY } = state
+    const cw = vp.clientWidth / 2, ch = vp.clientHeight / 2
+    const c = Math.cos(theta), s = Math.sin(theta)
+    world.style.transform = `translate(${panX}px,${panY}px) scale(${zoom},${zoom * K_TILT})`
+    disc.style.transform = `rotate(${theta}rad)`
+    nodeRefs.forEach(n => {
+      const dx = n.x - GC_X, dy = n.y - GC_Y
+      n.sx = cw + panX + zoom * (dx * c - dy * s)
+      n.sy = ch + panY + zoom * K_TILT * (dx * s + dy * c)
+      n.el.style.transform = `translate3d(${n.sx.toFixed(1)}px,${n.sy.toFixed(1)}px,0)`
+    })
+    regionRefs.forEach(r => {
+      const dx = r.x - GC_X, dy = r.y - GC_Y
+      const sx = cw + panX + zoom * (dx * c - dy * s)
+      const sy = ch + panY + zoom * K_TILT * (dx * s + dy * c)
+      r.el.style.transform = `translate3d(${sx.toFixed(1)}px,${sy.toFixed(1)}px,0)`
     })
   }
 
-  // ---- estado → estilos ----
-  function minZoom () {
-    return Math.max(0.55, Math.min(1.3, Math.min(vp.clientWidth / 1150, vp.clientHeight / 950)))
+  // Decluttering: oculta el label (no el marcador) de los mundos que chocan
+  // con uno de mayor prioridad. Los marcadores siguen siendo clicables.
+  let collideOrder = []
+  let lastCollideTheta = 0
+  function collide () {
+    const placed = []
+    collideOrder.forEach(n => {
+      if (!n.on) return
+      const r = { x: n.sx - n.lw / 2, y: n.sy + 10, w: n.lw, h: n.lh }
+      const hit = placed.some(p => r.x < p.x + p.w && p.x < r.x + r.w && r.y < p.y + p.h && p.y < r.y + r.h)
+      n.labelEl.style.visibility = hit ? 'hidden' : 'visible'
+      if (!hit) placed.push(r)
+    })
+    lastCollideTheta = theta
+    needCollide = false
   }
 
-  function renderModal () {
-    const w = WORLDS.find(x => x.name === state.sel)
-    if (!w) { modalEl.style.display = 'none'; return }
+  // ---- bucle: órbita, tween de botones y repintado bajo demanda ----
+  let last = performance.now()
+  function loop (now) {
+    if (tween) {
+      const k = Math.min(1, (now - tween.t0) / tween.dur)
+      const e = 1 - Math.pow(1 - k, 3)
+      setView(tween.z0 + (tween.z1 - tween.z0) * e, tween.x0 + (tween.x1 - tween.x0) * e, tween.y0 + (tween.y1 - tween.y0) * e)
+      if (k >= 1) tween = null
+    }
+    if (state.playing) { theta += (now - last) * SPIN; dirty = true }
+    last = now
+    if (dirty) {
+      applyFrame()
+      if (needCollide || Math.abs(theta - lastCollideTheta) > 0.02) collide()
+      dirty = false
+    }
+    requestAnimationFrame(loop)
+  }
+
+  function tweenTo (z1, x1, y1, dur) {
+    tween = { t0: performance.now(), dur: dur || 220, z0: state.zoom, z1, x0: state.panX, x1, y0: state.panY, y1 }
+  }
+
+  function setPlaying (on) {
+    state.playing = on
+    playBtn.textContent = on ? '❚❚ ÓRBITA' : '▶ ÓRBITA'
+  }
+
+  function fit () {
+    setPlaying(true)
+    tweenTo(minZoom(), 0, 0, 300)
+  }
+
+  // ---- modal ----
+  function openModal (name, trigger) {
+    const w = WORLDS.find(x => x.name === name)
+    if (!w) return
+    state.sel = name
+    modalTrigger = trigger || null
     const tc = K[w.k].tc
     modalCard.innerHTML = `
-      <button class="gm-x" data-close>✕</button>
+      <button class="gm-x" data-close aria-label="Cerrar">✕</button>
       <div style="font-size:10px;letter-spacing:0.26em;color:${tc};text-transform:uppercase">${w.type}</div>
       <h2 style="font-family:'Cinzel',serif;font-size:24px;font-weight:700;color:#ffffff;margin:6px 0 14px">${w.name}</h2>
       <div style="display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:13px;color:#c8c6c0;margin-bottom:16px">
@@ -364,80 +522,139 @@ const { mode = 'page' } = Astro.props
       </div>
       <p style="font-size:13.5px;line-height:1.65;color:#a8a8b0;margin:0;text-wrap:pretty">${w.blurb}</p>`
     modalEl.style.display = 'flex'
+    modalCard.querySelector('[data-close]').focus()
   }
 
-  function update () {
-    const { zoom, panX, panY, playing, dragging } = state
-    const t1 = zoom >= 0.95, t2 = zoom >= 1.5
-    const showT = (t) => t === 0 || (t === 1 && t1) || (t === 2 && t2)
-    const invZoom = Math.min(1.7, Math.max(0.5, 1 / zoom)).toFixed(3)
-
-    world.style.transform = `translate(${panX}px,${panY}px) scale(${zoom}) rotateX(${TILT}deg)`
-    world.style.transition = dragging ? 'none' : 'transform 0.18s ease-out'
-    vp.classList.toggle('gm-paused', !playing)
-    playBtn.textContent = playing ? '❚❚ ÓRBITA' : '▶ ÓRBITA'
-    lodEl.textContent = t2 ? 'detalle máximo' : t1 ? 'acerca más para ver todos los mundos' : 'acerca para ver más mundos y sectores'
-
-    nodeRefs.forEach(n => {
-      const on = showT(n.tier)
-      n.el.style.opacity = on ? 0.92 : 0
-      n.el.style.pointerEvents = on ? 'auto' : 'none'
-      n.el.style.transform = `rotateX(${-TILT}deg) translateZ(3px) scale(${invZoom})`
-    })
-    regionRefs.forEach(r => { r.el.style.opacity = showT(r.tier) ? 1 : 0 })
-
-    renderModal()
+  function closeModal () {
+    if (state.sel === null) return
+    state.sel = null
+    modalEl.style.display = 'none'
+    if (modalTrigger) { modalTrigger.focus(); modalTrigger = null }
   }
 
-  function setState (patch) { Object.assign(state, patch); update() }
-  function fit () { setState({ zoom: minZoom(), panX: 0, panY: 40 }) }
-
-  // ---- interacción ----
-  nodesEl.addEventListener('click', (e) => {
-    const node = e.target.closest('.gm-node')
-    if (node) { e.stopPropagation(); setState({ sel: node.getAttribute('data-name') }) }
-  })
+  const modalOpen = () => state.sel !== null
 
   modalEl.addEventListener('click', (e) => {
-    if (e.target === modalEl || e.target.closest('[data-close]')) setState({ sel: null })
+    if (e.target === modalEl || e.target.closest('[data-close]')) closeModal()
+  })
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal() })
+
+  // ---- interacción ----
+  let suppressClick = false // true tras un drag: el click de soltar no abre modal
+
+  nodesEl.addEventListener('click', (e) => {
+    if (suppressClick) return
+    const node = e.target.closest('.gm-node')
+    if (node) openModal(node.getAttribute('data-name'), node)
   })
 
   document.getElementById('gm-zin').addEventListener('click', () => {
-    const z = Math.min(3.2, state.zoom * 1.18), f = z / state.zoom
-    setState({ zoom: z, panX: f * state.panX, panY: f * state.panY })
+    setPlaying(false)
+    const z = Math.min(maxZoom(), state.zoom * 1.18), f = z / state.zoom
+    tweenTo(z, f * state.panX, f * state.panY, 180)
   })
   document.getElementById('gm-zout').addEventListener('click', () => {
+    setPlaying(false)
     const z = Math.max(minZoom(), state.zoom / 1.18), f = z / state.zoom
-    setState({ zoom: z, panX: f * state.panX, panY: f * state.panY })
+    tweenTo(z, f * state.panX, f * state.panY, 180)
   })
   document.getElementById('gm-zfit').addEventListener('click', fit)
-  playBtn.addEventListener('click', () => setState({ playing: !state.playing }))
+  playBtn.addEventListener('click', () => setPlaying(!state.playing))
 
   vp.addEventListener('wheel', (e) => {
-    if (!wheelActive) return
+    if (modalOpen()) return
+    if (wheelNeedsKey && !e.ctrlKey && !e.metaKey) { showHint(); return } // la página hace scroll
     e.preventDefault()
-    const z = Math.min(3.2, Math.max(minZoom(), state.zoom * (e.deltaY < 0 ? 1.07 : 1 / 1.07)))
-    const f = z / state.zoom
+    tween = null
+    if (state.playing) setPlaying(false)
+    const dy = e.deltaY * (e.deltaMode === 1 ? 33 : e.deltaMode === 2 ? 120 : 1)
+    // deltas pequeños = pinch/trackpad suave (coeficiente mayor); grandes = ticks de rueda
+    const kf = Math.abs(dy) >= 40 ? 0.0022 : 0.008
+    const f = Math.exp(-Math.max(-80, Math.min(80, dy)) * kf)
     const r = vp.getBoundingClientRect()
-    const cx = e.clientX - r.left - r.width / 2, cy = e.clientY - r.top - r.height / 2
-    setState({ zoom: z, panX: state.panX + (1 - f) * (cx - state.panX), panY: state.panY + (1 - f) * (cy - state.panY) })
+    zoomAt(f, e.clientX - r.left - r.width / 2, e.clientY - r.top - r.height / 2)
   }, { passive: false })
 
-  vp.addEventListener('mousedown', (e) => {
-    const sx = e.clientX, sy = e.clientY, px = state.panX, py = state.panY
-    const mv = (ev) => setState({ panX: px + ev.clientX - sx, panY: py + ev.clientY - sy, dragging: true })
-    const up = () => {
-      window.removeEventListener('mousemove', mv)
-      window.removeEventListener('mouseup', up)
-      vp.style.cursor = 'grab'
-      setState({ dragging: false })
+  // Pan con pointer events (ratón y táctil) + pinch con dos punteros.
+  // En modo embed un dedo desplaza la página (touch-action:pan-y); el mapa
+  // solo captura el gesto con dos dedos o con ratón.
+  const ptrs = new Map()
+  let panStart = null // { x, y, panX, panY }
+  let pinch = null    // { d, mx, my } del frame anterior
+
+  function startPan (x, y) { panStart = { x, y, panX: state.panX, panY: state.panY } }
+
+  vp.addEventListener('pointerdown', (e) => {
+    if (modalOpen() || e.target.closest('[data-hud], #gm-modal')) return
+    if (e.pointerType === 'mouse' && e.button !== 0) return
+    ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY })
+    suppressClick = false
+    pinch = null
+    if (ptrs.size === 1) {
+      const singleTouchScrollsPage = wheelNeedsKey && e.pointerType === 'touch'
+      panStart = null
+      if (!singleTouchScrollsPage) startPan(e.clientX, e.clientY)
+    } else {
+      panStart = null
     }
-    vp.style.cursor = 'grabbing'
-    window.addEventListener('mousemove', mv)
-    window.addEventListener('mouseup', up)
   })
+
+  window.addEventListener('pointermove', (e) => {
+    const p = ptrs.get(e.pointerId)
+    if (!p) return
+    p.x = e.clientX
+    p.y = e.clientY
+    if (ptrs.size === 2) {
+      const [a, b] = [...ptrs.values()]
+      const d = Math.hypot(a.x - b.x, a.y - b.y)
+      const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2
+      if (pinch) {
+        suppressClick = true
+        tween = null
+        if (state.playing) setPlaying(false)
+        const r = vp.getBoundingClientRect()
+        zoomAt(d / pinch.d, pinch.mx - r.left - r.width / 2, pinch.my - r.top - r.height / 2)
+        setView(state.zoom, state.panX + mx - pinch.mx, state.panY + my - pinch.my)
+      }
+      pinch = { d, mx, my }
+    } else if (panStart) {
+      const dx = e.clientX - panStart.x, dy = e.clientY - panStart.y
+      if (!suppressClick && Math.hypot(dx, dy) > 5) {
+        suppressClick = true
+        vp.style.cursor = 'grabbing'
+        tween = null
+        if (state.playing) setPlaying(false)
+      }
+      if (suppressClick) setView(state.zoom, panStart.panX + dx, panStart.panY + dy)
+    }
+  })
+
+  function endPointer (e) {
+    if (!ptrs.delete(e.pointerId)) return
+    pinch = null
+    if (ptrs.size === 1) {
+      const [a] = [...ptrs.values()]
+      startPan(a.x, a.y)
+    } else if (ptrs.size === 0) {
+      panStart = null
+      vp.style.cursor = 'grab'
+      // el click derivado del pointerup se dispara después: liberar el flag un tick más tarde
+      setTimeout(() => { suppressClick = false }, 0)
+    }
+  }
+  window.addEventListener('pointerup', endPointer)
+  window.addEventListener('pointercancel', endPointer)
+
+  // Con touch-action:pan-y el navegador reclamaría también el gesto vertical
+  // de dos dedos; se lo quitamos solo cuando hay más de un dedo sobre el mapa
+  vp.addEventListener('touchmove', (e) => { if (e.touches.length > 1) e.preventDefault() }, { passive: false })
+
+  window.addEventListener('resize', () => { setView(state.zoom, state.panX, state.panY) })
 
   buildStars()
   build()
-  fit()
+  collideOrder = [...nodeRefs].sort((a, b) => a.tier - b.tier)
+  setView(minZoom(), 0, 0)
+  updateLod()
+  requestAnimationFrame(loop)
 </script>
