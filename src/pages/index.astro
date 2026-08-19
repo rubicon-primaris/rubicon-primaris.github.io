@@ -53,9 +53,11 @@ for (let i = 0; i < 45; i++) {
   })
 }
 
+// pos centra al personaje en la card; zoom compensa las imágenes apaisadas (su cover queda
+// limitado por la altura y no amplía al expandir la card) y origin fija el punto focal del zoom
 const factions = [
-  { name: 'Caos', image: '/images/home/faction-caos.png', pos: '68% 20%' },
-  { name: 'Xenos', image: '/images/home/faction-xenos.png', pos: 'center 30%' },
+  { name: 'Caos', image: '/images/home/faction-caos.jpg', pos: 'center 20%', zoom: true, origin: '50% 26%' },
+  { name: 'Xenos', image: '/images/home/faction-xenos.png', pos: 'center 30%', zoom: true, origin: '50% 30%' },
   { name: 'Imperium', image: '/images/home/faction-imperium.png', pos: 'center 20%' },
 ]
 ---
@@ -137,7 +139,7 @@ const factions = [
     </section>
 
     <!-- Facciones -->
-    <section class="snap-sec flex min-h-screen items-center justify-center p-12">
+    <section id="facciones" class="snap-sec flex min-h-screen items-center justify-center p-12">
       <div class="w-full max-w-[1800px]">
         <h2 class="rvl m-0 mb-14 text-center font-display text-[34px] font-bold uppercase tracking-[.28em] text-white">
           Facciones
@@ -146,9 +148,12 @@ const factions = [
           {factions.map((f) => (
             <a
               href="#"
-              class="relative -mr-14 block h-[clamp(520px,78vh,760px)] no-underline [clip-path:polygon(76px_0,100%_0,calc(100%_-_76px)_100%,0_100%)] last:mr-0"
-              style={`background:url('${f.image}') ${f.pos}/cover no-repeat #141311`}
+              class="relative -mr-14 block h-[clamp(520px,78vh,760px)] bg-[#141311] no-underline [clip-path:polygon(76px_0,100%_0,calc(100%_-_76px)_100%,0_100%)] last:mr-0"
             >
+              <span
+                class={`fbg absolute inset-0 ${f.zoom ? 'fbg-zoom' : ''}`}
+                style={`background:url('${f.image}') ${f.pos}/cover no-repeat;transform-origin:${f.origin ?? 'center'}`}
+              ></span>
               <span class="absolute inset-x-0 bottom-0 h-60 bg-gradient-to-t from-black/[.92] to-transparent"></span>
               <span class="absolute inset-x-0 bottom-14 flex flex-col items-center gap-3">
                 <span class="font-display text-3xl font-bold uppercase tracking-[.24em] text-white">{f.name}</span>
@@ -237,6 +242,15 @@ const factions = [
   }
   .faction-row > a:hover {
     flex: 1.7 1 0%;
+  }
+  /* Las imágenes apaisadas quedan limitadas por la altura de la card, así que la expansión
+     del flex no las amplía; este scale replica el 1.7x que la vertical (Imperium) obtiene
+     de forma natural del cover al crecer el ancho */
+  .fbg-zoom {
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .faction-row > a:hover .fbg-zoom {
+    transform: scale(1.7);
   }
 
   /* Efectos importados del diseño "Hero Cruzada": brasas y glitch de pantalla */
