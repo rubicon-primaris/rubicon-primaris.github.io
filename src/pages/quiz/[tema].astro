@@ -1,0 +1,183 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import { CATS } from '../../data/quiz-bank.js'
+
+export function getStaticPaths () {
+  return Object.keys(CATS).map((tema) => ({ params: { tema } }))
+}
+
+const { tema } = Astro.params
+const cat = CATS[tema]
+---
+<Layout>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <div id="qz-root" data-tema={tema} style="width:100vw;min-height:100vh;background:#080809;color:#e8e6e0;font-family:system-ui,'Segoe UI',sans-serif">
+    <header style="text-align:center;padding:44px 24px 16px;display:flex;flex-direction:column;gap:12px;align-items:center">
+      <a href="/quiz" class="qz-hb" style="font-size:11px;letter-spacing:0.2em;text-decoration:none;color:#c8c6c0">← PRUEBAS DEL SABER</a>
+      <h1 style="font-family:'Cinzel',serif;font-weight:700;font-size:clamp(26px,4vw,42px);margin:0;letter-spacing:0.06em;color:#ffffff">{cat.titulo.toUpperCase()}</h1>
+      <div style="font-size:12px;letter-spacing:0.2em;color:#8a8a92;text-transform:uppercase">{cat.sub}</div>
+    </header>
+
+    <main style="max-width:640px;margin:0 auto;padding:10px 20px 60px">
+
+      <!-- pantalla de dificultad -->
+      <section id="qz-start">
+        <div style="text-align:center;font-size:10px;letter-spacing:0.3em;color:#6a6a72;margin:18px 0 14px">ELIGE TU RANGO · 10 PREGUNTAS</div>
+        <div style="display:grid;gap:12px">
+          <button data-diff="facil" class="qz-diff" style="cursor:pointer;font-family:inherit;text-align:left;background:#0c0d10;border:1px solid #2e2e36;border-radius:3px;padding:18px 20px;color:#e8e6e0">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><span style="font-family:'Cinzel',serif;font-size:17px;font-weight:700;color:#ffffff">Iniciado</span><span style="font-size:11px;letter-spacing:0.14em;color:#8fbf5a">10 PTS / PREGUNTA</span></div>
+            <div style="font-size:12.5px;color:#a8a8b0;margin-top:4px">Preguntas básicas. Todo escriba debe empezar por algún sitio.</div>
+          </button>
+          <button data-diff="media" class="qz-diff" style="cursor:pointer;font-family:inherit;text-align:left;background:#0c0d10;border:1px solid #2e2e36;border-radius:3px;padding:18px 20px;color:#e8e6e0">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><span style="font-family:'Cinzel',serif;font-size:17px;font-weight:700;color:#ffffff">Cruzado</span><span style="font-size:11px;letter-spacing:0.14em;color:#c9a227">20 PTS / PREGUNTA</span></div>
+            <div style="font-size:12.5px;color:#a8a8b0;margin-top:4px">Saber de veterano: linajes, heráldica y señores del capítulo.</div>
+          </button>
+          <button data-diff="dificil" class="qz-diff" style="cursor:pointer;font-family:inherit;text-align:left;background:#0c0d10;border:1px solid #2e2e36;border-radius:3px;padding:18px 20px;color:#e8e6e0">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><span style="font-family:'Cinzel',serif;font-size:17px;font-weight:700;color:#ffffff">Maestro del Saber</span><span style="font-size:11px;letter-spacing:0.14em;color:#c96a5a">30 PTS / PREGUNTA</span></div>
+            <div style="font-size:12.5px;color:#a8a8b0;margin-top:4px">Archivos sellados y preguntas trampa. La Inquisición vigila tus respuestas.</div>
+          </button>
+        </div>
+      </section>
+
+      <!-- pantalla de pregunta -->
+      <section id="qz-game" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:0.16em;color:#8a8a92;margin:14px 0 8px">
+          <span id="qz-progress"></span><span id="qz-score" style="color:#c9a227"></span>
+        </div>
+        <div style="height:3px;background:#1c1c22;border-radius:2px;margin-bottom:20px"><div id="qz-bar" style="height:3px;width:0;background:#c8c6c0;border-radius:2px;transition:width .3s"></div></div>
+        <div id="qz-sw" style="display:none;justify-content:center;gap:10px;margin-bottom:14px"></div>
+        <h2 id="qz-q" style="font-family:'Cinzel',serif;font-size:clamp(17px,2.4vw,22px);font-weight:600;line-height:1.4;color:#ffffff;margin:0 0 20px;text-align:center;text-wrap:pretty"></h2>
+        <div id="qz-opts" style="display:grid;gap:10px"></div>
+        <div id="qz-exp" style="display:none;margin-top:16px;font-size:13px;line-height:1.6;color:#a8a8b0;background:#0c0d10;border:1px solid #2e2e36;border-left:3px solid #c9a227;border-radius:3px;padding:12px 16px"></div>
+        <div style="text-align:center;margin-top:18px">
+          <button id="qz-next" class="qz-hb" style="display:none;cursor:pointer;font-family:inherit;font-size:12px;letter-spacing:0.2em;padding:10px 26px;border:1px solid #34343c;background:transparent;color:#e8e6e0;border-radius:2px">SIGUIENTE →</button>
+        </div>
+      </section>
+
+      <!-- pantalla final -->
+      <section id="qz-end" style="display:none;text-align:center">
+        <div style="font-size:10px;letter-spacing:0.3em;color:#6a6a72;margin:26px 0 10px">VEREDICTO DE LOS ARCHIVOS</div>
+        <div id="qz-final-pts" style="font-family:'Cinzel',serif;font-size:52px;font-weight:700;color:#c9a227;line-height:1"></div>
+        <div id="qz-final-detail" style="font-size:12px;letter-spacing:0.14em;color:#8a8a92;margin:8px 0 22px"></div>
+        <div id="qz-rank" style="font-family:'Cinzel',serif;font-size:26px;font-weight:700;color:#ffffff"></div>
+        <div id="qz-rank-flavor" style="font-size:13.5px;color:#a8a8b0;margin:8px auto 28px;max-width:420px;line-height:1.6;text-wrap:pretty"></div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+          <button id="qz-again" class="qz-hb" style="cursor:pointer;font-family:inherit;font-size:12px;letter-spacing:0.2em;padding:10px 24px;border:1px solid #34343c;background:transparent;color:#e8e6e0;border-radius:2px">REPETIR PRUEBA</button>
+          <button id="qz-change" class="qz-hb" style="cursor:pointer;font-family:inherit;font-size:12px;letter-spacing:0.2em;padding:10px 24px;border:1px solid #34343c;background:transparent;color:#e8e6e0;border-radius:2px">CAMBIAR RANGO</button>
+          <a href="/quiz" class="qz-hb" style="font-size:12px;letter-spacing:0.2em;text-decoration:none;color:#e8e6e0;border:1px solid #34343c;padding:10px 24px;border-radius:2px;display:inline-block">OTRAS PRUEBAS</a>
+        </div>
+      </section>
+    </main>
+
+    <footer style="text-align:center;padding:12px 24px 48px;font-size:11px;color:#55555c;line-height:1.7">
+      Pruebas no oficiales creadas por fans.<br />Warhammer 40,000 es propiedad de Games Workshop.
+    </footer>
+  </div>
+</Layout>
+
+<style is:global>
+  body:has(#qz-root) { display: block; height: auto }
+  #qz-root .qz-hb:hover { border-color: #ffffff !important; color: #ffffff }
+  #qz-root .qz-diff { transition: transform .15s ease, border-color .15s ease }
+  #qz-root .qz-diff:hover { transform: translateY(-2px); border-color: #c8c6c0 !important }
+  #qz-root .qz-opt {
+    cursor: pointer; font-family: inherit; font-size: 14px; text-align: left; color: #e8e6e0;
+    background: #0c0d10; border: 1px solid #2e2e36; border-radius: 3px; padding: 13px 16px;
+    transition: transform .12s ease, border-color .12s ease, background .12s ease;
+  }
+  #qz-root .qz-opt:not(:disabled):hover { border-color: #ffffff; transform: translateX(4px) }
+  #qz-root .qz-opt.ok { border-color: #8fbf5a !important; background: #101a0e !important }
+  #qz-root .qz-opt.ko { border-color: #c96a5a !important; background: #1a0e0e !important }
+  #qz-root .qz-opt:disabled { cursor: default; opacity: 0.75 }
+  #qz-root .qz-opt.ok:disabled, #qz-root .qz-opt.ko:disabled { opacity: 1 }
+</style>
+
+<script>
+  import { buildPool, pickQuestions, DIFFS, RANKS } from '../../data/quiz-bank.js'
+
+  const tema = document.getElementById('qz-root').getAttribute('data-tema')
+  const pool = buildPool()
+  const $ = (id) => document.getElementById(id)
+  const N = 10
+
+  let run = null // { qs, i, pts, ok, diff }
+
+  function show (screen) {
+    $('qz-start').style.display = screen === 'start' ? 'block' : 'none'
+    $('qz-game').style.display = screen === 'game' ? 'block' : 'none'
+    $('qz-end').style.display = screen === 'end' ? 'block' : 'none'
+  }
+
+  function start (diffKey) {
+    const diff = DIFFS[diffKey]
+    run = { qs: pickQuestions(pool, tema, diff.set, N), i: 0, pts: 0, ok: 0, diffKey, ppq: diff.pts }
+    show('game')
+    render()
+  }
+
+  function render () {
+    const q = run.qs[run.i]
+    $('qz-progress').textContent = `PREGUNTA ${run.i + 1} / ${run.qs.length}`
+    $('qz-score').textContent = `${run.pts} PTS`
+    $('qz-bar').style.width = `${(run.i / run.qs.length) * 100}%`
+    $('qz-q').textContent = q.q
+    const sw = $('qz-sw')
+    if (q.sw) {
+      sw.style.display = 'flex'
+      sw.innerHTML = q.sw.map(c => `<span style="width:34px;height:34px;border-radius:50%;background:${c};border:1px solid #3a3a42;box-shadow:inset 0 0 8px rgba(0,0,0,0.5)"></span>`).join('')
+    } else { sw.style.display = 'none'; sw.innerHTML = '' }
+    $('qz-exp').style.display = 'none'
+    $('qz-next').style.display = 'none'
+    const opts = $('qz-opts')
+    opts.innerHTML = ''
+    q.opts.forEach((o) => {
+      const b = document.createElement('button')
+      b.className = 'qz-opt'
+      b.textContent = o
+      b.addEventListener('click', () => answer(b, o))
+      opts.appendChild(b)
+    })
+  }
+
+  function answer (btn, choice) {
+    const q = run.qs[run.i]
+    const good = choice === q.ok
+    document.querySelectorAll('.qz-opt').forEach(b => {
+      b.disabled = true
+      if (b.textContent === q.ok) b.classList.add('ok')
+    })
+    if (!good) btn.classList.add('ko')
+    else { run.pts += run.ppq; run.ok++ }
+    $('qz-score').textContent = `${run.pts} PTS`
+    const exp = $('qz-exp')
+    exp.textContent = q.exp
+    exp.style.borderLeftColor = good ? '#8fbf5a' : '#c96a5a'
+    exp.style.display = 'block'
+    $('qz-next').style.display = 'inline-block'
+    $('qz-next').textContent = run.i + 1 < run.qs.length ? 'SIGUIENTE →' : 'VER VEREDICTO →'
+  }
+
+  function finish () {
+    const max = run.qs.length * run.ppq
+    const pct = Math.round((run.pts / max) * 100)
+    let rank = RANKS[0]
+    for (const r of RANKS) if (pct >= r[0]) rank = r
+    $('qz-final-pts').textContent = `${run.pts} / ${max}`
+    $('qz-final-detail').textContent = `${run.ok} DE ${run.qs.length} CORRECTAS · RANGO ${DIFFS[run.diffKey].label.toUpperCase()}`
+    $('qz-rank').textContent = rank[1]
+    $('qz-rank-flavor').textContent = rank[2]
+    show('end')
+  }
+
+  document.querySelectorAll('.qz-diff').forEach(b =>
+    b.addEventListener('click', () => start(b.getAttribute('data-diff'))))
+  $('qz-next').addEventListener('click', () => {
+    run.i++
+    if (run.i >= run.qs.length) finish()
+    else render()
+  })
+  $('qz-again').addEventListener('click', () => start(run.diffKey))
+  $('qz-change').addEventListener('click', () => show('start'))
+</script>

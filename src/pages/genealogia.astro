@@ -13,6 +13,7 @@ import Layout from '../layouts/Layout.astro'
       <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
         <a href="/" class="gene-hb" style="font-size:12px;letter-spacing:0.2em;text-decoration:none;color:#e8e6e0;border:1px solid #34343c;padding:8px 20px;border-radius:2px">← LAS LEGIONES</a>
         <a href="/mapa" class="gene-hb" style="font-size:12px;letter-spacing:0.2em;text-decoration:none;color:#e8e6e0;border:1px solid #34343c;padding:8px 20px;border-radius:2px">MAPA DE LA GALAXIA →</a>
+        <a href="/quiz" class="gene-hb" style="font-size:12px;letter-spacing:0.2em;text-decoration:none;color:#e8e6e0;border:1px solid #34343c;padding:8px 20px;border-radius:2px">PRUEBAS DEL SABER →</a>
       </div>
       <div style="display:flex;gap:24px;align-items:center;font-size:12px;color:#8a8a92;flex-wrap:wrap;justify-content:center">
         <span style="display:flex;align-items:center;gap:8px"><span style="display:inline-block;width:28px;height:0;border-top:2px solid #e8e6e0"></span>linaje leal</span>
@@ -25,10 +26,12 @@ import Layout from '../layouts/Layout.astro'
         <button data-filter="all" class="gene-hb gene-fbtn" style="cursor:pointer;font-family:inherit;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;padding:8px 18px;border:1px solid #34343c;background:transparent;color:#e8e6e0;border-radius:2px">Todas</button>
         <button data-filter="loyal" class="gene-hb gene-fbtn" style="cursor:pointer;font-family:inherit;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;padding:8px 18px;border:1px solid #34343c;background:transparent;color:#e8e6e0;border-radius:2px">Leales</button>
         <button data-filter="traitor" class="gene-hb gene-fbtn" style="cursor:pointer;font-family:inherit;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;padding:8px 18px;border:1px solid #34343c;background:transparent;color:#e8e6e0;border-radius:2px">Traidoras</button>
-        <span style="width:1px;background:#2a2a30;margin:0 6px"></span>
-        <button id="gene-zout" title="Alejar" class="gene-hb" style="cursor:pointer;font-size:14px;width:34px;border:1px solid #34343c;background:transparent;color:#e8e6e0;border-radius:2px">−</button>
-        <button id="gene-zin" title="Acercar" class="gene-hb" style="cursor:pointer;font-size:14px;width:34px;border:1px solid #34343c;background:transparent;color:#e8e6e0;border-radius:2px">+</button>
-        <button id="gene-zfit" class="gene-hb" style="cursor:pointer;font-family:inherit;font-size:12px;letter-spacing:0.1em;padding:8px 14px;border:1px solid #34343c;background:transparent;color:#e8e6e0;border-radius:2px">AJUSTAR</button>
+        <span id="gene-zoomctl" style="display:flex;gap:10px;align-items:stretch">
+          <span style="width:1px;background:#2a2a30;margin:0 6px"></span>
+          <button id="gene-zout" title="Alejar" class="gene-hb" style="cursor:pointer;font-size:14px;width:34px;border:1px solid #34343c;background:transparent;color:#e8e6e0;border-radius:2px">−</button>
+          <button id="gene-zin" title="Acercar" class="gene-hb" style="cursor:pointer;font-size:14px;width:34px;border:1px solid #34343c;background:transparent;color:#e8e6e0;border-radius:2px">+</button>
+          <button id="gene-zfit" class="gene-hb" style="cursor:pointer;font-family:inherit;font-size:12px;letter-spacing:0.1em;padding:8px 14px;border:1px solid #34343c;background:transparent;color:#e8e6e0;border-radius:2px">AJUSTAR</button>
+        </span>
     </div>
 
     <div id="gene-scroller" style="overflow-x:auto;padding:8px 0 40px;cursor:grab">
@@ -113,9 +116,11 @@ import Layout from '../layouts/Layout.astro'
     }
   }
   #gene-scroller { -webkit-overflow-scrolling: touch }
-  /* Movil: cabecera compacta y el panel pasa a ser una hoja inferior */
+  /* Movil: cabecera compacta, sin controles de zoom (basta el gesto tactil)
+     y el panel pasa a ser una hoja inferior */
   @media (max-width: 640px) {
     #gene-root header { padding: 30px 14px 16px !important; gap: 10px !important }
+    #gene-zoomctl { display: none !important }
     #gene-panel {
       left: 10px !important; right: 10px !important; top: auto !important; bottom: 10px !important;
       width: auto !important; max-height: 56vh !important;
