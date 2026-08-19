@@ -45,11 +45,69 @@ const proximamente = ['Orkos', 'Necrones', 'Aeldari']
       ))}
     </main>
 
+    <section id="qh-ranking" style="max-width:980px;margin:0 auto;padding:10px 20px 20px;display:none">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;border-top:1px solid #1c1c22;padding-top:26px;margin-top:6px">
+        <h2 style="font-family:'Cinzel',serif;font-size:18px;font-weight:700;letter-spacing:0.1em;color:#ffffff;margin:0">TUS GESTAS</h2>
+        <button id="qh-purge" style="cursor:pointer;font-family:inherit;font-size:10px;letter-spacing:0.16em;color:#8a8a92;background:transparent;border:1px solid #2e2e36;border-radius:2px;padding:6px 12px">PURGAR REGISTROS</button>
+      </div>
+      <div style="font-size:11px;letter-spacing:0.14em;color:#6a6a72;margin:6px 0 14px">TUS MEJORES RESULTADOS, ORDENADOS POR PORCENTAJE DE ACIERTO</div>
+      <div style="overflow-x:auto">
+        <div id="qh-rows" style="min-width:620px"></div>
+      </div>
+    </section>
+
     <footer style="text-align:center;padding:12px 24px 48px;font-size:11px;color:#55555c;line-height:1.7">
       Pruebas no oficiales creadas por fans.<br />Warhammer 40,000 es propiedad de Games Workshop.
     </footer>
   </div>
 </Layout>
+
+<script>
+  import { CATS, DIFFS, RANKS } from '../../data/quiz-bank.js'
+
+  const KEY = 'rubicon-quiz-resultados'
+  const section = document.getElementById('qh-ranking')
+  const rowsEl = document.getElementById('qh-rows')
+
+  function rankOf (pct) {
+    let rank = RANKS[0]
+    for (const r of RANKS) if (pct >= r[0]) rank = r
+    return rank[1]
+  }
+
+  function render () {
+    let hist = []
+    try { hist = JSON.parse(localStorage.getItem(KEY) || '[]') } catch (e) { hist = [] }
+    if (!hist.length) { section.style.display = 'none'; return }
+    section.style.display = 'block'
+    const sorted = hist.slice().sort((a, b) => (b.p / b.m) - (a.p / a.m) || b.p - a.p || b.ts - a.ts).slice(0, 10)
+    const head = `<div style="display:grid;grid-template-columns:34px 1.2fr 1fr 84px 84px 1.1fr 76px;gap:10px;font-size:9.5px;letter-spacing:0.18em;color:#6a6a72;padding:6px 10px">
+      <span>#</span><span>PRUEBA</span><span>RANGO</span><span>PUNTOS</span><span>ACIERTOS</span><span>VEREDICTO</span><span>FECHA</span></div>`
+    rowsEl.innerHTML = head + sorted.map((r, i) => {
+      const pct = Math.round((r.p / r.m) * 100)
+      const diff = DIFFS[r.d] || { label: r.d }
+      const cat = CATS[r.t] || { titulo: r.t }
+      const f = new Date(r.ts)
+      const fecha = `${String(f.getDate()).padStart(2, '0')}/${String(f.getMonth() + 1).padStart(2, '0')}`
+      const medal = i === 0 ? '#c9a227' : i === 1 ? '#c8c6c0' : i === 2 ? '#b87333' : '#55555c'
+      return `<div style="display:grid;grid-template-columns:34px 1.2fr 1fr 84px 84px 1.1fr 76px;gap:10px;align-items:center;font-size:12.5px;color:#c8c6c0;background:${i % 2 ? 'transparent' : '#0c0d10'};border:1px solid ${i === 0 ? '#3a3320' : '#1c1c22'};border-radius:2px;padding:9px 10px;margin-bottom:6px">
+        <span style="font-family:'Cinzel',serif;font-weight:700;color:${medal}">${i + 1}</span>
+        <span style="color:#e8e6e0">${cat.titulo}</span>
+        <span>${diff.label}</span>
+        <span style="color:#c9a227">${r.p} / ${r.m}</span>
+        <span>${r.ok} de ${r.n}</span>
+        <span style="font-size:11.5px">${rankOf(pct)}</span>
+        <span style="color:#8a8a92">${fecha}</span>
+      </div>`
+    }).join('')
+  }
+
+  document.getElementById('qh-purge').addEventListener('click', () => {
+    try { localStorage.removeItem(KEY) } catch (e) {}
+    render()
+  })
+  render()
+</script>
 
 <style is:global>
   body:has(#qh-root) { display: block; height: auto }

@@ -168,6 +168,13 @@ const cat = CATS[tema]
     const pct = Math.round((run.pts / max) * 100)
     let rank = RANKS[0]
     for (const r of RANKS) if (pct >= r[0]) rank = r
+    // guarda el resultado para el ranking del hub
+    try {
+      const key = 'rubicon-quiz-resultados'
+      const hist = JSON.parse(localStorage.getItem(key) || '[]')
+      hist.push({ t: tema, d: run.diffKey, p: run.pts, m: max, ok: run.ok, n: run.qs.length, ts: Date.now() })
+      localStorage.setItem(key, JSON.stringify(hist.slice(-50)))
+    } catch (e) { /* almacenamiento no disponible */ }
     $('qz-final-pts').textContent = `${run.pts} / ${max}`
     $('qz-final-detail').textContent = `${run.ok} DE ${run.qs.length} CORRECTAS · RANGO ${DIFFS[run.diffKey].label.toUpperCase()}`
     $('qz-rank').textContent = rank[1]
