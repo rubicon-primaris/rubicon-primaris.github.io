@@ -56,9 +56,9 @@ for (let i = 0; i < 45; i++) {
 // pos centra al personaje en la card; zoom compensa las imágenes apaisadas (su cover queda
 // limitado por la altura y no amplía al expandir la card) y origin fija el punto focal del zoom
 const factions = [
-  { name: 'Caos', image: '/images/home/faction-caos.jpg', pos: 'center 20%', zoom: true, origin: '50% 26%' },
-  { name: 'Xenos', image: '/images/home/faction-xenos.png', pos: 'center 30%', zoom: true, origin: '50% 30%' },
-  { name: 'Imperium', image: '/images/home/faction-imperium.png', pos: 'center 20%' },
+  { name: 'Caos', href: '/facciones/caos', image: '/images/home/faction-caos.jpg', pos: 'center 20%', zoom: true, origin: '50% 26%' },
+  { name: 'Xenos', href: '/facciones/xenos', image: '/images/home/faction-xenos.png', pos: 'center 30%', zoom: true, origin: '50% 30%' },
+  { name: 'Imperium', href: '/facciones/imperium', image: '/images/home/faction-imperium.png', pos: 'center 20%' },
 ]
 ---
 <Layout>
@@ -147,7 +147,7 @@ const factions = [
         <div class="faction-row rvl rvl-d1 flex justify-center">
           {factions.map((f) => (
             <a
-              href="#"
+              href={f.href}
               class="relative -mr-14 block h-[clamp(520px,78vh,760px)] bg-[#141311] no-underline [clip-path:polygon(76px_0,100%_0,calc(100%_-_76px)_100%,0_100%)] last:mr-0"
             >
               <span

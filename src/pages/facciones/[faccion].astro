@@ -1,0 +1,479 @@
+---
+// Página de facción: listado de razas como faction-cards (la destacada a lo ancho,
+// el resto en filas diagonales como en la portada; si no caben en una línea se
+// reparten en varias). El clic en una card hace scroll al resumen de lore, que
+// cambia de fondo según la raza seleccionada.
+// Las gamas siguen los listados oficiales de GW. Las imágenes por raza se añaden
+// rellenando `image` (y opcionalmente `pos`).
+import Layout from '../../layouts/Layout.astro'
+
+export function getStaticPaths () {
+  return [
+    { params: { faccion: 'imperium' } },
+    { params: { faccion: 'caos' } },
+    { params: { faccion: 'xenos' } },
+  ]
+}
+
+const FACTIONS = {
+  imperium: {
+    title: 'El Imperium',
+    kicker: '✠ Facción · Imperium de la Humanidad ✠',
+    intro: [
+      'Durante diez mil años, el Imperium de la Humanidad ha abarcado un millón de mundos bajo la luz del Emperador. Es el mayor imperio que las estrellas han conocido — y también el más cruel, sostenido por la fe, el sacrificio y una guerra que no termina jamás.',
+      'Estos son los ejércitos, adeptus y órdenes que mantienen a raya la oscuridad.',
+    ],
+    races: [
+      {
+        id: 'astartes', name: 'Adeptus Astartes', sub: 'Los Ángeles de la Muerte', featured: true, tint: '#4f7ec2', image: '/images/factions/imperium/astartes.jpg', pos: 'center 26%',
+        lore: [
+          'Creados a partir del material genético de los primarcas, los Marines Espaciales son la élite transhumana del Imperio: más rápidos, más fuertes y más resistentes que cualquier humano, forjados por décadas de doctrina, cirugía y guerra sin descanso.',
+          'Organizados en un millar de capítulos de mil hermanos, acuden allí donde la humanidad más los necesita. Desde la Cruzada Indomitus, los refuerzos Primaris de Belisarius Cawl han renovado unas filas diezmadas por diez milenios de sacrificio.',
+        ],
+        cta: { label: 'Genealogía Astartes', href: '/genealogia' },
+      },
+      {
+        id: 'sororitas', name: 'Adepta Sororitas', sub: 'Las Hijas del Emperador', tint: '#b03a45', image: '/images/factions/imperium/sororitas.jpg', pos: '38% 30%',
+        lore: [
+          'El brazo militante del Culto Imperial: órdenes de batalla de hermanas cuya fe es, literalmente, un arma. Avanzan entre himnos y fuego purificador, portando las reliquias más sagradas del Imperio.',
+          'Donde la Inquisición señala herejía, las Órdenes Militantes ejecutan la sentencia. Sus actos de fe obran milagros en el campo de batalla — y ningún enemigo del Emperador ha sobrevivido a uno para explicarlo.',
+        ],
+      },
+      {
+        id: 'custodes', name: 'Adeptus Custodes', sub: 'Los Diez Mil', tint: '#d9a600', image: '/images/factions/imperium/custodes.png', pos: '32% 55%',
+        lore: [
+          'Los guardianes personales del Emperador: cada uno es una obra maestra única, forjada mediante procesos que los Astartes solo pueden envidiar. No son un ejército — son diez mil héroes.',
+          'Durante cien siglos custodiaron el Palacio Imperial sin pisar otro mundo. Tras la apertura de la Gran Grieta rompieron su vigilia, y la ira dorada del Emperador marcha de nuevo por la galaxia.',
+        ],
+      },
+      {
+        id: 'mechanicus', name: 'Adeptus Mechanicus', sub: 'Los Sacerdotes de Marte', tint: '#b0522a', image: '/images/factions/imperium/mechanicus.jpg', pos: '30% 45%',
+        lore: [
+          'El culto de la Máquina gobierna las forjas del Imperio desde Marte. Sus tecnosacerdotes atesoran los secretos de eras pasadas y consideran la carne un material defectuoso que conviene sustituir por bendito metal.',
+          'Sus legiones skitarii, sus titanes-dios y sus arcas explorator recorren la galaxia en busca de arqueotecnología. A cambio de sus armas, el Imperio tolera que Marte no responda ante nadie.',
+        ],
+      },
+      {
+        id: 'titanicus', name: 'Adeptus Titanicus', sub: 'Collegia Titanica', tint: '#8a5a2a', image: '/images/factions/imperium/titanicus.png', pos: 'center 40%',
+        lore: [
+          'Los titanes-dios del Collegia Titanica: máquinas de guerra de treinta metros ante las que ejércitos enteros resultan irrelevantes. Cada una es una reliquia insustituible, con milenios de batallas grabados en el casco.',
+          'Cuando un Warlord camina, el suelo tiembla a kilómetros. Cuando camina una legión entera, las guerras terminan.',
+        ],
+      },
+      {
+        id: 'militarum', name: 'Astra Militarum', sub: 'El Martillo del Emperador', tint: '#8a7a4a', image: '/images/factions/imperium/militarum.jpg', pos: '62% 32%',
+        lore: [
+          'Incontables miles de millones de soldados corrientes sostienen todos los frentes del Imperio. Sin bendiciones genéticas ni armaduras milagrosas: solo rifles láser, artillería, blindados y un valor que desafía a la razón.',
+          'Cada mundo paga su diezma en regimientos: los Korps de la Muerte de Krieg, los Luchadores de la Jungla de Catachan, los cadianos que aún repiten que Cadia resiste. La Guardia Imperial no gana con elegancia; gana porque nunca deja de avanzar.',
+        ],
+      },
+      {
+        id: 'agentes', name: 'Agentes del Imperium', sub: 'Los Instrumentos del Trono', tint: '#7a8a99', image: '/images/factions/imperium/agentes.jpg', pos: '45% 35%',
+        lore: [
+          'La Inquisición y sus instrumentos: inquisidores, asesinos del Officio Assassinorum, comerciantes independientes y cazadores de brujas. Operan en los márgenes, donde los ejércitos no llegan y las preguntas no se hacen.',
+          'No hay tribunal que los juzgue ni puerta que se les cierre. Un sello inquisitorial puede ordenar el Exterminatus de un mundo entero — y a veces lo hace.',
+        ],
+      },
+      {
+        id: 'caballeros-imperiales', name: 'Caballeros Imperiales', sub: 'Las Casas Nobles', tint: '#3a6a5a', image: '/images/factions/imperium/caballeros-imperiales.jpg', pos: '48% 38%',
+        lore: [
+          'Las casas nobles de los mundos caballero pilotan armaduras titánicas heredadas de la Era de la Tecnología, ligadas a sus linajes por vínculos neuronales y juramentos feudales más antiguos que el propio Imperio.',
+          'Una lanza de Caballeros puede decidir una campaña. Su honor les exige estar donde la batalla es más desesperada — y su historia, no retroceder jamás.',
+        ],
+      },
+    ],
+  },
+  caos: {
+    title: 'El Caos',
+    kicker: '✠ Facción · Los Poderes Ruinosos ✠',
+    intro: [
+      'Más allá del velo de la realidad se extiende la disformidad: un océano de emoción y pesadilla donde moran los Cuatro Poderes — Khorne, Tzeentch, Nurgle y Slaanesh — y donde toda ambición, rabia o desesperación humana encuentra un eco que responde.',
+      'Estos son los siervos de los Dioses Oscuros: las legiones traidoras, sus dioses-máquina corruptos y la progenie demoníaca del warp.',
+    ],
+    races: [
+      {
+        id: 'csm', name: 'Marines Espaciales del Caos', sub: 'Las Legiones Traidoras', featured: true, tint: '#b3402f', image: '/images/factions/caos/csm.jpg', pos: 'center 25%',
+        lore: [
+          'Nueve legiones siguieron a Horus contra el Emperador, y diez mil años después sus supervivientes siguen haciendo la guerra desde el Ojo del Terror: veteranos inmortales de la Larga Guerra, endurecidos por siglos de batalla y mutación.',
+          'Bajo Abaddon el Saqueador, la Legión Negra ha lanzado trece Cruzadas Negras contra el Imperio. La última partió la galaxia en dos.',
+        ],
+      },
+      {
+        id: 'demonios', name: 'Demonios del Caos', sub: 'La Progenie de los Dioses', tint: '#c13a6b', image: '/images/factions/caos/demonios.jpg', pos: '35% 32%',
+        lore: [
+          'Fragmentos de los propios dioses con voluntad y forma: desangradores de Khorne, horrores de Tzeentch, portadores de plaga de Nurgle y diablesas de Slaanesh. No mueren — solo regresan al warp, furiosos.',
+          'Solo pueden pisar la realidad donde el velo se rasga: tormentas warp, rituales sangrientos, mundos corrompidos. Desde la Gran Grieta, esos lugares son cada vez más numerosos.',
+        ],
+      },
+      {
+        id: 'caballeros', name: 'Caballeros del Caos', sub: 'Las Casas Renegadas', tint: '#7a4a30', image: '/images/factions/caos/caballeros.jpg', pos: 'center 35%',
+        lore: [
+          'Linajes nobles que pilotan armaduras titánicas desde antes del Imperio... y que rompieron sus juramentos. Sus Caballeros caminan ahora envueltos en herejía, cazando en manadas para los Dioses Oscuros.',
+          'Un solo Caballero renegado puede quebrar un regimiento. Una casa entera, como la Casa Devine en Molech, puede quebrar un mundo.',
+        ],
+      },
+      {
+        id: 'death-guard', name: 'Guardia de la Muerte', sub: 'Los Hijos de Mortarion', tint: '#6e753a', image: '/images/factions/caos/death-guard.jpg', pos: '60% 45%',
+        lore: [
+          'La legión de Mortarion, bendecida por Nurgle con una resistencia inmunda: avanzan a través del fuego de barrera entre nubes de moscas, imposibles de detener, imposibles de matar.',
+          'Desde las Estrellas Azote, conquistadas tras la Gran Grieta, reparten los dones del Abuelo Nurgle: plagas que pudren cuerpos, mundos y esperanzas.',
+        ],
+      },
+      {
+        id: 'hijos-emperador', name: 'Hijos del Emperador', sub: 'La Legión de Slaanesh', tint: '#b06ab8', image: '/images/factions/caos/hijos-emperador.jpg', pos: '35% 35%',
+        lore: [
+          'La legión de Fulgrim persiguió la perfección hasta caer en manos de Slaanesh. Ahora persigue la sensación: cada batalla es una sinfonía de exceso y cada masacre, una obra de arte.',
+          'Marchan al combate entre acordes que revientan tímpanos y éxtasis químico. Lo único que temen es el silencio.',
+        ],
+      },
+      {
+        id: 'guerreros-hierro', name: 'Guerreros de Hierro', sub: 'Los Señores del Asedio', tint: '#8a8a92', image: '/images/factions/caos/guerreros-hierro.jpg', pos: '55% 45%',
+        lore: [
+          'La legión de Perturabo convirtió el asedio en ciencia exacta. No hay fortaleza que no puedan reducir a escombros, ni coste en vidas — propias o ajenas — que les haga dudar.',
+          'Desde Medrengard alimentan un rencor de diez mil años contra los Puños Imperiales y contra todo lo que el Imperio representa. Hierro por dentro, hierro por fuera.',
+        ],
+      },
+      {
+        id: 'corsarios', name: 'Corsarios Rojos', sub: 'Los Piratas del Maelstrom', tint: '#c04040', image: '/images/factions/caos/corsarios.jpg', pos: '40% 40%',
+        lore: [
+          'Capítulos renegados unidos bajo Huron Blackheart, el Tirano de Badab, que cambió el juramento al Emperador por el saqueo sin bandera desde su fortaleza en el Maelstrom.',
+          'Sus flotas corsarias asaltan las rutas del corazón galáctico, y sus filas engordan con cada capítulo que cae en la tentación.',
+        ],
+      },
+      {
+        id: 'mil-hijos', name: 'Mil Hijos', sub: 'Los Hechiceros de Tzeentch', tint: '#3a8ac0', image: '/images/factions/caos/mil-hijos.jpg', pos: '30% 50%',
+        lore: [
+          'La legión de Magnus el Rojo pagó su sed de conocimiento con la maldición de la carne: sus guerreros son polvo sellado en armaduras, guiados por los hechiceros que causaron su ruina.',
+          'Desde el Planeta de los Hechiceros tejen las tramas de Tzeentch: cada derrota suya podría ser una victoria planeada, y cada victoria ajena, un engaño.',
+        ],
+      },
+      {
+        id: 'titanicus-traitoris', name: 'Titanicus Traitoris', sub: 'Los Titanes Corruptos', tint: '#7a5a30', image: '/images/factions/caos/titanicus-traitoris.jpg', pos: '40% 42%',
+        lore: [
+          'La mitad del Collegia Titanica cayó con Horus, y sus titanes-dios caminan desde entonces bajo estandartes oscuros, con los espíritus-máquina corrompidos por la disformidad.',
+          'Un titán del Caos no es solo una máquina de guerra: es una catedral andante de herejía, poseída por demonios que ya no distinguen dónde acaba el metal y dónde empiezan ellos.',
+        ],
+      },
+      {
+        id: 'devoradores', name: 'Devoradores de Mundos', sub: 'Los Berserkers de Khorne', tint: '#a42020', image: '/images/factions/caos/devoradores.jpg', pos: '40% 40%',
+        lore: [
+          'La legión de Angron se entregó a Khorne córtex a córtex: los Clavos del Carnicero convirtieron a sus guerreros en berserkers que solo conocen la carga y la sangre.',
+          '«¡Sangre para el Dios de la Sangre! ¡Cráneos para el Trono de Cráneos!» no es un grito de guerra: es la única política exterior que les queda.',
+        ],
+      },
+    ],
+  },
+  xenos: {
+    title: 'Xenos',
+    kicker: '✠ Facción · Las Especies Alienígenas ✠',
+    intro: [
+      'La galaxia no pertenece a la humanidad. Imperios más antiguos que la propia Terra despiertan de su letargo, especies voraces devoran cuanto encuentran y civilizaciones moribundas luchan por sobrevivir un milenio más.',
+      'Estas son las especies que disputan las estrellas al Imperio — y entre sí.',
+    ],
+    races: [
+      {
+        id: 'aeldari', name: 'Aeldari', sub: 'El Imperio Caído', tint: '#58a8a0', image: '/images/factions/xenos/aeldari.jpg', pos: '52% 35%',
+        lore: [
+          'Restos de una civilización que gobernó las estrellas durante eones y cayó en una sola noche, devorada por sus propios excesos: su Caída dio a luz a Slaanesh y abrió el Ojo del Terror.',
+          'Desde sus mundos astronave, los supervivientes libran una guerra desesperada contra la extinción, guiados por videntes que leen los hilos del destino.',
+        ],
+      },
+      {
+        id: 'drukhari', name: 'Drukhari', sub: 'Los Señores de Commorragh', tint: '#4a7a85', image: '/images/factions/xenos/drukhari.jpg', pos: 'center 40%',
+        lore: [
+          'Los primos oscuros de los aeldari no cayeron con su imperio: se escondieron con él. En Commorragh, la Ciudad Oscura oculta en la telaraña, perpetúan los excesos que condenaron a su especie.',
+          'Sus incursores surgen de portales warp para cosechar esclavos y sufrimiento — el único alimento que mantiene a raya la sed que Slaanesh siente por sus almas.',
+        ],
+      },
+      {
+        id: 'genestealer', name: 'Cultos Genestealer', sub: 'La Semilla de la Devoradora', tint: '#9a4a8a', image: '/images/factions/xenos/genestealer.jpg', pos: '70% 40%',
+        lore: [
+          'Generaciones antes de que llegue la flota enjambre, la semilla ya está plantada: cultos de híbridos que infiltran colmenas y minas, adorando a un dios de cuatro brazos al que llaman el Padre.',
+          'Cuando el culto se alza, el mundo arde en revolución. Entonces la Mente Enjambre acude a la señal — y devora a fieles e infieles por igual.',
+        ],
+      },
+      {
+        id: 'votann', name: 'Ligas de Votann', sub: 'Los Parientes', tint: '#c08a3a', image: '/images/factions/xenos/votann.jpg', pos: '65% 40%',
+        lore: [
+          'Clones robustos forjados en el Núcleo Galáctico, herederos de la humanidad más antigua: sus ancestros digitales, los Votann, guardan memorias de antes del propio Imperio.',
+          'Mineros, mercaderes y soldados pragmáticos: no hacen cruzadas, cobran deudas. Y el rencor de una Liga no prescribe jamás.',
+        ],
+      },
+      {
+        id: 'necrones', name: 'Necrones', sub: 'Las Dinastías Eternas', tint: '#9fb8a8', image: '/images/factions/xenos/necrones.jpg', pos: '70% 40%',
+        lore: [
+          'Hace sesenta millones de años cambiaron su carne por metal viviente para ganar una guerra contra los propios dioses estelares. Ganaron — y perdieron todo lo demás.',
+          'Sus mundos tumba despiertan dinastía a dinastía, y sus señores inmortales reclaman un imperio que consideran suyo. La galaxia solo les parece... desordenada.',
+        ],
+      },
+      {
+        id: 'orkos', name: 'Orkos', sub: 'La Waaagh! Interminable', tint: '#8fbf5a', image: '/images/factions/xenos/orkos.jpg', pos: '68% 45%',
+        lore: [
+          'La especie más extendida y belicosa de la galaxia: hongos de guerra que nacen peleando y mueren riéndose. Su tecnología funciona porque ellos creen que funciona.',
+          'Cuando un kaudillo crece lo bastante, la Waaagh! psíquica arrastra a millones tras él. La de Ghazghkull Thraka, la Bestia de Armageddon, aún no ha encontrado quien la detenga.',
+        ],
+      },
+      {
+        id: 'tau', name: 'Imperio T’au', sub: 'El Bien Supremo', tint: '#d08a4a', image: '/images/factions/xenos/tau.jpg', pos: '66% 45%',
+        lore: [
+          'Un imperio joven, optimista y tecnológicamente brillante que se expande por el Fringe Oriental predicando el Bien Supremo: la causa mayor a la que todas las especies deberían servir.',
+          'Los mundos que aceptan se integran en sus castas. Los que no, descubren que la diplomacia t’au dispara proyectiles hipersónicos.',
+        ],
+      },
+      {
+        id: 'tiranidos', name: 'Tiránidos', sub: 'La Gran Devoradora', tint: '#a05ab0', image: '/images/factions/xenos/tiranidos.jpg', pos: 'center 40%',
+        lore: [
+          'Un enjambre extragaláctico guiado por una única Mente Enjambre: no conquista, no negocia, no odia. Consume. Cada mundo devorado hace a la siguiente flota más fuerte.',
+          'Behemoth, Kraken, Leviatán... cada flota enjambre ha sido mayor que la anterior. Los astrópatas hablan de una sombra en el warp que se acerca desde el vacío intergaláctico.',
+        ],
+      },
+    ],
+  },
+}
+
+const { faccion } = Astro.params
+const F = FACTIONS[faccion]
+const featured = F.races.find((r) => r.featured)
+const rest = F.races.filter((r) => !r.featured)
+
+// Reparte las cards en filas equilibradas de como mucho 5 (sketch: si no caben
+// en una línea, se ponen en dos)
+function chunkRows (arr, maxPerRow = 5) {
+  const n = Math.ceil(arr.length / maxPerRow)
+  const size = Math.ceil(arr.length / n)
+  const out = []
+  for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size))
+  return out
+}
+const cardRows = chunkRows(rest)
+
+// Fondo de card: imagen si existe; si no, placeholder con tinte y trama técnica
+const cardBg = (r) =>
+  r.image
+    ? `background:url('${r.image}') ${r.pos || 'center'}/cover no-repeat #141311`
+    : `background:repeating-linear-gradient(115deg,transparent 0 14px,${r.tint}12 14px 15px),radial-gradient(90% 70% at 50% 28%,${r.tint}44,transparent 72%),#141311`
+
+const loreBg = (r) =>
+  r.image
+    ? `background:url('${r.image}') ${r.pos || 'center'}/cover no-repeat #0a0a09`
+    : `background:radial-gradient(85% 90% at 72% 40%,${r.tint}2e,transparent 70%),#0a0a09`
+
+const OTHERS = Object.keys(FACTIONS)
+---
+<Layout>
+  <Fragment slot="head">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&display=swap" />
+  </Fragment>
+
+  <main class="relative min-h-screen w-full bg-surface font-sans text-white">
+    <nav class="flex items-center justify-between border-b border-white/10 px-8 py-5 text-[11px] uppercase tracking-[.2em]">
+      <a href="/" class="text-ink-muted no-underline transition-colors hover:text-white">← Portada</a>
+      <div class="flex gap-7">
+        {OTHERS.map((slug) => (
+          <a
+            href={`/facciones/${slug}`}
+            class={`no-underline transition-colors hover:text-white ${slug === faccion ? 'text-secondary' : 'text-ink-muted'}`}
+          >{FACTIONS[slug].title}</a>
+        ))}
+      </div>
+      <a href="/mapa" class="text-ink-muted no-underline transition-colors hover:text-white">Mapa</a>
+    </nav>
+
+    <!-- Cabecera de facción -->
+    <section class="px-8 pb-16 pt-20 text-center">
+      <span class="font-mono text-[11px] uppercase tracking-[.5em] text-secondary">{F.kicker}</span>
+      <h1 class="m-0 mt-6 font-display text-[clamp(38px,5vw,64px)] font-bold uppercase tracking-[.18em]">{F.title}</h1>
+      <div class="mx-auto mt-8 flex max-w-[760px] flex-col gap-5">
+        {F.intro.map((p) => (
+          <p class="m-0 text-base leading-[1.9] text-ink-muted [text-wrap:pretty]">{p}</p>
+        ))}
+      </div>
+    </section>
+
+    <!-- Cards de razas -->
+    <section class="px-8 pb-24">
+      <div class="mx-auto max-w-[1600px]">
+        {featured && (
+          <a href={`#${featured.id}`} class="fcard fcard-xl" data-race={featured.id}>
+            <span class="fbg" style={cardBg(featured)}></span>
+            <span class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/[.92] to-transparent"></span>
+            <span class="absolute inset-x-0 bottom-9 flex flex-col items-center gap-2">
+              <span class="font-display text-[clamp(24px,2.6vw,36px)] font-bold uppercase tracking-[.24em] text-white">{featured.name}</span>
+              <span class="text-[11px] font-semibold uppercase tracking-[.2em] text-ink-muted">{featured.sub}</span>
+            </span>
+          </a>
+        )}
+        {cardRows.map((row) => (
+          <div class="fcard-row">
+            {row.map((r) => (
+              <a href={`#${r.id}`} class="fcard" data-race={r.id}>
+                <span class="fbg" style={cardBg(r)}></span>
+                <span class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/[.92] to-transparent"></span>
+                <span class="absolute inset-x-0 bottom-9 flex flex-col items-center gap-2 px-14">
+                  <span class="text-center font-display text-[clamp(15px,1.3vw,21px)] font-bold uppercase tracking-[.16em] leading-tight text-white">{r.name}</span>
+                  <span class="text-center text-[10.5px] font-semibold uppercase tracking-[.16em] text-ink-muted">{r.sub}</span>
+                </span>
+              </a>
+            ))}
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Lore: fondo por raza (crossfade) + resumen -->
+    <section id="lore" class="relative min-h-[82vh] overflow-hidden border-t border-white/10">
+      {F.races.map((r) => (
+        <div class="lore-bg absolute inset-0 opacity-0 transition-opacity duration-700" data-bg={r.id} style={loreBg(r)}></div>
+      ))}
+      <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/[.82] via-black/60 to-black/30"></div>
+      <div class="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black to-transparent"></div>
+
+      <div class="relative z-10 mx-auto flex min-h-[82vh] max-w-[1100px] items-center px-8 py-24">
+        {F.races.map((r) => (
+          <article class="lore-item max-w-[640px]" data-lore={r.id} hidden>
+            <span class="font-mono text-[11px] uppercase tracking-[.4em]" style={`color:${r.tint}`}>{r.sub}</span>
+            <h2 class="m-0 mt-4 font-display text-[clamp(30px,3.6vw,48px)] font-bold uppercase tracking-[.1em] text-white">{r.name}</h2>
+            <span class="mt-6 block h-px w-24" style={`background:linear-gradient(90deg,${r.tint},transparent)`}></span>
+            <div class="mt-7 flex flex-col gap-5">
+              {r.lore.map((p) => (
+                <p class="m-0 text-[15px] leading-[1.9] text-ink-muted [text-wrap:pretty]">{p}</p>
+              ))}
+            </div>
+            {r.cta && (
+              <a
+                href={r.cta.href}
+                class="mt-9 inline-block border px-6 py-3 text-[11px] font-semibold uppercase tracking-[.22em] text-white no-underline transition-colors"
+                style={`border-color:${r.tint}66`}
+              >{r.cta.label} →</a>
+            )}
+            <div class="mt-10 font-mono text-[9px] uppercase tracking-[.24em] text-ink-faint">Archivo Administratum · {F.title} · M42</div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <footer class="border-t border-white/10 px-12 py-10 text-center">
+      <span class="font-mono text-[10px] uppercase tracking-[.24em] text-ink-faint">El Emperador protege · M41</span>
+    </footer>
+  </main>
+</Layout>
+
+<style is:global>
+  body.flex {
+    display: block;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+
+  .fcard {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    text-decoration: none;
+  }
+  .fcard .fbg {
+    position: absolute;
+    inset: 0;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .fcard:hover .fbg {
+    transform: scale(1.06);
+  }
+
+  .fcard-xl {
+    height: clamp(220px, 30vh, 300px);
+    margin-bottom: 20px;
+    clip-path: polygon(56px 0, 100% 0, calc(100% - 56px) 100%, 0 100%);
+  }
+
+  .fcard-row {
+    display: flex;
+    justify-content: center;
+  }
+  .fcard-row + .fcard-row {
+    margin-top: 20px;
+  }
+  .fcard-row .fcard {
+    flex: 1 1 0%;
+    margin-right: -48px;
+    height: clamp(280px, 40vh, 380px);
+    clip-path: polygon(56px 0, 100% 0, calc(100% - 56px) 100%, 0 100%);
+    transition: flex 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .fcard-row .fcard:last-child {
+    margin-right: 0;
+  }
+  .fcard-row:hover .fcard {
+    flex: 0.75 1 0%;
+  }
+  .fcard-row .fcard:hover {
+    flex: 1.5 1 0%;
+  }
+
+  .lore-item[hidden] {
+    display: none;
+  }
+  .lore-bg.on {
+    opacity: 1;
+  }
+  #lore article a:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  @media (max-width: 860px) {
+    .fcard-row {
+      flex-direction: column;
+      gap: 14px;
+    }
+    .fcard-row + .fcard-row {
+      margin-top: 14px;
+    }
+    .fcard-row .fcard {
+      height: 150px;
+      margin-right: 0;
+      clip-path: polygon(36px 0, 100% 0, calc(100% - 36px) 100%, 0 100%);
+    }
+    .fcard-xl {
+      height: 190px;
+      clip-path: polygon(36px 0, 100% 0, calc(100% - 36px) 100%, 0 100%);
+    }
+    .fcard-row:hover .fcard,
+    .fcard-row .fcard:hover {
+      flex: 1 1 0%;
+    }
+  }
+</style>
+
+<script>
+  // Selección de raza: activa su lore + fondo y hace scroll a la sección.
+  // El hash (#astartes) permite enlazar una raza concreta desde fuera.
+  const items = [...document.querySelectorAll('.lore-item')]
+  const bgs = [...document.querySelectorAll('.lore-bg')]
+  const cards = [...document.querySelectorAll('.fcard')]
+
+  function select (id, opts) {
+    if (!items.some((el) => el.dataset.lore === id)) return
+    items.forEach((el) => { el.hidden = el.dataset.lore !== id })
+    bgs.forEach((el) => el.classList.toggle('on', el.dataset.bg === id))
+    if (opts && opts.hash) history.replaceState(null, '', '#' + id)
+    if (opts && opts.scroll) document.getElementById('lore').scrollIntoView({ behavior: 'smooth' })
+  }
+
+  cards.forEach((c) => {
+    c.addEventListener('click', (e) => {
+      e.preventDefault()
+      select(c.dataset.race, { hash: true, scroll: true })
+    })
+  })
+
+  const initial = location.hash.slice(1)
+  if (initial && items.some((el) => el.dataset.lore === initial)) {
+    select(initial, { hash: true })
+    // 'instant' puentea el scroll-behavior:smooth global en el salto inicial
+    document.getElementById('lore').scrollIntoView({ behavior: 'instant' })
+  } else if (items[0]) {
+    select(items[0].dataset.lore)
+  }
+</script>
