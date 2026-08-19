@@ -347,6 +347,37 @@ import Layout from '../layouts/Layout.astro'
   }
   const primarisOf = (name) => PRIMARIS[name] || 'Mixto — Firstborn y refuerzos Primaris de la Cruzada Indomitus'
 
+  // Nombre de cada color segun el catalogo de pinturas Citadel (Games Workshop)
+  const COLOR_NAMES = {
+    '#25523b': 'Caliban Green', '#d8cfae': 'Ushabti Bone', '#8a1f1f': 'Mephiston Red',
+    '#111111': 'Abaddon Black', '#8a8f96': 'Administratum Grey', '#e8e6e0': 'White Scar',
+    '#2a4a8a': 'Altdorf Guard Blue', '#3a3a42': 'Mechanicus Standard Grey', '#c9a227': 'Averland Sunset',
+    '#e0b31f': 'Averland Sunset', '#6b7f8f': 'Russ Grey', '#1c2a5a': 'Kantor Blue',
+    '#b8b4a8': 'Rakarth Flesh', '#c8c6c0': 'Ulthuan Grey', '#5a2a6a': 'Xereus Purple',
+    '#c04a4a': 'Evil Sunz Scarlet', '#a03030': 'Wazdakka Red', '#7a2a2a': 'Khorne Red',
+    '#b87333': 'Fulgurite Copper', '#4a7a3a': 'Straken Green', '#1c3a8a': 'Macragge Blue',
+    '#2a7a4a': 'Warpstone Glow', '#4a5a3a': 'Death World Forest', '#5a5a62': 'Eshin Grey',
+    '#3a5a4a': 'Sons of Horus Green', '#2a6a6a': 'Sotek Green'
+  }
+  // Excepciones por capitulo: metalicos y pinturas con nombre propio de faccion
+  const NAME_OVERRIDES = {
+    'Adeptus Custodes': ['Retributor Armour', 'Mephiston Red'],
+    'Hijos del Emperador': ['Phoenician Purple', 'Retributor Armour'],
+    'Mil Hijos': ['Thousand Sons Blue', 'Retributor Armour'],
+    'Legión Negra': ['Abaddon Black', 'Retributor Armour'],
+    'Señores de la Noche': ['Night Lords Blue'],
+    'Portadores de la Palabra': ['Word Bearers Red'],
+    'Devoradores de Mundos': ['Khorne Red', 'Runelord Brass'],
+    'Caballeros Grises': ['Leadbelcher', 'Ulthuan Grey'],
+    'Cráneos Plateados': ['Runefang Steel', 'Mephiston Red'],
+    'Águilas Plateadas': ['Ironbreaker', 'Macragge Blue'],
+    'Hijos de la Venganza': ['Mechanicus Standard Grey', 'Retributor Armour']
+  }
+  const colorNames = (entity, cols) => {
+    const o = NAME_OVERRIDES[entity] || []
+    return cols.map((c, i) => ({ c, n: o[i] || COLOR_NAMES[c] || c }))
+  }
+
   const chapCols = (name) => (CI[name] || {}).c || []
   const dotsHtml = (cols, size, gap, margin) =>
     `<div style="display:flex;gap:${gap}px;justify-content:center;${margin}">` +
@@ -561,6 +592,7 @@ import Layout from '../layouts/Layout.astro'
         en: state.sel === '?' ? 'Capítulo · origen desconocido' : `Capítulo · linaje ${l.name}`,
         blurb: info.d || p.blurb, cols: info.c || [], hasCols: (info.c || []).length > 0,
         master: info.m || 'Sin registros', masterLabel: fallen ? 'Señor de la Guerra' : 'Señor del Capítulo', hasPrim: false,
+        hasSucc: state.sel !== '?' && p.hasSucc,
         primaris: primarisOf(state.selChap),
         statusLabel: fallen ? 'Renegado — Caos' : p.statusLabel,
         statusColor: fallen ? CHT : p.statusColor
@@ -581,6 +613,15 @@ import Layout from '../layouts/Layout.astro'
         <div style="font-size:10.5px;letter-spacing:0.1em;color:${p.primFateColor};text-transform:uppercase;margin:2px 0 8px">${p.primFate}</div>
         <p style="font-size:12.5px;line-height:1.6;color:#a8a8b0;margin:0;text-wrap:pretty">${p.primBlurb}</p>
       </div>`
+    }
+    let palHtml = ''
+    if (p.hasCols) {
+      palHtml = `<div style="border-top:1px solid #1c1c22;padding-top:14px;margin-bottom:16px">
+        <div style="font-size:10px;letter-spacing:0.2em;color:#6a6a72;margin-bottom:8px">COLORES · PINTURAS CITADEL</div>` +
+        colorNames(p.name, p.cols).map(x => `<div style="display:flex;align-items:center;gap:10px;font-size:12.5px;padding:4px 0">
+          <span style="width:16px;height:16px;border-radius:50%;background:${x.c};border:1px solid #3a3a42;box-shadow:inset 0 0 4px rgba(0,0,0,0.45);flex-shrink:0"></span>
+          <span style="color:#c8c6c0">${x.n}</span>
+        </div>`).join('') + '</div>'
     }
     let succHtml = ''
     if (p.hasSucc) {
@@ -605,6 +646,7 @@ import Layout from '../layouts/Layout.astro'
       </div>
       <p style="font-size:13px;line-height:1.6;color:#a8a8b0;margin:0 0 16px;text-wrap:pretty">${p.blurb}</p>
       ${primHtml}
+      ${palHtml}
       ${succHtml}`
     panelEl.style.display = 'block'
     // reanima la entrada del panel cada vez que cambia la seleccion
