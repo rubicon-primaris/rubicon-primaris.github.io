@@ -1,0 +1,137 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Button, Badge, Card, LegionCard } from '../components/ds/index.js';
+
+const legions = [
+  { n: 'i', name: 'Dark Angels' },
+  { n: 'iii', name: "Emperor's Children" },
+  { n: 'iv', name: 'Iron Warriors' },
+  { n: 'v', name: 'White Scars' },
+  { n: 'vi', name: 'Space Wolves' },
+  { n: 'vii', name: 'Imperial Fists' },
+  { n: 'viii', name: 'Night Lords' },
+  { n: 'ix', name: 'Blood Angels' },
+  { n: 'x', name: 'Iron Hands' },
+  { n: 'xii', name: 'World Eaters' },
+  { n: 'xiii', name: 'Ultramarines' },
+  { n: 'xiv', name: 'Death Guard' },
+  { n: 'xv', name: 'Thousand Sons' },
+  { n: 'xvi', name: 'Sons of Horus' },
+  { n: 'xvii', name: 'Word Bearers' },
+  { n: 'xviii', name: 'Salamanders' },
+  { n: 'xix', name: 'Raven Guard' },
+  { n: 'xx', name: 'Alpha Legion' },
+];
+
+const shades = [100, 200, 300, 400, 500, 600, 700, 800, 900];
+
+const semantic = [
+  { cls: 'bg-primary', name: 'primary', hex: '#252422' },
+  { cls: 'bg-secondary', name: 'secondary', hex: '#eb5e28' },
+  { cls: 'bg-surface', name: 'surface', hex: '#000000' },
+  { cls: 'bg-surface-raised', name: 'surface-raised', hex: '#161513' },
+  { cls: 'bg-surface-overlay', name: 'surface-overlay', hex: '#252422' },
+];
+---
+
+<Layout>
+  <main class="w-full min-h-screen bg-surface text-white px-6 py-12 md:px-16">
+    <div class="max-w-6xl mx-auto flex flex-col gap-16">
+      <header>
+        <h1 class="text-4xl font-bold uppercase tracking-widest">Rubicón Primaris</h1>
+        <p class="text-ink-muted mt-2">Design system · tokens y componentes del sitio</p>
+      </header>
+
+      <!-- Colores semánticos -->
+      <section class="flex flex-col gap-4">
+        <h2 class="text-2xl font-bold uppercase tracking-wide border-b border-white/10 pb-2">Colores semánticos</h2>
+        <div class="flex flex-wrap gap-4">
+          {semantic.map(({ cls, name, hex }) => (
+            <div class="flex flex-col gap-1">
+              <div class={`${cls} w-28 h-16 rounded-md border border-white/15`}></div>
+              <span class="text-sm">{name}</span>
+              <span class="text-xs text-ink-faint">{hex}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Paletas de legiones -->
+      <section class="flex flex-col gap-4">
+        <h2 class="text-2xl font-bold uppercase tracking-wide border-b border-white/10 pb-2">Paletas de legiones</h2>
+        <div class="flex flex-col gap-2">
+          {legions.map(({ n, name }) => (
+            <div class="flex items-center gap-3">
+              <span class="w-40 shrink-0 text-sm text-ink-muted">{n.toUpperCase()} · {name}</span>
+              <div class="flex rounded-md overflow-hidden">
+                {shades.map((s) => (
+                  <div class={`bg-${n}-${s} w-10 h-8`} title={`${n}-${s}`}></div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Tipografía -->
+      <section class="flex flex-col gap-4">
+        <h2 class="text-2xl font-bold uppercase tracking-wide border-b border-white/10 pb-2">Tipografía</h2>
+        <div class="flex flex-col gap-3">
+          <p class="text-4xl font-bold uppercase tracking-widest">Título / text-4xl bold</p>
+          <p class="text-2xl font-bold uppercase tracking-wide">Sección / text-2xl bold</p>
+          <p class="text-lg font-bold uppercase tracking-wide">Card / text-lg bold</p>
+          <p class="text-base">Cuerpo / text-base — El Emperador protege.</p>
+          <p class="text-sm text-ink-muted">Secundario / text-sm ink-muted</p>
+          <p class="text-xs text-ink-faint">Pie / text-xs ink-faint</p>
+        </div>
+      </section>
+
+      <!-- Botones -->
+      <section class="flex flex-col gap-4">
+        <h2 class="text-2xl font-bold uppercase tracking-wide border-b border-white/10 pb-2">Botones</h2>
+        <div class="flex flex-wrap items-center gap-4">
+          <Button variant="primary">Primario</Button>
+          <Button variant="secondary">Secundario</Button>
+          <Button variant="ghost">Ghost</Button>
+          <Button variant="danger">Peligro</Button>
+          <Button variant="primary" disabled>Deshabilitado</Button>
+        </div>
+        <div class="flex flex-wrap items-center gap-4">
+          <Button size="sm">Pequeño</Button>
+          <Button size="md">Mediano</Button>
+          <Button size="lg">Grande</Button>
+        </div>
+      </section>
+
+      <!-- Badges -->
+      <section class="flex flex-col gap-4">
+        <h2 class="text-2xl font-bold uppercase tracking-wide border-b border-white/10 pb-2">Badges</h2>
+        <div class="flex flex-wrap items-center gap-3">
+          <Badge>Neutro</Badge>
+          {legions.slice(0, 8).map(({ n, name }) => <Badge legion={n}>{name}</Badge>)}
+        </div>
+      </section>
+
+      <!-- Cards -->
+      <section class="flex flex-col gap-4">
+        <h2 class="text-2xl font-bold uppercase tracking-wide border-b border-white/10 pb-2">Cards</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card title="Panel básico">Contenido del panel sobre surface-raised.</Card>
+          <Card title="Ultramarines" legion="xiii">Card con acento de legión (borde superior).</Card>
+          <Card title="Blood Angels" legion="ix">Card con acento de legión (borde superior).</Card>
+        </div>
+      </section>
+
+      <!-- LegionCard -->
+      <section class="flex flex-col gap-4">
+        <h2 class="text-2xl font-bold uppercase tracking-wide border-b border-white/10 pb-2">LegionCard</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          <LegionCard image="images/legions/13-ultra.webp" legion="xiii" />
+          <LegionCard image="images/legions/9-blood-angles.webp" legion="ix" />
+          <LegionCard image="images/legions/6-wolf.webp" legion="vi" />
+          <LegionCard image={null} legion="ii" />
+        </div>
+      </section>
+    </div>
+  </main>
+</Layout>
