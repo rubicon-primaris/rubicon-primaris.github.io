@@ -19,7 +19,9 @@ import Layout from '../layouts/Layout.astro'
         <span style="display:flex;align-items:center;gap:8px"><span style="display:inline-block;width:28px;height:0;border-top:2px dashed #b3402f"></span><span style="color:#c96a5a">caos — legión traidora</span></span>
         <span style="display:flex;align-items:center;gap:8px"><span style="display:inline-block;width:12px;height:12px;border:1px solid #6a6a72;position:relative"></span>registros eliminados</span>
       </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:6px">
+    </header>
+
+    <div id="gene-controls" style="position:sticky;top:0;z-index:5;background:rgba(8,8,9,0.92);backdrop-filter:blur(4px);padding:10px 14px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
         <button data-filter="all" class="gene-hb gene-fbtn" style="cursor:pointer;font-family:inherit;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;padding:8px 18px;border:1px solid #34343c;background:transparent;color:#e8e6e0;border-radius:2px">Todas</button>
         <button data-filter="loyal" class="gene-hb gene-fbtn" style="cursor:pointer;font-family:inherit;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;padding:8px 18px;border:1px solid #34343c;background:transparent;color:#e8e6e0;border-radius:2px">Leales</button>
         <button data-filter="traitor" class="gene-hb gene-fbtn" style="cursor:pointer;font-family:inherit;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;padding:8px 18px;border:1px solid #34343c;background:transparent;color:#e8e6e0;border-radius:2px">Traidoras</button>
@@ -27,25 +29,30 @@ import Layout from '../layouts/Layout.astro'
         <button id="gene-zout" title="Alejar" class="gene-hb" style="cursor:pointer;font-size:14px;width:34px;border:1px solid #34343c;background:transparent;color:#e8e6e0;border-radius:2px">−</button>
         <button id="gene-zin" title="Acercar" class="gene-hb" style="cursor:pointer;font-size:14px;width:34px;border:1px solid #34343c;background:transparent;color:#e8e6e0;border-radius:2px">+</button>
         <button id="gene-zfit" class="gene-hb" style="cursor:pointer;font-family:inherit;font-size:12px;letter-spacing:0.1em;padding:8px 14px;border:1px solid #34343c;background:transparent;color:#e8e6e0;border-radius:2px">AJUSTAR</button>
-      </div>
-    </header>
+    </div>
 
     <div id="gene-scroller" style="overflow-x:auto;padding:8px 0 40px;cursor:grab">
       <div id="gene-sizer" style="margin:0 auto;position:relative">
-        <div id="gene-canvas" style="position:absolute;left:0;top:0;width:1912px;height:1330px;transform-origin:top left">
-          <svg id="gene-edges" width="1912" height="1330" viewBox="0 0 1912 1330" style="position:absolute;left:0;top:0;pointer-events:none"></svg>
-          <div style="position:absolute;left:912px;top:8px;width:88px;text-align:center;color:#ffffff">
-            <div style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:0.2em">TERRA</div>
-            <div style="font-size:9px;letter-spacing:0.24em;color:#8a8a92;margin-top:2px">EL EMPERADOR</div>
+        <div id="gene-canvas" style="position:absolute;left:0;top:0;width:1320px;height:2460px;transform-origin:top left">
+          <svg id="gene-edges" width="1320" height="2460" viewBox="0 0 1320 2460" style="position:absolute;left:0;top:0;pointer-events:none"></svg>
+          <!-- banda superior (legiones I–X): las lineas de epoca se alejan del centro -->
+          <div style="position:absolute;left:40px;top:745px;width:1240px;border-top:1px solid #26262c"></div>
+          <div style="position:absolute;left:48px;top:726px;font-size:11px;letter-spacing:0.3em;color:#6a6a72;background:#080809;padding:0 8px">M31 · 2ª FUNDACIÓN — CODEX ASTARTES</div>
+          <div style="position:absolute;left:40px;top:890px;width:1240px;border-top:1px solid #26262c"></div>
+          <div style="position:absolute;left:48px;top:871px;font-size:11px;letter-spacing:0.3em;color:#6a6a72;background:#080809;padding:0 8px">M31 · HEREJÍA DE HORUS</div>
+          <!-- banda inferior (legiones XI–XX) -->
+          <div style="position:absolute;left:40px;top:1550px;width:1240px;border-top:1px solid #26262c"></div>
+          <div style="position:absolute;left:48px;top:1555px;font-size:11px;letter-spacing:0.3em;color:#6a6a72;background:#080809;padding:0 8px">M31 · HEREJÍA DE HORUS</div>
+          <div style="position:absolute;left:40px;top:1695px;width:1240px;border-top:1px solid #26262c"></div>
+          <div style="position:absolute;left:48px;top:1700px;font-size:11px;letter-spacing:0.3em;color:#6a6a72;background:#080809;padding:0 8px">M31 · 2ª FUNDACIÓN — CODEX ASTARTES</div>
+          <div style="position:absolute;left:40px;top:2430px;width:1240px;border-top:1px solid #26262c"></div>
+          <div style="position:absolute;left:48px;top:2435px;font-size:11px;letter-spacing:0.3em;color:#6a6a72;background:#080809;padding:0 8px">M42 · FUNDACIÓN ULTIMA — CAPÍTULOS PRIMARIS EN TODOS LOS LINAJES LEALES</div>
+          <!-- franja central: el Emperador y los capitulos sin linaje confirmado -->
+          <div style="position:absolute;left:594px;top:1188px;width:132px;text-align:center;color:#ffffff;background:#080809;padding:6px 0;z-index:2">
+            <div style="font-family:'Cinzel',serif;font-size:16px;letter-spacing:0.2em">TERRA</div>
+            <div style="font-size:10px;letter-spacing:0.24em;color:#8a8a92;margin-top:2px">EL EMPERADOR</div>
           </div>
-          <div style="position:absolute;left:36px;top:288px;width:1840px;border-top:1px solid #26262c"></div>
-          <div style="position:absolute;left:44px;top:293px;font-size:10px;letter-spacing:0.3em;color:#6a6a72;background:#080809;padding:0 8px">M31 · HEREJÍA DE HORUS</div>
-          <div style="position:absolute;left:36px;top:410px;width:1840px;border-top:1px solid #26262c"></div>
-          <div style="position:absolute;left:44px;top:415px;font-size:10px;letter-spacing:0.3em;color:#6a6a72;background:#080809;padding:0 8px">M31 · 2ª FUNDACIÓN — CODEX ASTARTES</div>
-          <div style="position:absolute;left:36px;top:1048px;width:1840px;border-top:1px solid #26262c"></div>
-          <div style="position:absolute;left:44px;top:1053px;font-size:10px;letter-spacing:0.3em;color:#6a6a72;background:#080809;padding:0 8px">CAPÍTULOS SIN LINAJE CONFIRMADO — REGISTROS PERDIDOS O CLASIFICADOS</div>
-          <div style="position:absolute;left:36px;top:1250px;width:1840px;border-top:1px solid #26262c"></div>
-          <div style="position:absolute;left:44px;top:1255px;font-size:10px;letter-spacing:0.3em;color:#6a6a72;background:#080809;padding:0 8px">M42 · FUNDACIÓN ULTIMA — CAPÍTULOS PRIMARIS EN TODOS LOS LINAJES LEALES</div>
+          <div style="position:absolute;left:500px;top:1252px;width:320px;text-align:center;font-size:9px;letter-spacing:0.16em;line-height:1.7;color:#6a6a72;background:#080809;padding:0 6px;z-index:2">CAPÍTULOS SIN LINAJE CONFIRMADO<br />REGISTROS PERDIDOS O CLASIFICADOS</div>
           <div id="gene-nodes"></div>
         </div>
       </div>
@@ -93,11 +100,14 @@ import Layout from '../layouts/Layout.astro'
   // Port a JS vanilla del diseño "Genealogia Astartes.dc.html" (Claude Design)
   const SHOW_LOST = true
   const LINE_BASE = 0.4
-  const W = 1912, H = 1330
-  const colW = 92, mL = 36
-  const busY = 100, legTop = 124, legBot = 248, rowY0 = 450, rowH = 62, wbY = 336
+  // Reloj de arena: el Emperador en el centro, legiones I–X hacia arriba y XI–XX hacia abajo.
+  // Cada banda tiene su propio bus; los capitulos sin linaje flotan en la franja central.
+  const W = 1320, H = 2460
+  const colW = 124, mL = 40
+  const CY1 = 1100, CY2 = 1340   // bus superior (banda I–X) y bus inferior (banda XI–XX)
+  const rowH = 76
   const CH = '#b3402f', CHT = '#c96a5a'
-  const x = (i) => mL + i * colW + 46
+  const x = (i) => mL + i * colW + colW / 2
 
   const M = {
     sword:  { p1: '24,5 27,11 27,33 24,42 21,33 21,11', p2: '14,14 34,14 34,18 14,18' },
@@ -316,14 +326,14 @@ import Layout from '../layouts/Layout.astro'
 
   function markHtml (l) {
     if (ICONS[l.id]) {
-      return `<img src="/images/legions/icons/${ICONS[l.id]}.png" alt="" width="44" height="44" style="display:block;margin:0 auto;width:44px;height:44px;object-fit:contain">`
+      return `<img src="/images/legions/icons/${ICONS[l.id]}.png" alt="" width="54" height="54" style="display:block;margin:0 auto;width:54px;height:54px;object-fit:contain">`
     }
     return markSvg(l)
   }
 
   function markSvg (l) {
     const m = l.mark
-    return `<svg viewBox="0 0 48 48" width="44" height="44" style="display:block;margin:0 auto">
+    return `<svg viewBox="0 0 48 48" width="54" height="54" style="display:block;margin:0 auto">
       <circle cx="24" cy="24" r="${m.ringR || 0}" fill="none" stroke="#ffffff" stroke-width="2.4"></circle>
       <circle cx="24" cy="${m.dotY || 24}" r="${m.dotR || 0}" fill="#ffffff"></circle>
       <polygon points="${m.p1 || '0,0'}" fill="${m.p1f || '#ffffff'}"></polygon>
@@ -332,62 +342,79 @@ import Layout from '../layouts/Layout.astro'
   }
 
   function build () {
-    // raíz + bus horizontal
-    addPath(`M956,52 L956,${busY}`, { kind: 'root' })
-    addPath(`M${x(0)},${busY} L${x(19)},${busY}`, { kind: 'root' })
+    // buses de ambas bandas + conector vertical a traves del Emperador
+    addPath(`M${x(0)},${CY1} L${x(9)},${CY1}`, { kind: 'root' })
+    addPath(`M${x(0)},${CY2} L${x(9)},${CY2}`, { kind: 'root' })
+    addPath(`M${W / 2},${CY1} L${W / 2},${CY2}`, { kind: 'root' })
 
     let html = ''
-    D.forEach((l, i) => {
+    D.forEach((l, gi) => {
       if (l.st === 'lost' && !SHOW_LOST) return
-      const cx = x(i)
-      addPath(`M${cx},${busY} L${cx},${legTop}`, { kind: 'legion', id: l.id })
+      const up = gi < 10                     // banda superior: legiones I–X
+      const cx = x(gi % 10)
+      const BUS = up ? CY1 : CY2
+      const Y = (off) => up ? BUS - off : BUS + off   // offset alejandose del centro
+
+      addPath(`M${cx},${BUS} L${cx},${Y(24)}`, { kind: 'legion', id: l.id })
 
       const badge = l.st === 'traitor' ? 'CAOS' : l.st === 'lost' ? 'EXPURGADA' : ''
       const badgeColor = l.st === 'traitor' ? CHT : '#6a6a72'
-      html += `<div class="gene-lg" data-lg="${l.id}" title="${l.en} · ${l.primarch}" style="position:absolute;left:${cx - 44}px;top:${legTop}px;width:88px;text-align:center;cursor:pointer">
+      const nodeTop = up ? BUS - 184 : BUS + 24
+      html += `<div class="gene-lg" data-lg="${l.id}" title="${l.en} · ${l.primarch}" style="position:absolute;left:${cx - 56}px;top:${nodeTop}px;width:112px;text-align:center;cursor:pointer">
         <span data-mark>${markHtml(l)}</span>
-        <div style="font-family:'Cinzel',serif;font-size:12px;color:#9a9aa2;margin-top:6px">${l.id}</div>
-        <div style="font-family:'Cinzel',serif;font-size:11.5px;font-weight:600;line-height:1.25;color:#ffffff;margin-top:2px">${l.name}</div>
-        <div style="font-size:8.5px;font-style:italic;color:#7a7a82;margin-top:2px;line-height:1.3">${l.prev ? 'antes ' + l.prev : ''}</div>
-        <div style="font-size:8px;letter-spacing:0.24em;margin-top:3px;color:${badgeColor}">${badge}</div>
-        ${dotsHtml(chapCols(l.name), 8, 5, 'margin-top:4px')}
+        <div style="font-family:'Cinzel',serif;font-size:13px;color:#9a9aa2;margin-top:6px">${l.id}</div>
+        <div style="font-family:'Cinzel',serif;font-size:13px;font-weight:600;line-height:1.25;color:#ffffff;margin-top:2px">${l.name}</div>
+        <div style="font-size:10px;font-style:italic;color:#7a7a82;margin-top:2px;line-height:1.3">${l.prev ? 'antes ' + l.prev : ''}</div>
+        <div style="font-size:9px;letter-spacing:0.24em;margin-top:3px;color:${badgeColor}">${badge}</div>
+        ${dotsHtml(chapCols(l.name), 9, 5, 'margin-top:4px')}
       </div>`
 
       if (l.st === 'traitor') {
-        addPath(`M${cx},${legBot} L${cx},${wbY}`, { kind: 'legion', id: l.id, dash: '5 5', col: CH })
+        addPath(`M${cx},${Y(180)} L${cx},${Y(270)}`, { kind: 'legion', id: l.id, dash: '5 5', col: CH })
         const wname = l.id === 'XVI' ? 'Legión Negra' : l.name
-        html += `<div class="gene-wb" data-wb="${l.id}" style="position:absolute;left:${cx - 43}px;top:${wbY}px;width:86px;box-sizing:border-box;padding:6px 4px;text-align:center;background:#100b0b;border:1px dashed #4a2723;border-radius:2px;cursor:pointer">
-          ${dotsHtml(chapCols(wname), 7, 4, 'margin-bottom:3px')}
-          <div style="font-size:10px;line-height:1.25;color:#e8e6e0">${wname}</div>
-          <div style="font-size:8px;letter-spacing:0.14em;color:${CHT};margin-top:3px">CAOS · M41</div>
+        const wbTop = up ? BUS - 328 : BUS + 270
+        html += `<div class="gene-wb" data-wb="${l.id}" style="position:absolute;left:${cx - 55}px;top:${wbTop}px;width:110px;box-sizing:border-box;padding:8px 6px;text-align:center;background:#100b0b;border:1px dashed #4a2723;border-radius:2px;cursor:pointer">
+          ${dotsHtml(chapCols(wname), 8, 4, 'margin-bottom:4px')}
+          <div style="font-size:12px;line-height:1.3;color:#e8e6e0">${wname}</div>
+          <div style="font-size:9px;letter-spacing:0.14em;color:${CHT};margin-top:4px">CAOS · M41</div>
         </div>`
       } else if (l.st === 'lost') {
-        addPath(`M${cx},${legBot} L${cx},268`, { kind: 'legion', id: l.id, dash: '2 4', lost: true })
-        html += `<div class="gene-term" data-term="${l.id}" style="position:absolute;left:${cx - 44}px;top:262px;width:88px;text-align:center;font-size:8.5px;letter-spacing:0.18em;color:#7a7a82">ELIMINADA</div>`
+        addPath(`M${cx},${Y(180)} L${cx},${Y(196)}`, { kind: 'legion', id: l.id, dash: '2 4', lost: true })
+        const termTop = up ? BUS - 202 : BUS + 190
+        html += `<div class="gene-term" data-term="${l.id}" style="position:absolute;left:${cx - 56}px;top:${termTop}px;width:112px;text-align:center;font-size:10px;letter-spacing:0.18em;color:#7a7a82">ELIMINADA</div>`
       } else {
         const maxRows = 9
         const n0 = Math.min(l.succ.length, maxRows)
-        addPath(`M${cx},${legBot} L${cx},${rowY0 + (n0 - 1) * rowH + 23}`, { kind: 'legion', id: l.id })
+        addPath(`M${cx},${Y(180)} L${cx},${Y(400 + (n0 - 1) * rowH + 28)}`, { kind: 'legion', id: l.id })
         if (l.succ.length > maxRows) {
           const n1 = l.succ.length - maxRows
-          addPath(`M${cx},${rowY0 - 16} L${cx + 90},${rowY0 - 16} L${cx + 90},${rowY0 + (n1 - 1) * rowH + 23}`, { kind: 'legion', id: l.id })
+          addPath(`M${cx},${Y(382)} L${cx + 116},${Y(382)} L${cx + 116},${Y(400 + (n1 - 1) * rowH + 28)}`, { kind: 'legion', id: l.id })
         }
         l.succ.forEach((s, k) => {
           const col = Math.floor(k / maxRows), row = k % maxRows
-          html += `<div class="gene-chap" data-chap="${l.id}" data-name="${s.n}" style="position:absolute;left:${cx - 43 + col * 90}px;top:${rowY0 + row * rowH}px;width:86px;box-sizing:border-box;padding:6px 4px;text-align:center;background:#0c0d10;border:1px solid #2e2e36;border-radius:2px;cursor:pointer">
-            ${dotsHtml(chapCols(s.n), 7, 4, 'margin-bottom:3px')}
-            <div style="font-size:10px;line-height:1.25;color:#e8e6e0">${s.n}</div>
-            <div style="font-size:8px;letter-spacing:0.14em;color:#6a6a72;margin-top:3px">${s.tag}</div>
+          const top = up ? BUS - 456 - row * rowH : BUS + 400 + row * rowH
+          html += `<div class="gene-chap" data-chap="${l.id}" data-name="${s.n}" style="position:absolute;left:${cx - 55 + col * 116}px;top:${top}px;width:110px;box-sizing:border-box;padding:8px 6px;text-align:center;background:#0c0d10;border:1px solid #2e2e36;border-radius:2px;cursor:pointer">
+            ${dotsHtml(chapCols(s.n), 8, 4, 'margin-bottom:4px')}
+            <div style="font-size:12px;line-height:1.3;color:#e8e6e0">${s.n}</div>
+            <div style="font-size:9px;letter-spacing:0.14em;color:#6a6a72;margin-top:4px">${s.tag}</div>
           </div>`
         })
       }
     })
 
+    // huerfanos en la franja central: 6 a la izquierda y 5 a la derecha del Emperador
+    const ORPH_POS = [
+      [118, CY1 + 35], [242, CY1 + 35], [366, CY1 + 35],
+      [118, CY1 + 111], [242, CY1 + 111], [366, CY1 + 111],
+      [844, CY1 + 35], [968, CY1 + 35], [1092, CY1 + 35],
+      [906, CY1 + 111], [1030, CY1 + 111]
+    ]
     ORPHANS.forEach((s, i) => {
-      html += `<div class="gene-chap" data-orphan="1" data-name="${s.n}" style="position:absolute;left:${323 + i * 118}px;top:1090px;width:86px;box-sizing:border-box;padding:6px 4px;text-align:center;background:#0c0d10;border:1px dashed #2e2e36;border-radius:2px;cursor:pointer">
-        ${dotsHtml(chapCols(s.n), 7, 4, 'margin-bottom:3px')}
-        <div style="font-size:10px;line-height:1.25;color:#e8e6e0">${s.n}</div>
-        <div style="font-size:8px;letter-spacing:0.14em;color:#6a6a72;margin-top:3px">${s.tag}</div>
+      const [left, top] = ORPH_POS[i]
+      html += `<div class="gene-chap" data-orphan="1" data-name="${s.n}" style="position:absolute;left:${left}px;top:${top}px;width:110px;box-sizing:border-box;padding:8px 6px;text-align:center;background:#0c0d10;border:1px dashed #2e2e36;border-radius:2px;cursor:pointer">
+        ${dotsHtml(chapCols(s.n), 8, 4, 'margin-bottom:4px')}
+        <div style="font-size:12px;line-height:1.3;color:#e8e6e0">${s.n}</div>
+        <div style="font-size:9px;letter-spacing:0.14em;color:#6a6a72;margin-top:4px">${s.tag}</div>
       </div>`
     })
 
@@ -552,11 +579,41 @@ import Layout from '../layouts/Layout.astro'
   }
 
   function setState (patch) { Object.assign(state, patch); update() }
+
+  // AJUSTAR = vista general: encoge hasta que quepa (con un suelo de legibilidad)
   function fit () {
     const w = Math.min(window.innerWidth - 24, W)
-    // en movil no se baja de 0.55 para que el texto siga legible; el resto se recorre con scroll tactil
-    const minZ = window.innerWidth < 640 ? 0.55 : 0.4
+    const minZ = window.innerWidth < 640 ? 0.5 : 0.32
     setState({ zoom: Math.max(minZ, Math.min(1, w / W)) })
+  }
+
+  // Vista inicial: zoom legible y arranque en la franja central (el Emperador);
+  // lo que no quepa se recorre con arrastre / scroll tactil
+  function initView () {
+    const w = Math.min(window.innerWidth - 24, W)
+    setState({ zoom: Math.max(0.8, Math.min(1, w / W)) })
+    if (W * state.zoom > scroller.clientWidth) {
+      scroller.scrollLeft = (W / 2) * state.zoom - scroller.clientWidth / 2
+    }
+    const topPage = scroller.getBoundingClientRect().top + window.scrollY + 8 + ((CY1 + CY2) / 2) * state.zoom
+    window.scrollTo({ top: Math.max(0, topPage - window.innerHeight * 0.5) })
+  }
+
+  // Centra suavemente la legion seleccionada (dejando sitio al panel en escritorio)
+  function centerLegion (id) {
+    const i = D.findIndex(d => d.id === id)
+    if (i < 0) return
+    if (W * state.zoom > scroller.clientWidth) {
+      const panelW = window.innerWidth > 900 ? 320 : 0
+      scroller.scrollTo({ left: x(i % 10) * state.zoom - (scroller.clientWidth - panelW) / 2, behavior: 'smooth' })
+    }
+    const node = nodesEl.querySelector(`[data-lg="${id}"]`)
+    if (node) {
+      // banda superior: el linaje crece hacia arriba, deja el nodo abajo; banda inferior, al reves
+      const anchor = i < 10 ? 0.72 : 0.25
+      const r = node.getBoundingClientRect()
+      window.scrollBy({ top: r.top - window.innerHeight * anchor, behavior: 'smooth' })
+    }
   }
 
   // ---- interacción ----
@@ -564,13 +621,23 @@ import Layout from '../layouts/Layout.astro'
     const lg = e.target.closest('[data-lg]')
     if (lg) {
       const id = lg.getAttribute('data-lg')
-      setState({ sel: state.sel === id ? null : id, selChap: null })
+      const selecting = state.sel !== id
+      setState({ sel: selecting ? id : null, selChap: null })
+      if (selecting) centerLegion(id)
       e.stopPropagation(); return
     }
     const wb = e.target.closest('[data-wb]')
-    if (wb) { setState({ sel: wb.getAttribute('data-wb') }); e.stopPropagation(); return }
+    if (wb) {
+      const id = wb.getAttribute('data-wb')
+      setState({ sel: id }); centerLegion(id)
+      e.stopPropagation(); return
+    }
     const chap = e.target.closest('[data-chap]')
-    if (chap) { setState({ sel: chap.getAttribute('data-chap'), selChap: chap.getAttribute('data-name') }); e.stopPropagation(); return }
+    if (chap) {
+      const id = chap.getAttribute('data-chap')
+      setState({ sel: id, selChap: chap.getAttribute('data-name') }); centerLegion(id)
+      e.stopPropagation(); return
+    }
     const orph = e.target.closest('[data-orphan]')
     if (orph) { setState({ sel: '?', selChap: orph.getAttribute('data-name') }); e.stopPropagation(); return }
     setState({ sel: null, selChap: null })
@@ -601,5 +668,5 @@ import Layout from '../layouts/Layout.astro'
   })
 
   build()
-  fit()
+  initView()
 </script>
