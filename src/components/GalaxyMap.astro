@@ -116,8 +116,18 @@ const { mode = 'page' } = Astro.props
       <div id="gm-hint" style="position:absolute;left:50%;bottom:20px;transform:translateX(-50%);pointer-events:none;font-size:10.5px;letter-spacing:0.18em;color:#c8c6c0;background:rgba(8,8,9,0.75);border:1px solid #34343c;border-radius:2px;padding:8px 16px;transition:opacity .4s;white-space:nowrap;opacity:0">USA CTRL + RUEDA (⌘ EN MAC) PARA HACER ZOOM</div>
     )}
 
-    <div id="gm-modal" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.72);align-items:center;justify-content:center;z-index:50;backdrop-filter:blur(3px)">
-      <div id="gm-modal-card" role="dialog" aria-modal="true" style="width:min(460px,90vw);background:#0c0d10;border:1px solid #34343c;border-radius:3px;padding:28px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.8)"></div>
+    <!-- Vista de detalle: la cámara vuela al mundo seleccionado, aparece el planeta y su lore -->
+    <div id="gm-modal" style="display:none;position:absolute;inset:0;z-index:50">
+      <div class="gm-dim"></div>
+      <div id="gm-planet" aria-hidden="true">
+        <div class="gm-p-glow"></div>
+        <div class="gm-p-ball">
+          <div class="gm-p-tex"></div>
+          <div class="gm-p-tint"></div>
+          <div class="gm-p-shade"></div>
+        </div>
+      </div>
+      <div id="gm-modal-card" class="gm-lore" role="dialog" aria-modal="true"></div>
     </div>
   </div>
 </div>
@@ -133,7 +143,58 @@ const { mode = 'page' } = Astro.props
   #gm-root .gm-x:hover { color: #ffffff }
   /* El arte del disco es decorativo; toda la interacción vive en el overlay 2D */
   #gm-disc { pointer-events: none }
-  @media (max-width: 860px), (max-height: 560px) { #gm-legend { display: none } }
+  #gm-overlay { transition: opacity .4s }
+  /* con la vista de detalle abierta, los labels del mapa pasan a telón de fondo */
+  #gm-vp.gm-detail #gm-overlay { opacity: .3 }
+  /* !important: el display:flex inline de la leyenda ganaría a la media query */
+  @media (max-width: 860px), (max-height: 560px) { #gm-legend { display: none !important } }
+
+  /* ---- vista de detalle (planeta + lore) ---- */
+  #gm-modal { --pc: #c8c6c0; --psz: min(46vh, 400px); opacity: 0; transition: opacity .4s ease }
+  #gm-modal.gm-open { opacity: 1 }
+  #gm-root .gm-dim { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,0,0,.2), rgba(0,0,0,.55) 74%), radial-gradient(ellipse at 34% 52%, transparent 18%, rgba(0,0,0,.4) 85%) }
+
+  #gm-planet { position: absolute; width: var(--psz); height: var(--psz); transform: translate(-50%,-50%) scale(.85); pointer-events: none; transition: transform .5s cubic-bezier(0.22,1,0.36,1) }
+  #gm-modal.gm-open #gm-planet { transform: translate(-50%,-50%) scale(1) }
+  #gm-planet .gm-p-glow { position: absolute; inset: -1px; border-radius: 50%; box-shadow: 0 0 90px 12px color-mix(in srgb, var(--pc) 25%, transparent), 0 0 24px 3px color-mix(in srgb, var(--pc) 18%, transparent) }
+  #gm-planet .gm-p-ball { position: absolute; inset: 0; border-radius: 50%; overflow: hidden; background: #0c1117 }
+  /* Superficie: franja al 200% con patrón repetido en cada mitad; desplazarla
+     una mitad exacta = rotación del planeta sin costura */
+  #gm-planet .gm-p-tex {
+    position: absolute; top: 0; bottom: 0; left: 0; width: 200%;
+    background-image:
+      radial-gradient(36% 30% at 12% 34%, rgba(160,180,192,.36), transparent 68%),
+      radial-gradient(24% 20% at 31% 62%, rgba(118,140,155,.32), transparent 70%),
+      radial-gradient(18% 26% at 43% 26%, rgba(95,115,130,.3), transparent 70%),
+      radial-gradient(13% 12% at 22% 78%, rgba(150,168,180,.28), transparent 72%),
+      radial-gradient(9% 9% at 38% 47%, rgba(170,188,198,.3), transparent 74%),
+      linear-gradient(8deg, rgba(64,82,96,.16) 0%, transparent 28%, rgba(64,82,96,.13) 54%, transparent 82%);
+    background-size: 50% 100%;
+    background-repeat: repeat-x;
+    animation: gmPlanetSpin 46s linear infinite;
+  }
+  @keyframes gmPlanetSpin { to { transform: translateX(-50%) } }
+  #gm-planet .gm-p-tint { position: absolute; inset: 0; background: var(--pc); opacity: .18; mix-blend-mode: screen }
+  #gm-planet .gm-p-shade { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 32% 29%, rgba(255,255,255,.2), transparent 48%); box-shadow: inset -40px -28px 84px rgba(0,0,0,.9), inset -9px -7px 30px rgba(0,0,0,.5), inset 8px 7px 26px rgba(255,255,255,.06) }
+
+  /* Callout tipo diagrama futurista: una diagonal sale del planeta hasta el
+     arranque de una línea horizontal; el texto se escribe debajo de esta.
+     Las líneas se "dibujan" (scaleX) y después aparece el texto. */
+  #gm-root .gm-lore { position: absolute; pointer-events: none }
+  #gm-root .gm-l-diag { position: absolute; left: 0; top: -1px; height: 2px; background: var(--pc); transform-origin: 0 50%; transform: rotate(var(--ang)) scaleX(0); transition: transform .4s .1s ease-out; box-shadow: 0 0 8px color-mix(in srgb, var(--pc) 45%, transparent) }
+  #gm-modal.gm-open .gm-l-diag { transform: rotate(var(--ang)) scaleX(1) }
+  #gm-root .gm-l-dot { position: absolute; right: -5px; top: 50%; width: 8px; height: 8px; transform: translateY(-50%) rotate(45deg); border: 1px solid var(--pc); background: color-mix(in srgb, var(--pc) 35%, transparent) }
+  #gm-root .gm-l-horiz { position: absolute; left: 0; top: -1px; right: 0; height: 2px; background: linear-gradient(90deg, var(--pc) 0%, color-mix(in srgb, var(--pc) 35%, transparent) 82%, transparent); transform-origin: left center; transform: scaleX(0); transition: transform .35s .42s ease-out }
+  #gm-modal.gm-open .gm-l-horiz { transform: scaleX(1) }
+  #gm-root .gm-lore .gm-x { position: absolute; right: 0; top: -36px; pointer-events: auto }
+  #gm-root .gm-l-body { padding-top: 16px; pointer-events: auto; opacity: 0; transform: translateY(10px); transition: opacity .45s .55s, transform .45s .55s cubic-bezier(0.22,1,0.36,1); text-shadow: 0 1px 8px rgba(0,0,0,.9) }
+  #gm-modal.gm-open .gm-l-body { opacity: 1; transform: translateY(0) }
+
+  @media (max-width: 760px) {
+    #gm-modal { --psz: min(30vh, 240px) }
+    #gm-root .gm-l-body { max-height: 42vh; overflow: auto }
+  }
+
 </style>
 
 <script>
@@ -505,37 +566,96 @@ const { mode = 'page' } = Astro.props
     tweenTo(minZoom(), 0, 0, 300)
   }
 
-  // ---- modal ----
+  // ---- vista de detalle: super-zoom al mundo + planeta + lore ----
+  const planetEl = document.getElementById('gm-planet')
+  let prevView = null // vista y estado de órbita antes de abrir, para volver al cerrar
+  let modalTimer = null
+
   function openModal (name, trigger) {
     const w = WORLDS.find(x => x.name === name)
     if (!w) return
+    if (!prevView) prevView = { zoom: state.zoom, panX: state.panX, panY: state.panY, playing: state.playing }
     state.sel = name
     modalTrigger = trigger || null
+    setPlaying(false)
+
+    // La cámara vuela al mundo: su punto del mapa queda bajo el planeta (ancla
+    // a la izquierda en pantallas anchas, arriba en estrechas, con la card al lado)
+    const wide = vp.clientWidth > 760
+    const ax = vp.clientWidth * (wide ? 0.34 : 0.5)
+    const ay = vp.clientHeight * (wide ? 0.52 : 0.30)
+    const z = maxZoom()
+    const c = Math.cos(theta), s = Math.sin(theta)
+    const dx = w.x - GC_X, dy = w.y - GC_Y
+    tweenTo(z, ax - vp.clientWidth / 2 - z * (dx * c - dy * s), ay - vp.clientHeight / 2 - z * K_TILT * (dx * s + dy * c), 700)
+
     const tc = K[w.k].tc
+    modalEl.style.setProperty('--pc', tc)
+    planetEl.style.left = ax + 'px'
+    planetEl.style.top = ay + 'px'
+
+    // Geometría del callout: P0 = borde del planeta, P1 = arranque de la línea
+    // horizontal (y origen del contenedor); la diagonal une P1 con P0
+    const R = Math.min(vp.clientHeight * (wide ? 0.46 : 0.30), wide ? 400 : 240) / 2
+    let p0x, p0y, p1x, p1y, tw
+    if (wide) {
+      p0x = ax + R * 0.72
+      p0y = ay - R * 0.72
+      p1x = p0x + 96
+      p1y = p0y - 72
+      tw = Math.min(440, vp.clientWidth - p1x - 28)
+    } else {
+      p0x = ax
+      p0y = ay + R - 4
+      p1x = 20
+      p1y = ay + R + 56
+      tw = vp.clientWidth - 40
+    }
+    const vx = p0x - p1x, vy = p0y - p1y
+    modalCard.style.left = p1x + 'px'
+    modalCard.style.top = p1y + 'px'
+    modalCard.style.width = tw + 'px'
     modalCard.innerHTML = `
+      <span class="gm-l-diag" style="--ang:${(Math.atan2(vy, vx) * 180 / Math.PI).toFixed(2)}deg;width:${Math.hypot(vx, vy).toFixed(1)}px"><i class="gm-l-dot"></i></span>
+      <span class="gm-l-horiz"></span>
       <button class="gm-x" data-close aria-label="Cerrar">✕</button>
-      <div style="font-size:10px;letter-spacing:0.26em;color:${tc};text-transform:uppercase">${w.type}</div>
-      <h2 style="font-family:'Cinzel',serif;font-size:24px;font-weight:700;color:#ffffff;margin:6px 0 14px">${w.name}</h2>
-      <div style="display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:13px;color:#c8c6c0;margin-bottom:16px">
-        <span style="color:#6a6a72">Segmentum</span><span>${w.seg}</span>
-        <span style="color:#6a6a72">Control</span><span style="color:${tc}">${w.fac}</span>
-      </div>
-      <p style="font-size:13.5px;line-height:1.65;color:#a8a8b0;margin:0;text-wrap:pretty">${w.blurb}</p>`
-    modalEl.style.display = 'flex'
+      <div class="gm-l-body">
+        <div style="font-size:10px;letter-spacing:0.3em;color:${tc};text-transform:uppercase">${w.type}</div>
+        <h2 style="font-family:'Cinzel',serif;font-size:27px;font-weight:700;color:#ffffff;margin:6px 0 14px;letter-spacing:0.05em">${w.name}</h2>
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:6px 18px;font-size:12.5px;color:#c8c6c0;margin-bottom:14px">
+          <span style="color:#6a6a72;letter-spacing:0.14em;font-size:10.5px;text-transform:uppercase">Segmentum</span><span>${w.seg}</span>
+          <span style="color:#6a6a72;letter-spacing:0.14em;font-size:10.5px;text-transform:uppercase">Control</span><span style="color:${tc}">${w.fac}</span>
+        </div>
+        <p style="font-size:13.5px;line-height:1.7;color:#b4b4bc;margin:0;text-wrap:pretty">${w.blurb}</p>
+        <div style="margin-top:16px;font-family:monospace;font-size:9px;letter-spacing:0.22em;color:#6a6a72;text-transform:uppercase">Archivo Administratum · Ref ${w.seg} · M42</div>
+      </div>`
+
+    clearTimeout(modalTimer)
+    modalEl.style.display = 'block'
+    vp.classList.add('gm-detail')
+    requestAnimationFrame(() => modalEl.classList.add('gm-open'))
     modalCard.querySelector('[data-close]').focus()
   }
 
   function closeModal () {
     if (state.sel === null) return
     state.sel = null
-    modalEl.style.display = 'none'
+    modalEl.classList.remove('gm-open')
+    vp.classList.remove('gm-detail')
+    clearTimeout(modalTimer)
+    modalTimer = setTimeout(() => { modalEl.style.display = 'none' }, 400)
+    if (prevView) {
+      tweenTo(prevView.zoom, prevView.panX, prevView.panY, 600)
+      setPlaying(prevView.playing)
+      prevView = null
+    }
     if (modalTrigger) { modalTrigger.focus(); modalTrigger = null }
   }
 
   const modalOpen = () => state.sel !== null
 
   modalEl.addEventListener('click', (e) => {
-    if (e.target === modalEl || e.target.closest('[data-close]')) closeModal()
+    if (e.target === modalEl || e.target.closest('.gm-dim') || e.target.closest('[data-close]')) closeModal()
   })
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal() })
 
@@ -549,17 +669,19 @@ const { mode = 'page' } = Astro.props
   })
 
   document.getElementById('gm-zin').addEventListener('click', () => {
+    if (modalOpen()) return
     setPlaying(false)
     const z = Math.min(maxZoom(), state.zoom * 1.18), f = z / state.zoom
     tweenTo(z, f * state.panX, f * state.panY, 180)
   })
   document.getElementById('gm-zout').addEventListener('click', () => {
+    if (modalOpen()) return
     setPlaying(false)
     const z = Math.max(minZoom(), state.zoom / 1.18), f = z / state.zoom
     tweenTo(z, f * state.panX, f * state.panY, 180)
   })
-  document.getElementById('gm-zfit').addEventListener('click', fit)
-  playBtn.addEventListener('click', () => setPlaying(!state.playing))
+  document.getElementById('gm-zfit').addEventListener('click', () => { if (!modalOpen()) fit() })
+  playBtn.addEventListener('click', () => { if (!modalOpen()) setPlaying(!state.playing) })
 
   vp.addEventListener('wheel', (e) => {
     if (modalOpen()) return
