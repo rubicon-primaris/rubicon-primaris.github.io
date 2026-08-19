@@ -7,6 +7,9 @@ export default {
 	theme: {
 	
 		extend: {
+			fontFamily: {
+				display: ['Cinzel', 'serif'],
+			},
 			colors: {
 				i: { // Dark Angels
 					50:  '#ecf4ef',
