@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro'
+import GalaxyMap from '../components/GalaxyMap.astro'
 
 // Partículas deterministas (misma secuencia LCG que el diseño original, semilla 42)
 const mkRnd = () => {
@@ -34,6 +35,24 @@ for (let i = 0; i < 18; i++) {
   })
 }
 
+// Brasas del hero (efecto "ceniza" del diseño Hero Cruzada, semilla 987)
+const mkEmberRnd = () => {
+  let seed = 987
+  return () => (seed = (seed * 16807) % 2147483647) / 2147483647
+}
+const ernd = mkEmberRnd()
+const embers = []
+for (let i = 0; i < 45; i++) {
+  embers.push({
+    size: (1.5 + ernd() * 3.5).toFixed(2),
+    left: (ernd() * 100).toFixed(3),
+    dur: (7 + ernd() * 9).toFixed(2),
+    delay: (-ernd() * 16).toFixed(2),
+    sway: ((ernd() - 0.5) * 160).toFixed(0),
+    warm: ernd() > 0.35,
+  })
+}
+
 const factions = [
   { name: 'Caos', image: '/images/home/faction-caos.png', pos: '68% 20%' },
   { name: 'Xenos', image: '/images/home/faction-xenos.png', pos: 'center 30%' },
@@ -43,7 +62,7 @@ const factions = [
 <Layout>
   <Fragment slot="head">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&display=swap" />
   </Fragment>
 
   <main class="relative min-h-screen w-full bg-surface font-sans text-white">
@@ -63,10 +82,25 @@ const factions = [
     </div>
 
     <!-- Hero -->
-    <header class="hero snap-sec relative flex min-h-screen items-center justify-center border-b border-white/10 p-12 text-center">
+    <header class="hero snap-sec relative flex min-h-screen items-center justify-center overflow-hidden border-b border-white/10 p-12 text-center">
+      <!-- Brasas ascendentes (ceniza incandescente) -->
+      <div class="pointer-events-none absolute inset-0 overflow-hidden">
+        {embers.map((e) => (
+          <span
+            class="absolute bottom-[-10px] rounded-full [will-change:transform,opacity]"
+            style={`left:${e.left}%;width:${e.size}px;height:${e.size}px;background:${e.warm ? '#ff8c3b' : '#eb5e28'};box-shadow:0 0 ${(e.size * 3).toFixed(1)}px ${e.warm ? 'rgba(255,110,40,.8)' : 'rgba(235,94,40,.8)'};--sway:${e.sway}px;animation:emberRise ${e.dur}s linear ${e.delay}s infinite`}
+          ></span>
+        ))}
+      </div>
+
       <div class="rvl flex flex-col items-center gap-5">
         <span class="font-mono text-[11px] uppercase tracking-[.5em] text-ink-muted">M41 · Era Indomitus</span>
-        <img src="/images/home/warhammer-logo.png" alt="Warhammer 40.000" class="-my-[120px] h-auto w-[min(720px,80vw)]" />
+        <img
+          src="/images/home/warhammer-logo.png"
+          alt="Warhammer 40.000"
+          class="-my-[120px] h-auto w-[min(720px,80vw)]"
+          style="animation:glitchJolt 7s steps(1,end) 3s infinite"
+        />
         <div class="flex flex-col items-center gap-4">
           <span class="h-px w-24 bg-secondary/60"></span>
           <p class="m-0 text-center font-display text-[26px] uppercase leading-loose tracking-[.34em] text-secondary">
@@ -75,6 +109,16 @@ const factions = [
           <span class="h-px w-24 bg-secondary/60"></span>
         </div>
       </div>
+
+      <!-- Glitch de pantalla: scanlines CRT + línea de barrido -->
+      <div
+        class="pointer-events-none absolute inset-0 z-[3] opacity-[.07]"
+        style="animation:flicker .18s steps(2) infinite;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.5) 0px,rgba(255,255,255,.5) 1px,transparent 1px,transparent 4px)"
+      ></div>
+      <div
+        class="pointer-events-none absolute inset-x-0 z-[3] h-[2px]"
+        style="background:linear-gradient(90deg,transparent,rgba(235,94,40,.5),rgba(255,255,255,.35),rgba(235,94,40,.5),transparent);animation:sweepLine 9s linear 2s infinite"
+      ></div>
     </header>
 
     <!-- Introducción -->
@@ -114,6 +158,11 @@ const factions = [
           ))}
         </div>
       </div>
+    </section>
+
+    <!-- Mapa galáctico -->
+    <section class="snap-sec relative h-screen border-t border-white/10">
+      <GalaxyMap mode="embed" />
     </section>
 
     <footer class="border-t border-white/10 px-12 py-10 text-center">
@@ -188,6 +237,71 @@ const factions = [
   }
   .faction-row > a:hover {
     flex: 1.7 1 0%;
+  }
+
+  /* Efectos importados del diseño "Hero Cruzada": brasas y glitch de pantalla */
+  @keyframes emberRise {
+    0% {
+      transform: translateY(0) translateX(0) scale(1);
+      opacity: 0;
+    }
+    8% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-110vh) translateX(var(--sway, 40px)) scale(0.2);
+      opacity: 0;
+    }
+  }
+  @keyframes glitchJolt {
+    0%, 91%, 100% {
+      transform: translate(0, 0) skewX(0);
+      opacity: 1;
+      filter: none;
+    }
+    92% {
+      transform: translate(-6px, 2px) skewX(-4deg);
+      opacity: 0.7;
+    }
+    93% {
+      transform: translate(5px, -2px) skewX(3deg);
+      opacity: 1;
+      filter: hue-rotate(40deg);
+    }
+    94% {
+      transform: translate(-3px, 0) skewX(-2deg);
+      opacity: 0.85;
+    }
+    95% {
+      transform: translate(0, 0) skewX(0);
+      opacity: 1;
+      filter: none;
+    }
+  }
+  @keyframes sweepLine {
+    0% {
+      top: -4%;
+      opacity: 0;
+    }
+    4% {
+      opacity: 0.5;
+    }
+    18% {
+      top: 104%;
+      opacity: 0;
+    }
+    100% {
+      top: 104%;
+      opacity: 0;
+    }
+  }
+  @keyframes flicker {
+    0%, 100% {
+      opacity: 0.05;
+    }
+    50% {
+      opacity: 0.09;
+    }
   }
 
   @keyframes ashRise {
