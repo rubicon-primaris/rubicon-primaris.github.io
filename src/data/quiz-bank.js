@@ -79,6 +79,12 @@ const MASTERS = {
   'Devoradores de Mundos': 'Angron', 'Guardia de la Muerte': 'Mortarion', 'Mil Hijos': 'Magnus el Rojo',
   'Legión Negra': 'Abaddon el Saqueador'
 }
+// señores de capitulos oscuros: solo para el nivel extremo
+const MASTERS_X = {
+  'Puños Imperiales': 'Gregor Dessian', 'Escorpiones Rojos': 'Carab Culln',
+  'Cuervos Sangrientos': 'Gabriel Angelos', 'Guadañas del Emperador': 'Thracian',
+  'Lamentadores': 'Malakim Phoros'
+}
 
 // ---- Mundos y regiones del mapa ----
 // [nombre, que es, controlador, segmentum]
@@ -220,6 +226,49 @@ export function buildPool () {
     ['Templarios Negros', 'Puños Imperiales', 'Ángeles Oscuros'], 'Lobos Espaciales',
     'Los Lobos de Fenris solo aceptaron un sucesor, y acabó en tragedia.'))
 
+  // ---- ASTARTES · EXTREMO ----
+  const allMastersX = [...Object.values(MASTERS), ...Object.values(MASTERS_X)]
+  for (const ch in MASTERS_X) {
+    P.push(Q('astartes', 'x', `¿Quién es el Señor del Capítulo de los ${ch}?`,
+      pickOthers(allMastersX, MASTERS_X[ch], 3), MASTERS_X[ch],
+      `${MASTERS_X[ch]} lidera a los ${ch}. Pocos archivos lo recogen.`))
+  }
+  P.push(Q('astartes', 'x', '¿Qué capítulo pertenece a la 21ª Fundación, la "Fundación Maldita"?',
+    ['Puños Carmesíes', 'Novamarines', 'Raptores'], 'Lamentadores',
+    'Los Lamentadores nacieron malditos por la fortuna; los Dragones Negros también son de la 21ª.'))
+  P.push(Q('astartes', 'x', '¿Qué sucesor de los Lobos Espaciales fue disuelto por la degeneración de su semilla?',
+    ['Los Merodeadores', 'Los Destructores', 'Los Verdugos'], 'Los Hermanos del Lobo',
+    'El único capítulo hermano de los Lobos; su semilla inestable los condenó.'))
+  P.push(Q('astartes', 'x', '¿Qué capítulo de las Cicatrices Blancas fue aniquilado y borrado de los registros?',
+    ['Los Saqueadores', 'Los Merodeadores', 'Los Halcones Solares'], 'Los Destructores',
+    'Aniquilados en campaña; su nombre fue retirado de los registros.'))
+  P.push(Q('astartes', 'x', '¿Qué capítulo nació de un cisma tecnológico dentro de las Manos de Hierro en M36?',
+    ['Las Garras Rojas', 'Las Zarpas de Bronce', 'Los Señores de Hierro'], 'Los Hijos de Medusa',
+    'Un cisma sobre la relación entre carne y máquina los separó de Medusa.'))
+  P.push(Q('astartes', 'x', '¿Qué dos capítulos de Ultramar tienen un linaje solo "probable"?',
+    ['Novamarines y Libadores', 'Mortifactores y Capítulo Aurora', 'Cónsules Negros y Cónsules Blancos'],
+    'Grifos Aulladores y Marines Errantes',
+    'Sus registros de fundación se perdieron; el linaje de Guilliman se les supone.'))
+  P.push(Q('astartes', 'x', '¿Qué capítulo expía el dolor de Dorn flagelando su propia carne?',
+    ['Los Verdugos', 'Los Puños Ejemplares', 'Los Retribuidores'], 'Los Excoriadores',
+    'Herederos del sufrimiento de Dorn: la penitencia es su credo.'))
+  P.push(Q('astartes', 'x', '¿Cuál de estos capítulos NO viste de negro?',
+    ['Templarios Negros', 'Consagradores', 'Dragones Negros'], 'Guardianes del Pacto',
+    'Los Guardianes del Pacto visten de gris; los otros tres, Abaddon Black.'))
+  P.push(Q('astartes', 'x', '¿Qué complica el Rubicón Primaris a los Exorcistas?',
+    ['Su semilla mutada', 'Su voto de pobreza', 'La prohibición del Ordo Xenos'],
+    'Sus ritos de iniciación por posesión',
+    'Cada Exorcista sobrevive a una posesión ritual; nadie sabe cómo afectaría a un Primaris.'))
+  P.push(Q('astartes', 'x', '¿Qué capítulo no entra en batalla sin leer antes los presagios?',
+    ['Los Exorcistas', 'Los Fantasmas Estelares', 'Los Mortifactores'], 'Los Cráneos Plateados',
+    'Sus augures leen los presagios antes de cada campaña. Sin presagio, no hay guerra.'))
+  P.push(Q('astartes', 'x', '¿Qué capítulo surge del vacío exterior y practica el canibalismo ritual?',
+    ['Los Devoradores de Carne', 'Los Injuriadores', 'Los Marines Malevolentes'], 'Los Carcharodons',
+    'Los Tiburones del Vacío aparecen sin aviso, silenciosos, y vuelven a la oscuridad.'))
+  P.push(Q('astartes', 'x', '¿Qué capítulo actúa como arma de choque del Alto Senado de Terra, incluso contra otros Astartes?',
+    ['Los Carcharodons', 'Los Escorpiones Rojos', 'Los Verdugos'], 'Los Minotauros',
+    'El Alto Senado los desata cuando un capítulo se desvía. No hacen preguntas.'))
+
   // ---- CAOS ----
   traitor.forEach(l => {
     P.push(Q('caos', 'f', `¿Qué primarca lideraba a los ${l.name}?`,
@@ -276,6 +325,44 @@ export function buildPool () {
     ['Magnus el Rojo', 'Kairos Fateweaver', 'Erebus'], 'Ahriman',
     'La Rubrica de Ahriman quiso salvarlos de la mutación... y los condenó.'))
 
+  // ---- CAOS · EXTREMO ----
+  P.push(Q('caos', 'x', '¿Quiénes lideran a los Portadores de la Palabra?',
+    ['Lorgar y Argel Tal', 'Ahriman y Amon', 'Typhus y Mortarion'], 'Erebus y Kor Phaeron',
+    'Los dos arquitectos de la Herejía; Lorgar medita en Sicarus desde hace milenios.'))
+  P.push(Q('caos', 'x', '¿Desde qué fortaleza-mundo forja Perturabo sus máquinas de guerra?',
+    ['Sicarus', 'Barbarus', 'Cthonia'], 'Medrengard',
+    'Un mundo-fortaleza del Ojo del Terror, entre fosos y murallas sin fin.'))
+  P.push(Q('caos', 'x', '¿En qué mundo-demonio medita Lorgar escribiendo el credo del Caos?',
+    ['Medrengard', 'El Planeta de los Hechiceros', 'Nuceria'], 'Sicarus',
+    'El primer hereje lleva milenios sin salir de su templo.'))
+  P.push(Q('caos', 'x', '¿Sobre qué mundo muerto flota el Planeta de los Hechiceros?',
+    ['Barbarus', 'Colchis', 'Nostramo'], 'Prospero',
+    'Magnus lo ancló sobre las ruinas de cristal de su antiguo hogar.'))
+  P.push(Q('caos', 'x', '¿Cuándo se libró la Guerra de Badab?',
+    ['999.M41', '444.M40', '013.M42'], '901–912.M41',
+    'Once años de guerra entre capítulos hermanos por la rebelión del Tirano.'))
+  P.push(Q('caos', 'x', '¿En qué año cayeron los Sables Carmesíes al Caos?',
+    ['999.M41', '901.M41', '745.M40'], '926.M41',
+    'Purgaron un mundo guiados por voces demoníacas y nacieron como la Matanza Carmesí.'))
+  P.push(Q('caos', 'x', '¿Qué adoran los Hijos de la Malicia?',
+    ['A Slaanesh', 'Al Emperador corrompido', 'A los Cuatro por igual'],
+    'A una potestad oscura que odia al propio Caos',
+    'Excomulgados que sirven a un poder renegado incluso entre los Dioses Oscuros.'))
+  P.push(Q('caos', 'x', '¿Qué significa que el primarca de la XX Legión fuera "Alpharius Omegon"?',
+    ['Que cambió de nombre tras la Herejía', 'Que era un demonio disfrazado', 'Que nunca existió'],
+    'Que eran dos gemelos compartiendo una sola identidad',
+    'Dos cuerpos y un nombre. Uno murió... ¿o los dos? Nadie lo sabe.'))
+  P.push(Q('caos', 'x', '¿Cómo mataron los Guerreros de Hierro al planeta Tallarn?',
+    ['Con un cañón cíclico', 'Hundiendo sus colmenas', 'Con la Plaga del Destructor'],
+    'Con un bombardeo viral',
+    'La superficie murió; la batalla siguió bajo blindaje, la mayor guerra de tanques de la historia.'))
+  P.push(Q('caos', 'x', '¿Quién destruyó el cuerpo clonado de Horus?',
+    ['El Emperador', 'Erebus', 'Fabius Bile'], 'Abaddon',
+    'Abaddon lo redujo a cenizas y rebautizó a la legión como Legión Negra.'))
+  P.push(Q('caos', 'x', '¿Qué apodo tomó Lufgt Huron al renacer en el Maelstrom?',
+    ['El Tirano de Badab', 'El Señor de la Tormenta', 'El Despojado'], 'Huron Blackheart',
+    'El Tirano de Badab murió; Blackheart gobierna a los Corsarios Rojos.'))
+
   // ---- GALAXIA ----
   for (const w in FORTRESS) {
     P.push(Q('galaxia', 'f', `¿Qué capítulo tiene su fortaleza en ${w}?`,
@@ -320,6 +407,44 @@ export function buildPool () {
     ['El Trono Dorado', 'La tumba de Horus', 'El Astronomican'], 'El Pasaje de Nachmund',
     'Una de las pocas rutas estables a través de la Gran Grieta.'))
 
+  // ---- GALAXIA · EXTREMO ----
+  P.push(Q('galaxia', 'x', '¿Qué mundo alberga una Fortaleza Negra que nadie ha logrado despertar?',
+    ['Naogeddon', 'Molov', 'Balor'], 'Bane’s Landing',
+    'Una estructura anterior al Imperio duerme allí. Todavía.'))
+  P.push(Q('galaxia', 'x', '¿Qué mundo forja es célebre por sus reactores de plasma?',
+    ['Cypra Mundi', 'Agripinaa', 'Bakka'], 'Ryza',
+    'Sitiado una y otra vez por las Waaagh! orkas que codician sus forjas.'))
+  P.push(Q('galaxia', 'x', '¿Qué mundo forja fue devorado por la Flota Enjambre Leviatán?',
+    ['Ryza', 'Marte', 'Agripinaa'], 'Gryphonne IV',
+    'Sus titanes no bastaron contra el enjambre.'))
+  P.push(Q('galaxia', 'x', '¿Dónde tiene su cuartel la Flota Imperial del Ultima Segmentum?',
+    ['Hydraphur', 'Cypra Mundi', 'Bakka'], 'Kar Duniash',
+    'Cada segmentum tiene su fondeadero: Hydraphur (Pacificus), Cypra Mundi (Obscurus), Bakka (Tempestus).'))
+  P.push(Q('galaxia', 'x', '¿Qué sistema imperial tiene nueve soles?',
+    ['Chinchare', 'Perdus', 'Solstice'], 'Luther McIntyre',
+    'Un sistema de nueve soles en el Segmentum Solar.'))
+  P.push(Q('galaxia', 'x', '¿De qué mundo era natal el Lord Solar Macharius?',
+    ['Ultima Macharia', 'Terra', 'Chiros'], 'Macharia',
+    'El mayor conquistador desde la Gran Cruzada; su cruzada murió donde sus ejércitos se negaron a seguir.'))
+  P.push(Q('galaxia', 'x', '¿Dónde quebraron los Ultramarines el avance de la Flota Enjambre Kraken?',
+    ['Macragge', 'Black Reach', 'Sotha'], 'Ichar IV',
+    'La colmena de Ichar IV resistió gracias a la XIII.'))
+  P.push(Q('galaxia', 'x', '¿Qué mundo cayó ante la plaga zombi de la Cruz Oscura?',
+    ['Agrax', 'San Leor', 'Solstice'], 'Antagonis',
+    'Su colmena fue arrasada; Agrax sobrevivió a una plaga similar y fue reconsagrado.'))
+  P.push(Q('galaxia', 'x', '¿Qué mundo es la cuna de las Hijas del Emperador, precursoras del Adepta Sororitas?',
+    ['Ophelia VII', 'Gathalamor', 'Dimmamar'], 'San Leor',
+    'De San Leor salieron las órdenes que hoy forman la Sororitas.'))
+  P.push(Q('galaxia', 'x', '¿Qué anomalía warp "susurra" sobre el sector Charadon?',
+    ['La Tormenta de la Sirena', 'Las Estrellas Somnium', 'El Lunaphage'], 'La Anomalía Hadex',
+    'Los astrópatas afirman que lo que susurra está vivo.'))
+  P.push(Q('galaxia', 'x', '¿Quién gobierna la dinastía necrona Sautekh?',
+    ['El Rey Silente', 'Trazyn el Infinito', 'Anrakyr el Viajero'], 'Imotekh el Señor de la Tormenta',
+    'La más agresiva de las dinastías, expandiéndose mundo tumba a mundo tumba.'))
+  P.push(Q('galaxia', 'x', '¿Qué tormenta warp aísla sistemas enteros del Segmentum Obscurus desde la Herejía?',
+    ['La Tormenta de la Sirena', 'El Maelstrom', 'Las Estrellas Azote'], 'La Tormenta de la Ira',
+    'La Tormenta de la Ira del Emperador les niega la luz del Astronomican.'))
+
   return P
 }
 
@@ -333,7 +458,8 @@ export const CATS = {
 export const DIFFS = {
   facil: { label: 'Iniciado', desc: 'Preguntas básicas', pts: 10, set: ['f'] },
   media: { label: 'Cruzado', desc: 'Saber de veterano', pts: 20, set: ['m'] },
-  dificil: { label: 'Maestro del Saber', desc: 'Archivos sellados y preguntas trampa', pts: 30, set: ['d'] }
+  dificil: { label: 'Maestro del Saber', desc: 'Archivos sellados y preguntas trampa', pts: 30, set: ['d'] },
+  extremo: { label: 'Inquisidor', desc: 'Saber prohibido: fechas, mundos perdidos y nombres que nadie recuerda', pts: 50, set: ['x'] }
 }
 
 export const RANKS = [
