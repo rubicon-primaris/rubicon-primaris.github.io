@@ -63,7 +63,7 @@ const factions = [
       </div>
 
       <div class="rvl flex flex-col items-center gap-5">
-        <span class="font-mono text-[11px] uppercase tracking-[.5em] text-ink-muted">M41 · Era Indomitus</span>
+        <span class="hero-fade font-mono text-[11px] uppercase tracking-[.5em] text-ink-muted">M41 · Era Indomitus</span>
         <img
           id="logo-ph"
           src="/images/home/warhammer-logo.png"
@@ -71,7 +71,7 @@ const factions = [
           aria-hidden="true"
           class="invisible -my-[120px] h-auto w-[min(720px,80vw)]"
         />
-        <div class="flex flex-col items-center gap-4">
+        <div class="hero-fade flex flex-col items-center gap-4">
           <span class="h-px w-24 bg-secondary/60"></span>
           <p class="m-0 text-center font-display text-[clamp(15px,1.65vw,26px)] uppercase leading-loose tracking-[.34em] text-secondary">
             En el sombrío futuro del cuadragésimo primer milenio,<br />solo hay guerra
@@ -304,6 +304,7 @@ const factions = [
   if (logoPh && logoSticky) {
     const TARGET_W = 170
     const TARGET_TOP = 14
+    const fadeEls = Array.from(document.querySelectorAll('.hero-fade'))
     const layoutLogo = () => {
       const r = logoPh.getBoundingClientRect()
       if (r.width > 0) {
@@ -313,6 +314,13 @@ const factions = [
         const y = r.top + (TARGET_TOP - r.top) * e
         logoSticky.style.width = `${w}px`
         logoSticky.style.transform = `translate(-50%, ${y}px)`
+        // Las letras del hero se funden antes de alcanzar la banda del logo
+        // anclado: desaparecen ya en el primer 70% del recorrido
+        const f = Math.max(0, 1 - p / 0.7)
+        for (const el of fadeEls) {
+          el.style.opacity = f.toFixed(3)
+          el.style.filter = `blur(${((1 - f) * 6).toFixed(2)}px)`
+        }
       }
       requestAnimationFrame(layoutLogo)
     }
