@@ -35,6 +35,22 @@ const factions = [
   </Fragment>
 
   <main class="relative min-h-screen w-full bg-surface font-sans text-white">
+    <!-- Brasas globales: ceniza incandescente ascendiendo por toda la página -->
+    <div class="pointer-events-none fixed inset-0 z-[1] overflow-hidden">
+      {embers.map((e) => (
+        <span
+          class="absolute bottom-[-10px] rounded-full [will-change:transform,opacity]"
+          style={`left:${e.left}%;width:${e.size}px;height:${e.size}px;background:${e.warm ? '#ff8c3b' : '#eb5e28'};box-shadow:0 0 ${(e.size * 3).toFixed(1)}px ${e.warm ? 'rgba(255,110,40,.8)' : 'rgba(235,94,40,.8)'};--sway:${e.sway}px;animation:emberRise ${e.dur}s linear ${e.delay}s infinite`}
+        ></span>
+      ))}
+    </div>
+
+    <!-- Cabecera fija: contenedor negro donde solo vive el logo anclado. Se
+         materializa (opacity = progreso del encaje) y bajo ella un degradado
+         funde cualquier contenido antes de que toque el logo -->
+    <div id="logo-bar" class="pointer-events-none fixed inset-x-0 top-0 z-[4] h-[120px] border-b border-white/10 bg-black" style="opacity:0"></div>
+    <div id="logo-fadeband" class="pointer-events-none fixed inset-x-0 top-[120px] z-[4] h-20 bg-gradient-to-b from-black to-transparent" style="opacity:0"></div>
+
     <!-- Logo fijo: nace grande en el centro del hero y con el scroll se encoge y
          se ancla arriba; #logo-ph marca su sitio en el hero y el JS interpola -->
     <div
@@ -52,18 +68,8 @@ const factions = [
 
     <!-- Hero -->
     <header class="hero snap-sec relative flex min-h-screen items-center justify-center overflow-hidden border-b border-white/10 p-12 text-center">
-      <!-- Brasas ascendentes (ceniza incandescente) -->
-      <div class="pointer-events-none absolute inset-0 overflow-hidden">
-        {embers.map((e) => (
-          <span
-            class="absolute bottom-[-10px] rounded-full [will-change:transform,opacity]"
-            style={`left:${e.left}%;width:${e.size}px;height:${e.size}px;background:${e.warm ? '#ff8c3b' : '#eb5e28'};box-shadow:0 0 ${(e.size * 3).toFixed(1)}px ${e.warm ? 'rgba(255,110,40,.8)' : 'rgba(235,94,40,.8)'};--sway:${e.sway}px;animation:emberRise ${e.dur}s linear ${e.delay}s infinite`}
-          ></span>
-        ))}
-      </div>
-
       <div class="rvl flex flex-col items-center gap-5">
-        <span class="hero-fade font-mono text-[11px] uppercase tracking-[.5em] text-ink-muted">M41 · Era Indomitus</span>
+        <span class="font-mono text-[11px] uppercase tracking-[.5em] text-ink-muted">M41 · Era Indomitus</span>
         <img
           id="logo-ph"
           src="/images/home/warhammer-logo.png"
@@ -71,7 +77,7 @@ const factions = [
           aria-hidden="true"
           class="invisible -my-[120px] h-auto w-[min(720px,80vw)]"
         />
-        <div class="hero-fade flex flex-col items-center gap-4">
+        <div class="flex flex-col items-center gap-4">
           <span class="h-px w-24 bg-secondary/60"></span>
           <p class="m-0 text-center font-display text-[clamp(15px,1.65vw,26px)] uppercase leading-loose tracking-[.34em] text-secondary">
             En el sombrío futuro del cuadragésimo primer milenio,<br />solo hay guerra
@@ -107,8 +113,8 @@ const factions = [
     </section>
 
     <!-- Facciones -->
-    <!-- pt-28 deja sitio al logo fijo anclado arriba -->
-    <section id="facciones" class="snap-sec flex min-h-screen items-center justify-center p-12 pt-28">
+    <!-- pt-44 deja el título fuera de la cabecera negra y su degradado -->
+    <section id="facciones" class="snap-sec flex min-h-screen items-center justify-center p-12 pt-44">
       <div class="w-full max-w-[1800px]">
         <h2 class="rvl m-0 mb-14 text-center font-display text-[34px] font-bold uppercase tracking-[.28em] text-white">
           Facciones
@@ -303,8 +309,9 @@ const factions = [
   const logoSticky = document.getElementById('logo-sticky')
   if (logoPh && logoSticky) {
     const TARGET_W = 170
-    const TARGET_TOP = 14
-    const fadeEls = Array.from(document.querySelectorAll('.hero-fade'))
+    const TARGET_TOP = 6
+    const logoBar = document.getElementById('logo-bar')
+    const logoBand = document.getElementById('logo-fadeband')
     const layoutLogo = () => {
       const r = logoPh.getBoundingClientRect()
       if (r.width > 0) {
@@ -314,13 +321,9 @@ const factions = [
         const y = r.top + (TARGET_TOP - r.top) * e
         logoSticky.style.width = `${w}px`
         logoSticky.style.transform = `translate(-50%, ${y}px)`
-        // Las letras del hero se funden antes de alcanzar la banda del logo
-        // anclado: desaparecen ya en el primer 70% del recorrido
-        const f = Math.max(0, 1 - p / 0.7)
-        for (const el of fadeEls) {
-          el.style.opacity = f.toFixed(3)
-          el.style.filter = `blur(${((1 - f) * 6).toFixed(2)}px)`
-        }
+        // La cabecera negra y su degradado aparecen a la vez que el logo encaja
+        logoBar.style.opacity = e.toFixed(3)
+        logoBand.style.opacity = e.toFixed(3)
       }
       requestAnimationFrame(layoutLogo)
     }

@@ -76,7 +76,7 @@ const { mode = 'page' } = Astro.props
       <div id="gm-nodes"></div>
     </div>
 
-    <header data-hud style="position:absolute;left:28px;top:24px;pointer-events:none">
+    <header data-hud style={`position:absolute;left:28px;top:${mode === 'embed' ? '150px' : '24px'};pointer-events:none`}>
       <div style="pointer-events:auto;display:flex;gap:18px">
         {mode === 'embed' ? (
           <a href="/mapa" style="font-size:11px;letter-spacing:0.2em">⛶ PANTALLA COMPLETA</a>
@@ -92,7 +92,7 @@ const { mode = 'page' } = Astro.props
       <div style="font-size:11px;letter-spacing:0.24em;color:#8a8a92">IMPERIUM SANCTUS · IMPERIUM NIHILUS</div>
     </header>
 
-    <div data-hud style="position:absolute;right:24px;top:24px;display:flex;gap:8px">
+    <div data-hud style={`position:absolute;right:24px;top:${mode === 'embed' ? '150px' : '24px'};display:flex;gap:8px`}>
       <button id="gm-zout" title="Alejar" class="gm-hb" style="cursor:pointer;font-size:15px;width:36px;height:32px;border:1px solid #34343c;background:rgba(8,8,9,0.8);color:#e8e6e0;border-radius:2px">−</button>
       <button id="gm-zin" title="Acercar" class="gm-hb" style="cursor:pointer;font-size:15px;width:36px;height:32px;border:1px solid #34343c;background:rgba(8,8,9,0.8);color:#e8e6e0;border-radius:2px">+</button>
       <button id="gm-zfit" class="gm-hb" style="cursor:pointer;font-family:inherit;font-size:11px;letter-spacing:0.12em;padding:0 14px;height:32px;border:1px solid #34343c;background:rgba(8,8,9,0.8);color:#e8e6e0;border-radius:2px">AJUSTAR</button>
