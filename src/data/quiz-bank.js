@@ -134,7 +134,7 @@ const NEC = [
 // [nombre, lema, "lo suyo", esquema de color, swatches, personaje/unidad asociada]
 const ORK = [
   ['Goffs', 'Los más grandes y los más brutos', 'El cuerpo a cuerpo y pegar más fuerte que nadie', 'Negro con cuadros blancos y negros', ['#111111', '#d8d8d8'], 'Ghazghkull Thraka'],
-  ['Evil Sunz', '¡El rojo va más rápido!', 'Kamiones, motos y cualquier cosa con motor', 'Rojo', ['#e0382a', '#ffb300'], 'Los motoristas y bombarderos'],
+  ['Evil Sunz', 'Los más veloces de la galaxia', 'Kamiones, motos y cualquier cosa con motor', 'Rojo', ['#e0382a', '#ffb300'], 'Los motoristas y bombarderos'],
   ['Bad Moons', 'Los más ricos y los más ruidosos', 'Dakka: nunca hay suficiente dakka', 'Amarillo con lunas negras', ['#f2c21b', '#111111'], 'Los dientes que crecen más rápido'],
   ['Deathskulls', 'Saqueadores con suerte', 'Robar cualquier cosa que no esté clavada', 'Azul', ['#3b7bd4', '#d8d8d8'], 'Los saqueadores y mekánikos chatarreros'],
   ['Blood Axes', 'Demasiado listos para ser de fiar', 'Táktika: emboscadas, kamuflaje y retiradas', 'Camuflaje verde oliva', ['#6b7d3c', '#3f4a24'], 'Los komandos'],
@@ -664,6 +664,9 @@ export function buildPool () {
   P.push(Q('orkos', 'm', '¿Qué dos Waaagh! de Ghazghkull golpearon el mismo mundo imperial?',
     ['Las de Cadia', 'Las de Vigilus', 'Las de Golgotha'], 'Las de Armageddon',
     'La Segunda y la Tercera Guerra de Armageddon, ambas con Ghazghkull al frente.'))
+  P.push(Q('orkos', 'm', '¿Quiénes gritan «¡el rojo va más rápido!»?',
+    ['Solo el klan Evil Sunz', 'Los Goffs', 'Los Blood Axes'], 'Los Speed Freeks, el kulto de la velocidad de cualquier klan',
+    'Abundan entre los Evil Sunz, pero ser Speed Freek es una obsesión, no un klan.'))
   P.push(Q('orkos', 'm', '¿Cómo se llaman los orkos con poderes psíquicos?',
     ['Mekánikos', 'Kaudillos', 'Matasanos'], 'Weirdboyz (los raroz)',
     'Canalizan el campo psíquico de la Waaagh!; a veces les explota la cabeza.'))
