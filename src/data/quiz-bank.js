@@ -118,6 +118,30 @@ const FORTRESS = {
   Deliverance: 'Guardia del Cuervo', 'Rynn’s World': 'Puños Carmesíes'
 }
 
+
+// ---- DINASTÍAS NECRONAS (copia compacta de /necrones) ----
+// [nombre, lema, faerón, mundo corona, esquema de color, swatches, personaje]
+const NEC = [
+  ['Szarekhan', 'Orgullosa preeminencia', 'Szarekh, el Rey Silente', null, 'Verde oscuro con hueso y oro', ['#1f4a2c', '#d9cfae', '#b8912f'], 'Szarekh, el Rey Silente'],
+  ['Sautekh', 'Legiones del Señor de la Tormenta', 'Imotekh, el Señor de la Tormenta', 'Mandrágora', 'Plata con bronce y brillo verde', ['#8f8f93', '#5a4a2e', '#3de08a'], 'Nemesor Zahndrekh'],
+  ['Nephrekh', 'Guerreros de las estrellas doradas', 'Sylphek', 'Aryand', 'Oro Retributor con turquesa', ['#c9a227', '#e8d27a', '#2f9e8a'], 'Sylphek'],
+  ['Nihilakh', 'Destinados a conquistar', null, 'Gheden', 'Óxido Nihilakh (turquesa) con oro', ['#4fa39a', '#c7a24a', '#1b3a33'], 'Trazyn el Infinito'],
+  ['Mephrit', 'Ejecutores solares', null, null, 'Metal negro con naranja solar', ['#2a2a2e', '#e0742a', '#8a5a2b'], 'Zarathusa el Inefable'],
+  ['Novokh', 'Carniceros salpicados de sangre', 'Galmakh', 'Dhol VI', 'Rojo Khorne con plata', ['#7a1c1c', '#b3262b', '#9a9a9e'], 'Galmakh']
+].map(([n, sub, ruler, world, col, sw, char]) => ({ n, sub, ruler, world, col, sw, char }))
+
+// ---- KLANES ORKOS (copia compacta de /orkos) ----
+// [nombre, lema, "lo suyo", esquema de color, swatches, personaje/unidad asociada]
+const ORK = [
+  ['Goffs', 'Los más grandes y los más brutos', 'El cuerpo a cuerpo y pegar más fuerte que nadie', 'Negro con cuadros blancos y negros', ['#111111', '#d8d8d8'], 'Ghazghkull Thraka'],
+  ['Evil Sunz', '¡El rojo va más rápido!', 'Kamiones, motos y cualquier cosa con motor', 'Rojo', ['#e0382a', '#ffb300'], 'Los motoristas y bombarderos'],
+  ['Bad Moons', 'Los más ricos y los más ruidosos', 'Dakka: nunca hay suficiente dakka', 'Amarillo con lunas negras', ['#f2c21b', '#111111'], 'Los dientes que crecen más rápido'],
+  ['Deathskulls', 'Saqueadores con suerte', 'Robar cualquier cosa que no esté clavada', 'Azul', ['#3b7bd4', '#d8d8d8'], 'Los saqueadores y mekánikos chatarreros'],
+  ['Blood Axes', 'Demasiado listos para ser de fiar', 'Táktika: emboscadas, kamuflaje y retiradas', 'Camuflaje verde oliva', ['#6b7d3c', '#3f4a24'], 'Los komandos'],
+  ['Snakebites', 'Salvajes de la vieja escuela', 'Squigs, jabalís de guerra y tradición', 'Marrón y tonos terrosos', ['#8a5a2b', '#d9cfae'], 'Los criadores de bestias'],
+  ['Freebooterz', 'Piratas del vacío', 'Saqueo a sueldo y flotas de pecios', 'Lo que roban (sin color propio)', ['#2c9e8c', '#f2c21b'], 'Los kapitanes piratas']
+].map(([n, sub, thing, col, sw, who]) => ({ n, sub, thing, col, sw, who }))
+
 const SEGMENTUMS = ['Solar', 'Obscurus', 'Ultima', 'Tempestus', 'Pacificus']
 const GODS = ['Khorne', 'Nurgle', 'Tzeentch', 'Slaanesh']
 
@@ -445,6 +469,260 @@ export function buildPool () {
     ['La Tormenta de la Sirena', 'El Maelstrom', 'Las Estrellas Azote'], 'La Tormenta de la Ira',
     'La Tormenta de la Ira del Emperador les niega la luz del Astronomican.'))
 
+  // ---- NECRONES · dinastías (copia compacta de /necrones) ----
+  NEC.forEach((d) => {
+    P.push(Q('necrones', 'f', `¿Qué lema identifica a la dinastía ${d.n}?`,
+      pickOthers(NEC.map(x => x.sub), d.sub, 3), d.sub,
+      `${d.n}: «${d.sub}».`))
+    if (d.ruler) {
+      P.push(Q('necrones', 'm', `¿Quién gobierna la dinastía ${d.n}?`,
+        pickOthers(NEC.filter(x => x.ruler).map(x => x.ruler).concat(['Anrakyr el Viajero', 'Illuminor Szeras']), d.ruler, 3), d.ruler,
+        `${d.ruler} rige la dinastía ${d.n}.`))
+    }
+    if (d.world) {
+      P.push(Q('necrones', 'd', `¿Cuál es el mundo corona de la dinastía ${d.n}?`,
+        pickOthers(NEC.filter(x => x.world).map(x => x.world).concat(['Solemnace', 'Zantragora', 'Gidrim']), d.world, 3), d.world,
+        `${d.world} es el mundo corona de los ${d.n}.`))
+    }
+    P.push(Q('necrones', 'm', `¿Qué esquema de color luce la dinastía ${d.n}?`,
+      pickOthers(NEC.map(x => x.col), d.col, 3), d.col,
+      `Los ${d.n} visten ${d.col.toLowerCase()}.`, d.sw))
+    P.push(Q('necrones', 'd', `¿A qué dinastía pertenece ${d.char}?`,
+      pickOthers(NEC.map(x => x.n), d.n, 3), d.n,
+      `${d.char}: dinastía ${d.n}.`))
+  })
+
+  // ---- NECRONES · fácil ----
+  P.push(Q('necrones', 'f', '¿Cómo se llamaban los necrones antes de la biotransferencia?',
+    ['Los C’tan', 'Los Antiguos', 'Los Aeldari'], 'Los necrontyr',
+    'Una especie de vida corta y cuerpos enfermos que cambió la carne por metal viviente.'))
+  P.push(Q('necrones', 'f', '¿Qué es un mundo tumba?',
+    ['Un mundo devorado por los tiránidos', 'Un cementerio imperial', 'Una luna de los orkos'],
+    'Un planeta donde las legiones necronas durmieron durante sesenta millones de años',
+    'Los mundos tumba despiertan dinastía a dinastía desde finales del M41.'))
+  P.push(Q('necrones', 'f', '¿Quién es el Rey Silente?',
+    ['Imotekh', 'Trazyn el Infinito', 'Orikan el Adivino'], 'Szarekh, señor de la dinastía Szarekhan',
+    'Selló el pacto con los C’tan, ordenó el Gran Sueño y ha regresado para gobernar de nuevo.'))
+  P.push(Q('necrones', 'f', '¿Qué dinastía es la más agresiva y expansionista?',
+    ['Nihilakh', 'Novokh', 'Nephrekh'], 'Sautekh',
+    'Tanto, que muchos enemigos confunden sus colores con los de toda la raza.'))
+  P.push(Q('necrones', 'f', '¿Qué son los C’tan?',
+    ['Máquinas de asedio necronas', 'Una dinastía rebelde', 'Los ingenieros de los mundos tumba'],
+    'Dioses estelares que engañaron a los necrontyr',
+    'Los necrones los destrozaron y encerraron sus fragmentos para usarlos como armas.'))
+  P.push(Q('necrones', 'f', '¿Qué dinastía practica rituales de sangre y prefiere el cuerpo a cuerpo?',
+    ['Mephrit', 'Szarekhan', 'Nihilakh'], 'Novokh',
+    'Sus cuerpos de metal viviente acaban cubiertos de vísceras como en las matanzas de antaño.'))
+  P.push(Q('necrones', 'f', '¿Qué dinastía domina la tecnología de translocación y viste de oro?',
+    ['Sautekh', 'Novokh', 'Mephrit'], 'Nephrekh',
+    'Guerreros de las estrellas doradas: cruzan distancias imposibles como haces de luz.'))
+  P.push(Q('necrones', 'f', '¿Qué título recibe el gobernante de una dinastía necrona?',
+    ['Kaudillo', 'Archonte', 'Etéreo'], 'Faerón',
+    'Por debajo están los señores supremos, los señores y los nobles de la corte.'))
+
+  // ---- NECRONES · media ----
+  P.push(Q('necrones', 'm', '¿Contra quién libraron los necrontyr la Guerra en el Cielo?',
+    ['El Imperio de la Humanidad', 'Los tiránidos', 'Los orkos'], 'Los Antiguos y sus creaciones',
+    'Los Aeldari y los orkos fueron creados por los Antiguos para esa guerra.'))
+  P.push(Q('necrones', 'm', '¿Qué dinastía tiene fama de conquistadora pero libra sobre todo guerras defensivas?',
+    ['Sautekh', 'Mephrit', 'Novokh'], 'Nihilakh',
+    'Solo marchan cuando sus oráculos lo dictan, con formaciones de precisión aterradora.'))
+  P.push(Q('necrones', 'm', '¿Qué dinastía era famosa, antes del Gran Sueño, por aniquilar sistemas enteros con energía solar?',
+    ['Szarekhan', 'Nihilakh', 'Nephrekh'], 'Mephrit',
+    'Los «ejecutores solares». Despertaron sin faerón y con el trono en disputa.'))
+  P.push(Q('necrones', 'm', '¿Qué dinastía es la del Rey Silente?',
+    ['Sautekh', 'Nihilakh', 'Mephrit'], 'Szarekhan',
+    'Orgullosa preeminencia: para los Szarekhan no hay rivales, hay subordinados.'))
+  P.push(Q('necrones', 'm', '¿Qué guardia de élite acompaña al Rey Silente?',
+    ['Los Destructores', 'Los Inmortales', 'Los Guerreros Necrones'], 'Los Pretorianos de la Triarca',
+    'Guardianes de los códigos dinásticos, leales a la Triarca antes que a cualquier faerón.'))
+  P.push(Q('necrones', 'm', '¿Qué sistema estelar baña a la dinastía Nephrekh con su energía?',
+    ['El sistema de Gheden', 'Mandrágora', 'Solemnace'], 'Las tres estrellas de Aryand',
+    'Su obsesión por la luz solar roza el delirio divino.'))
+  P.push(Q('necrones', 'm', '¿Quiénes son los criptotecnólogos?',
+    ['Los sacerdotes de los C’tan', 'Los generales de las legiones', 'Los guardianes de los mundos tumba'],
+    'Los científicos-magos que dominan la tecnología necrona',
+    'Crónomantes, plasmantes, geomantes… cada disciplina tiene sus adeptos.'))
+
+  // ---- NECRONES · difícil ----
+  P.push(Q('necrones', 'd', '¿Qué ocurrió con las mentes de muchos nobles necrones durante el Gran Sueño?',
+    ['Fueron transferidas a los C’tan', 'Se fusionaron en una sola conciencia', 'Fueron borradas por completo'],
+    'Se deterioraron hasta la locura o la paranoia',
+    'Eones de éstasis convirtieron a muchos señores en pesadillas andantes.'))
+  P.push(Q('necrones', 'd', '¿Qué noble Nihilakh colecciona los tesoros de la galaxia en Solemnace?',
+    ['Orikan el Adivino', 'Imotekh', 'Anrakyr el Viajero'], 'Trazyn el Infinito',
+    'Sus galerías guardan desde reliquias imperiales hasta ejércitos enteros en éstasis.'))
+  P.push(Q('necrones', 'd', '¿Qué nemesor Sautekh cree seguir combatiendo en la Guerra en el Cielo?',
+    ['Imotekh', 'Vargard Obyron', 'Szarekh'], 'Nemesor Zahndrekh',
+    'Su mente dañada ve a sus enemigos como necrontyr rebeldes; Obyron lo protege y le sigue el juego.'))
+  P.push(Q('necrones', 'd', '¿Qué fenómeno mantiene a los necrones esclavos de su forma metálica?',
+    ['El Gran Sueño', 'La maldición de la carne', 'El protocolo de reanimación'], 'La biotransferencia',
+    'Ganaron la inmortalidad a cambio de sus almas: el precio del pacto con los C’tan.'))
+  P.push(Q('necrones', 'd', '¿Qué despierta a las legiones necronas tras el Gran Sueño?',
+    ['El regreso de los C’tan', 'La Gran Grieta', 'Una señal del Rey Silente'], 'Los protocolos de sus mundos tumba, programados para sesenta millones de años',
+    'Muchos despertaron tarde, dañados o saqueados: la galaxia había cambiado de sitio.'))
+  P.push(Q('necrones', 'd', '¿Qué cinco rangos componen, de mayor a menor, la nobleza de una dinastía?',
+    ['Rey, duque, conde, barón, señor', 'Faerón, nemesor, criptek, señor, destructor', 'Triarca, faerón, nemesor, noble, guerrero'],
+    'Faerón, señor supremo, señor, noble de la corte, nemesor',
+    'El nemesor es el rango militar: manda una legión, no un territorio.'))
+
+  // ---- NECRONES · extremo ----
+  P.push(Q('necrones', 'x', '¿Qué dinastía despertó con su faerón asesinado y el trono disputado entre Zarathusa, Eknothet y Anubtar?',
+    ['Nihilakh', 'Novokh', 'Sautekh'], 'Mephrit',
+    'La guerra civil de los ejecutores solares continúa, y cualquier mundo en medio lo paga.'))
+  P.push(Q('necrones', 'x', '¿Qué vidente guía a los Nihilakh con sus visiones?',
+    ['Orikan', 'Szeras', 'Anrakyr'], 'El Vidente Yth',
+    'Sus oráculos dictan cuándo marchan las legiones de Gheden.'))
+  P.push(Q('necrones', 'x', '¿Qué dinastía rival saqueó el sistema de Aryand mientras los Nephrekh dormían?',
+    ['Sautekh', 'Mephrit', 'Nihilakh'], 'Altymhor',
+    'La venganza del faerón Sylphek fue tan rápida como un rayo.'))
+  P.push(Q('necrones', 'x', '¿Qué mundo corona es la necrópolis de los Sautekh?',
+    ['Gheden', 'Dhol VI', 'Aryand'], 'Mandrágora',
+    'Una fortaleza sepulcral de belleza macabra, centro del poder de Imotekh.'))
+  P.push(Q('necrones', 'x', '¿Cómo ganó Imotekh el trono Sautekh?',
+    ['Por herencia del Rey Silente', 'Asesinando al faerón anterior', 'Por un pacto con un C’tan'],
+    'Con victorias militares: no es noble de sangre',
+    'Un estratega que absorbe dinastías menores como vasallos y aplasta a las que resisten.'))
+  P.push(Q('necrones', 'x', '¿Qué mundo corona rige el faerón Galmakh?',
+    ['Mandrágora', 'Gheden', 'Solemnace'], 'Dhol VI',
+    'Trono de los Novokh, los carniceros salpicados de sangre.'))
+  P.push(Q('necrones', 'x', '¿Qué criptek traicionó a su dinastía y vende sus servicios de mejora biotecnológica a cualquiera?',
+    ['Orikan el Adivino', 'Trazyn el Infinito', 'El Vidente Yth'], 'Illuminor Szeras',
+    'Experimenta con cautivos para descubrir el secreto de recuperar la carne.'))
+  P.push(Q('necrones', 'x', '¿Qué orden de la Triarca hizo huir Szarekh de la galaxia tras despertar?',
+    ['El regreso de los C’tan', 'Una guerra contra los orkos', 'La apertura de la Gran Grieta'],
+    'Ninguna: huyó por la vergüenza de la biotransferencia y regresó al ver la amenaza tiránida',
+    'Volvió para reunificar las dinastías: los necrones son la única raza capaz de frenar a la Gran Devoradora.'))
+
+  P.push(Q('necrones', 'x', '¿Qué necrón de la dinastía Pyrrhia recorre la galaxia despertando mundos tumba y reclutando a sus legiones?',
+    ['Trazyn el Infinito', 'Orikan el Adivino', 'Nemesor Zahndrekh'], 'Anrakyr el Viajero',
+    'Exige un diezmo de guerreros a cada mundo que despierta; los que se niegan los pierden igualmente.'))
+  P.push(Q('necrones', 'x', '¿Qué crónomante Sautekh manipula el tiempo y puede volver a su forma energética de la Era de los Necrontyr?',
+    ['Illuminor Szeras', 'Anrakyr el Viajero', 'El Vidente Yth'], 'Orikan el Adivino',
+    'Sus profecías se cumplen siempre... aunque a veces tenga que retroceder en el tiempo para asegurarlo.'))
+
+  // ---- ORKOS · klanes (copia compacta de /orkos) ----
+  ORK.forEach((k) => {
+    P.push(Q('orkos', 'f', `¿Qué lema identifica al klan ${k.n}?`,
+      pickOthers(ORK.map(x => x.sub), k.sub, 3), k.sub,
+      `${k.n}: «${k.sub}».`))
+    P.push(Q('orkos', 'm', `¿Qué es "lo suyo" para el klan ${k.n}?`,
+      pickOthers(ORK.map(x => x.thing), k.thing, 3), k.thing,
+      `${k.n}: ${k.thing.toLowerCase()}.`))
+    P.push(Q('orkos', 'm', `¿De qué color van los ${k.n}?`,
+      pickOthers(ORK.map(x => x.col), k.col, 3), k.col,
+      `Los ${k.n}: ${k.col.toLowerCase()}.`, k.sw))
+    P.push(Q('orkos', 'd', `¿Con qué klan se asocia a ${k.who}?`,
+      pickOthers(ORK.map(x => x.n), k.n, 3), k.n,
+      `${k.who}: klan ${k.n}.`))
+  })
+
+  // ---- ORKOS · fácil ----
+  P.push(Q('orkos', 'f', '¿Cómo se reproducen los orkos?',
+    ['Poniendo huevos', 'Por clonación en los mundos forja', 'Se crean en cubas de los mekánikos'], 'Por esporas',
+    'Son hongos de guerra: donde muere un orko, brotan más.'))
+  P.push(Q('orkos', 'f', '¿Qué es una Waaagh!?',
+    ['Un tipo de kamión orko', 'Una enfermedad fúngica', 'El nombre del dios de los orkos'],
+    'Una migración bélica masiva impulsada por el campo psíquico de millones de orkos',
+    'Cuando un kaudillo crece lo bastante, arrastra sistemas enteros tras él.'))
+  P.push(Q('orkos', 'f', '¿Quiénes son los dioses de los orkos?',
+    ['Khorne y Nurgle', 'Los Antiguos', 'El Emperador y Horus'], 'Gork y Mork',
+    'Uno es brutalmente astuto y el otro astutamente brutal. Nadie se pone de acuerdo en cuál es cuál.'))
+  P.push(Q('orkos', 'f', '¿Por qué funciona la tecnología orka?',
+    ['Porque copia la de los necrones', 'Porque la fabrica el Adeptus Mechanicus', 'Porque es muy sencilla'],
+    'Porque los orkos creen que funciona',
+    'Su campo psíquico colectivo hace realidad lo que esperan: el rojo va más rápido.'))
+  P.push(Q('orkos', 'f', '¿Qué es un kaudillo?',
+    ['Un mekániko jefe', 'Un orko piloto', 'Un sacerdote de Gork'], 'El orko más grande y fuerte que lidera a los demás',
+    'Los orkos obedecen al más grande. Siempre. Hasta que llega uno más grande.'))
+  P.push(Q('orkos', 'f', '¿Cuál es la moneda de los orkos?',
+    ['Los cráneos', 'Los squigs', 'Las balas'], 'Los dientes',
+    'Se les caen y vuelven a crecer: una economía que nunca se hunde.'))
+  P.push(Q('orkos', 'f', '¿Qué kaudillo lidera la mayor Waaagh! vista en diez mil años?',
+    ['Grukk Kara-Roja', 'Nazdreg', 'Wazdakka Gutsmek'], 'Ghazghkull Mag Uruk Thraka',
+    'La Bestia de Armageddon, profeta de Gork y Mork.'))
+  P.push(Q('orkos', 'f', '¿Qué es un squig?',
+    ['Un arma orka', 'Un kamión pequeño', 'Un tipo de orko enano'], 'Una criatura fúngica de los orkos: mascota, comida o arma',
+    'Desde el squig de ataque hasta el squig-bomba, los hay para todo.'))
+
+  // ---- ORKOS · media ----
+  P.push(Q('orkos', 'm', '¿Qué klan usa camuflaje y táctica aprendidas de los humanos?',
+    ['Goffs', 'Deathskulls', 'Snakebites'], 'Blood Axes',
+    'Por eso el resto de klanes no se fía de ellos.'))
+  P.push(Q('orkos', 'm', '¿Quién construye y truca los vehículos y armas de los orkos?',
+    ['Los kaudillos', 'Los matasanos', 'Los kamorros'], 'Los mekánikos',
+    'Saben cómo funciona la tecnología instintivamente; no preguntes cómo.'))
+  P.push(Q('orkos', 'm', '¿Qué orko se encarga de "curar" a los heridos con sierras y trasplantes?',
+    ['El mekániko', 'El kaudillo', 'El pelotón de gretchins'], 'El matasanos',
+    'La tasa de supervivencia es… variable. La de diversión del matasanos, altísima.'))
+  P.push(Q('orkos', 'm', '¿Qué son los gretchins?',
+    ['Orkos veteranos', 'Los pilotos de los kamiones', 'Squigs domesticados'], 'Orkos pequeños que hacen el trabajo sucio',
+    'Cargan munición, arreglan cosas y sirven de escudo cuando hace falta.'))
+  P.push(Q('orkos', 'm', '¿Qué klan considera a los Bad Moons unos blandos por ser ricos?',
+    ['Evil Sunz', 'Blood Axes', 'Freebooterz'], 'Goffs',
+    'Los Goffs presumen de no necesitar más que sus puños y sus cuadros negros.'))
+  P.push(Q('orkos', 'm', '¿Qué dos Waaagh! de Ghazghkull golpearon el mismo mundo imperial?',
+    ['Las de Cadia', 'Las de Vigilus', 'Las de Golgotha'], 'Las de Armageddon',
+    'La Segunda y la Tercera Guerra de Armageddon, ambas con Ghazghkull al frente.'))
+  P.push(Q('orkos', 'm', '¿Cómo se llaman los orkos con poderes psíquicos?',
+    ['Mekánikos', 'Kaudillos', 'Matasanos'], 'Weirdboyz (los raroz)',
+    'Canalizan el campo psíquico de la Waaagh!; a veces les explota la cabeza.'))
+
+  // ---- ORKOS · difícil ----
+  P.push(Q('orkos', 'd', '¿En qué mundo capturó Ghazghkull al comisario Yarrick?',
+    ['Armageddon', 'Ryza', 'Octarius'], 'Golgotha',
+    'Le dejó escapar porque le divierte tener un enemigo digno.'))
+  P.push(Q('orkos', 'd', '¿Qué guerra eterna enfrenta a los orkos con los tiránidos en el Ultima Segmentum?',
+    ['La guerra de Armageddon', 'La Cruzada de Charadon', 'La Waaagh! Ghazghkull'], 'La Guerra de Octarius',
+    'La Inquisición la provocó desviando una flota enjambre hacia el imperio orko de Octarius.'))
+  P.push(Q('orkos', 'd', '¿Qué klan monta jabalís y desconfía de la tecnología nueva?',
+    ['Goffs', 'Freebooterz', 'Blood Axes'], 'Snakebites',
+    'Los más conservadores: tatuajes, huesos y bestias de guerra.'))
+  P.push(Q('orkos', 'd', '¿Cuál es el imperio orko más antiguo conocido?',
+    ['Octarius', 'Golgotha', 'Armageddon'], 'El Imperio de Charadon',
+    'Sus Waaagh! han asediado el mundo forja de Ryza una y otra vez.'))
+  P.push(Q('orkos', 'd', '¿Quién es el Kaudillo Supremo de los Freebooterz más famoso, piloto de su propio pecio espacial?',
+    ['Ghazghkull', 'Nazdreg', 'Grotsnik'], 'Kaptin Badrukk',
+    'Lleva un sombrero enorme, un loro-squig y más armas de las que puede sostener.'))
+  P.push(Q('orkos', 'd', '¿Qué le pasa a un orko cuando gana batallas y acumula poder?',
+    ['Se vuelve más inteligente', 'Cambia de klan', 'Pierde el color'], 'Crece físicamente',
+    'Los orkos crecen con la victoria: el kaudillo siempre es el más grande.'))
+  P.push(Q('orkos', 'd', '¿Qué matasanos famoso acompaña a Ghazghkull y ha operado a la mitad de sus jefes?',
+    ['Kaptin Badrukk', 'Boss Zagstruk', 'Wurrzag'], 'Mad Dok Grotsnik',
+    'Se hizo implantar una armadura en el cráneo. Él mismo. Sin anestesia.'))
+
+  // ---- ORKOS · extremo ----
+  P.push(Q('orkos', 'x', '¿Qué orko profeta "descubrió" que el rojo va más rápido y predicó sobre Gork y Mork?',
+    ['Ghazghkull', 'Kaptin Badrukk', 'Nazdreg'], 'Wurrzag Ud Ur Ghostmaker',
+    'El raroz más famoso de Armageddon, pintado de blanco y azul, que baila para invocar a los dioses.'))
+  P.push(Q('orkos', 'x', '¿Quién fue "La Bestia", el kaudillo que casi conquistó Terra en el M32?',
+    ['Ghazghkull', 'Wazdakka', 'Badrukk'], 'Urrlak Urruk, la Bestia de las Guerras de la Bestia',
+    'Sus lunas de ataque llegaron hasta el sistema solar; los Puños Imperiales murieron deteniéndola.'))
+  P.push(Q('orkos', 'x', '¿Qué orko Bad Moon lideró la Waaagh! sobre Piscina IV usando tecnología teletransportadora robada?',
+    ['Grukk Kara-Roja', 'Boss Zagstruk', 'Kaptin Badrukk'], 'Nazdreg Ug Urdgrub',
+    'Uno de los kaudillos más ricos de la galaxia, y uno de los que más armas raras acumula.'))
+  P.push(Q('orkos', 'x', '¿Qué kaudillo Evil Sun ansía abrir un portal galáctico para una Waaagh! de motos?',
+    ['Badrukk', 'Nazdreg', 'Grukk'], 'Wazdakka Gutsmek',
+    'Sueña con correr por toda la galaxia sin bajar de la moto.'))
+  P.push(Q('orkos', 'x', '¿Cómo se llama la unidad de orkos saltadores que lidera Boss Zagstruk?',
+    ['Los Dakkaboyz', 'Los Kamorros', 'Los Komandos'], 'Los Vulcha Squad, lanzakopteros',
+    'Caen desde el cielo con cohetes en la espalda y patas de hierro.'))
+  P.push(Q('orkos', 'x', '¿A qué mundo imperial volvió Ghazghkull décadas después de su primera Waaagh! solo porque «se lo pasó bien»?',
+    ['Cadia', 'Vigilus', 'Ryza'], 'Armageddon',
+    'La Segunda Guerra de Armageddon (941.M41) y la Tercera (998.M41).'))
+  P.push(Q('orkos', 'x', '¿Qué cargo ostenta el orko que transporta la "Waaagh!-bandera" del kaudillo?',
+    ['Kaptin', 'Nob', 'Raroz'], 'El portaestandarte o "Waaagh!-banner nob"',
+    'Un nob de confianza; perder la bandera es perder la Waaagh!.'))
+  P.push(Q('orkos', 'x', '¿Qué son los Kamorros en el ejército orko?',
+    ['Pilotos de kamiones', 'Orkos psíquicos', 'Orkos en armaduras pesadas'], 'Los nobs de élite que forman la guardia del kaudillo',
+    'Los más grandes después del jefe, con armaduras pesadas y garras de combate.'))
+  P.push(Q('orkos', 'x', '¿Qué klan se asocia con los "Dreadz" y "Kanz" más mortíferos, pilotados por gretchins?',
+    ['Goffs', 'Snakebites', 'Blood Axes'], 'Deathskulls',
+    'Chatarra saqueada y un gretchin sellado dentro: la fórmula del éxito.'))
+  P.push(Q('orkos', 'x', '¿Qué raza creó a los orkos como soldados para la Guerra en el Cielo?',
+    ['Los necrontyr', 'Los C’tan', 'Los Aeldari'], 'Los Antiguos',
+    'Los krork, sus ancestros, eran más grandes e inteligentes que cualquier orko actual.'))
+
   return P
 }
 
@@ -452,7 +730,9 @@ export const CATS = {
   general: { titulo: 'Prueba General', sub: 'Todo el saber del Imperio y sus enemigos' },
   astartes: { titulo: 'Adeptus Astartes', sub: 'Legiones, capítulos, linajes y heráldica' },
   caos: { titulo: 'Las Fuerzas del Caos', sub: 'Traidores, primarcas caídos y bandas renegadas' },
-  galaxia: { titulo: 'La Galaxia', sub: 'Mundos, facciones y segmentums en M42' }
+  galaxia: { titulo: 'La Galaxia', sub: 'Mundos, facciones y segmentums en M42' },
+  necrones: { titulo: 'Necrones', sub: 'Dinastías, faerones, mundos tumba y el Rey Silente' },
+  orkos: { titulo: 'Orkos', sub: 'Klanes, kaudillos, Waaagh! y mucho dakka' }
 }
 
 export const DIFFS = {
