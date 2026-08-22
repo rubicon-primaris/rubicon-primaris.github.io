@@ -105,6 +105,8 @@ import Layout from '../layouts/Layout.astro'
   #gene-root .gene-x:hover { color: #ffffff }
   /* animacion de apertura del panel al pulsar una tarjeta */
   #gene-panel.gene-panel-in { animation: genePanelIn .3s cubic-bezier(0.2, 0.75, 0.25, 1) }
+  #gene-panel .gene-prim-img img { filter: saturate(0.85); transition: transform .6s cubic-bezier(.22,1,.36,1), filter .4s ease }
+  #gene-panel .gene-prim-img:hover img { transform: scale(1.04); filter: saturate(1) }
   @keyframes genePanelIn {
     from { opacity: 0; transform: translateX(28px) scale(0.97) }
     to { opacity: 1; transform: none }
@@ -303,6 +305,13 @@ import Layout from '../layouts/Layout.astro'
   }
   const CI = {}
   for (const k in CHAP_RAW) CI[k] = { c: CHAP_RAW[k][0], d: CHAP_RAW[k][1], m: MASTERS[k] }
+
+  // Retrato de cada primarca (public/images) por numeral de legión
+  const PRIMARCH_IMG = {
+    I: 'lion.jpg', III: 'fulgrim.jpg', IV: 'perturabo.jpg', V: 'yagatain.jpg', VI: 'leman-russ.jpg', VII: 'rogal-dorn.jpg',
+    VIII: 'konrad.jpg', IX: 'snguinius.jpg', X: 'ferrus-manus.jpg', XII: 'angron.jpg', XIII: 'guilliman.jpg', XIV: 'mortarion.jpg',
+    XV: 'magnus.jpg', XVI: 'horus.jpg', XVII: 'lorgar.jpg', XVIII: 'vulkan.jpg', XIX: 'corvus.jpg', XX: 'alpha.jpg'
+  }
 
   // Destino de cada primarca [estado, relato]
   const PR = {
@@ -612,8 +621,16 @@ import Layout from '../layouts/Layout.astro'
     }
     let primHtml = ''
     if (p.hasPrim) {
+      const img = PRIMARCH_IMG[state.sel]
+      const imgHtml = img
+        ? `<div class="gene-prim-img" style="position:relative;margin:0 -22px 12px;height:240px;overflow:hidden;background:#000">
+            <img src="/images/${img}" alt="${p.primarch}" loading="lazy" style="display:block;width:100%;height:100%;object-fit:cover;object-position:center 18%">
+            <span style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,13,16,0.15),transparent 35%,transparent 70%,#0c0d10)"></span>
+          </div>`
+        : ''
       primHtml = `<div style="border-top:1px solid #1c1c22;padding-top:14px;margin-bottom:16px">
-        <div style="font-size:10px;letter-spacing:0.2em;color:#6a6a72;margin-bottom:6px">EL PRIMARCA</div>
+        <div style="font-size:10px;letter-spacing:0.2em;color:#6a6a72;margin-bottom:10px">EL PRIMARCA</div>
+        ${imgHtml}
         <div style="font-family:'Cinzel',serif;font-size:15px;font-weight:600;color:#ffffff">${p.primarch}</div>
         <div style="font-size:10.5px;letter-spacing:0.1em;color:${p.primFateColor};text-transform:uppercase;margin:2px 0 8px">${p.primFate}</div>
         <p style="font-size:12.5px;line-height:1.6;color:#a8a8b0;margin:0;text-wrap:pretty">${p.primBlurb}</p>
