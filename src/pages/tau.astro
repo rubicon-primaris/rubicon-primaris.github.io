@@ -1,0 +1,489 @@
+---
+// Imperio T'au: página construida con el design system del sitio (Cinzel, tokens
+// surface/ink/secondary, cards diagonales de /facciones, paneles tipo Card).
+// Bloques: cabecera → castas (iconos SVG) → facciones del Imperio (cards + lore
+// con galería, personajes y colores) → Arsenal de la Casta del Fuego (línea de
+// escala con las exoarmaduras recortadas del códex; clic = ficha) → catálogo de
+// drones X901-94 (recortes del códex) → hangar (vehículos) → personajes.
+// Los recortes salen de src/assets/tau-src/extract*.py.
+import Layout from '../layouts/Layout.astro'
+
+const IMG = '/images/tau/'
+const OCRE = '#d08a4a'
+const TEAL = '#3aa6a0'
+
+// ---- Castas: icono SVG (trazo) + texto ----
+const CASTAS = [
+  { id: 'fuego', name: 'Casta del Fuego', tau: 'Shas', role: 'Guerreros', tint: '#d9542b',
+    svg: '<circle cx="32" cy="34" r="13"/><path d="M32 4c-6 8-10 12-10 18a10 10 0 0 0 20 0c0-6-4-10-10-18z"/><path d="M14 56h36"/>',
+    text: 'Soldados y pilotos: desde el Shas’la de línea hasta el Comandante en su exoarmadura. Aprenden la Vía del Guerrero en las academias de Vior’la.' },
+  { id: 'tierra', name: 'Casta de la Tierra', tau: 'Fio', role: 'Constructores', tint: '#8a6a3c',
+    svg: '<circle cx="32" cy="28" r="13"/><path d="M10 50h44M16 58h32"/><path d="M26 41v9M38 41v9"/>',
+    text: 'Ingenieros, científicos y obreros. Inventan y fabrican todo lo que el Imperio usa, desde los rifles de inducción hasta las ciudades.' },
+  { id: 'agua', name: 'Casta del Agua', tau: 'Por', role: 'Diplomáticos', tint: '#3a8ab8',
+    svg: '<circle cx="32" cy="26" r="13"/><path d="M8 48c6-6 10-6 16 0s10 6 16 0 10-6 16 0M8 58c6-6 10-6 16 0s10 6 16 0 10-6 16 0"/>',
+    text: 'Negociadores, mercaderes y burócratas. Convencen a mundos enteros de unirse al Bien Supremo antes de que la casta del Fuego tenga que intervenir.' },
+  { id: 'aire', name: 'Casta del Aire', tau: 'Kor', role: 'Pilotos', tint: '#7aa6c2',
+    svg: '<circle cx="32" cy="30" r="13"/><path d="M6 36l14-8M58 36l-14-8M4 44l18-6M60 44l-18-6"/>',
+    text: 'Pilotos y tripulaciones de las naves y aeronaves. Mensajeros del Imperio entre las estrellas; casi nunca pisan tierra.' },
+  { id: 'etereos', name: 'Los Etéreos', tau: 'Aun', role: 'Guías', tint: '#e8d27a',
+    svg: '<circle cx="32" cy="34" r="13"/><circle cx="32" cy="34" r="22" stroke-dasharray="6 6"/><path d="M32 4v8"/>',
+    text: 'Aparecieron en el momento más oscuro de la historia t’au y unieron a las castas. Su autoridad es absoluta y nadie sabe de dónde procede.' },
+]
+
+// ---- Facciones del Imperio ----
+const FACTIONS = [
+  {
+    id: 'septos', name: 'Los Septos', sub: 'Los mundos del Imperio', tint: OCRE, image: IMG + 'septo-nieve.webp', pos: '50% 35%',
+    gallery: [IMG + 'guerrero-fuego-arte.webp', IMG + 'sigilo-ruinas.webp'],
+    thing: 'Cada mundo colonizado es un septo, con su propia doctrina y sus héroes.',
+    chars: ['T’au, el mundo natal', 'Vior’la, el septo más marcial (academias de la casta del Fuego)', 'Sa’cea, Dal’yth, Bork’an, Ke’lshan y Au’taal'],
+    colors: [['Ocre T’au', '#d08a4a'], ['Hueso', '#d9cfae'], ['Vior’la rojo', '#b3402f'], ['Sa’cea naranja', '#e0742a'], ['Bork’an azul', '#4a7bb3'], ['Dal’yth verde', '#6b8a3c']],
+    lore: [
+      'T’au fue el primer mundo; después vinieron las Expansiones por el Fringe Oriental, cada una sumando planetas que adoptan la tecnología y la filosofía t’au y aportan sus propias cadencias de guerra. La Tercera Expansión, lanzada tras la apertura de la Gran Grieta, es la más ambiciosa.',
+      'Los septos no compiten: se complementan. Vior’la forja a los guerreros más agresivos, Bork’an a los científicos, Dal’yth a los diplomáticos que convencen a otras especies de unirse al Bien Supremo. Cada uno marca a sus guerreros con una franja de color propia sobre el ocre común.',
+    ],
+  },
+  {
+    id: 'farsight', name: 'Enclaves de Farsight', sub: 'Los renegados del Bien Supremo', tint: '#c4302b', image: IMG + 'farsight.webp', pos: '50% 30%',
+    gallery: [IMG + 'farsight-2.webp', IMG + 'crisis-vs-astartes.webp'],
+    thing: 'Guerreros de la casta del Fuego que rompieron con los Etéreos y siguen a su comandante.',
+    chars: ['Comandante Farsight (O’Shovah), «el Cuchillo de Carga»', 'Los Ocho, su guardia de comandantes', 'Los Enclaves, más allá de la Fisura de Damocles'],
+    colors: [['Rojo Farsight', '#c4302b'], ['Blanco', '#e8e6e0'], ['Negro', '#151515'], ['Oro', '#c9a227']],
+    lore: [
+      'Durante la Cruzada de Damocles, el comandante O’Shovah aprendió a luchar como los humanos: de cerca, con saña y sin esperar órdenes. Tras descubrir verdades sobre los Etéreos que nunca ha revelado, se llevó a sus leales más allá de la Fisura y fundó los Enclaves.',
+      'Sus exoarmaduras visten el rojo de la sangre derramada y su doctrina favorece la carga y el combate cercano. El Imperio T’au los considera traidores… pero no ha dejado de necesitarlos.',
+    ],
+  },
+  {
+    id: 'kroot', name: 'Auxiliares Kroot', sub: 'Mercenarios de Pech', tint: '#6b8a3c', image: IMG + 'kroot-fuego.webp', pos: '30% 40%',
+    gallery: [IMG + 'kroot-krootox.webp', IMG + 'kroot-retrato.webp'],
+    thing: 'Cazadores que evolucionan devorando a sus presas.',
+    chars: ['Los Moldeadores, que eligen qué comer para guiar la evolución del clan', 'Los Krootox y los Sabuesos Kroot', 'Las Esferas de Guerra, naves-nido de los clanes'],
+    colors: [['Piel Kroot', '#6b8a3c'], ['Cresta', '#c9a227'], ['Cuero', '#5b4a2e'], ['Hueso', '#d9cfae']],
+    lore: [
+      'Los kroot de Pech absorben rasgos de lo que comen: un clan que devore genestealers empezará a parecerse a ellos. Sus moldeadores dirigen esa dieta como otros dirigen ejércitos, y venden sus rifles y sus cuchillos al Imperio T’au a cambio de tecnología… y de carne.',
+      'Son exploradores, tiradores y carniceros a partes iguales, y los t’au los tratan con respeto y cierta prudencia: nadie quiere saber qué pasa si un moldeador decide que la casta del Fuego sabe bien.',
+    ],
+  },
+  {
+    id: 'vespid', name: 'Vespid y Gue’vesa', sub: 'Súbditos del Bien Supremo', tint: TEAL, image: IMG + 'aliados-batalla.webp', pos: '70% 40%',
+    gallery: [IMG + 'aliados-batalla.webp'],
+    thing: 'El Imperio crece sumando especies, no exterminándolas.',
+    chars: ['Los Vespid de Vespid, con sus cristales neutrónicos', 'Los Gue’vesa, humanos que sirven al Bien Supremo', 'Los Nicassar, psíquicos que pilotan sus naves'],
+    colors: [['Vespid azul', '#4a7bb3'], ['Cristal', '#9fe7e0'], ['Gue’vesa ocre', '#d08a4a'], ['Negro', '#151515']],
+    lore: [
+      'Los vespid, insectoides alados de las cumbres de su mundo, combaten con rifles que disparan cristales neutrónicos y obedecen gracias a los yelmos de comunión que los t’au les fabricaron. Nadie pregunta si es voluntad o condicionamiento.',
+      'Los gue’vesa son humanos: colonos imperiales que cambiaron al Emperador por el Bien Supremo. Para el Imperio de la Humanidad son la prueba definitiva de la herejía t’au; para los t’au, la prueba de que el Bien Supremo es para todos.',
+    ],
+  },
+]
+
+// ---- Arsenal: exoarmaduras recortadas del códex. `h` = altura relativa al guerrero ----
+const UNITS = [
+  { id: 'guerrero-fuego', code: 'Shas’la', name: 'Guerrero de la Casta del Fuego', h: 1.0, m: '≈ 2 m', role: 'Infantería de línea', arms: 'Rifle de inducción · Carabina de inducción · Granadas fotónicas', tint: OCRE,
+    text: 'La base de toda Cadre: escuadras de guerreros con rifles de inducción que superan en alcance y potencia a cualquier arma de infantería imperial. Luchan a distancia, en formaciones que se cubren unas a otras, y se retiran antes de que el enemigo los alcance.' },
+  { id: 'xv02-piloto', code: 'XV02', name: 'Exoarmadura XV02 Piloto', h: 1.1, m: '≈ 2,2 m', role: 'Traje de pilotaje', arms: 'Sin armamento propio', tint: '#9fb0b8',
+    text: 'El traje que viste un piloto dentro de su exoarmadura: interfaz neuronal, soporte vital y blindaje ligero. Cuando una Crisis queda inutilizada, el piloto puede salir con su XV02 y seguir luchando… o retirarse, como manda la doctrina.' },
+  { id: 'xv25-sigilo', code: 'XV25', name: 'Exoarmadura XV25 Sigilo', h: 1.27, m: '≈ 2,6 m', role: 'Infiltración', arms: 'Cañón de ráfagas · Rifle de fusión · Generador de camuflaje', tint: '#8a2a2a',
+    text: 'Exploradores invisibles: su campo de camuflaje los funde con el terreno y solo revelan su posición cuando abren fuego. Marcan objetivos para el resto de la Cadre y cazan vehículos por los flancos.' },
+  { id: 'xv8-crisis', code: 'XV8', name: 'Exoarmadura XV8 Crisis', h: 2.06, m: '≈ 4,2 m', role: 'Ataque móvil', arms: 'Cañón de plasma · Rifle de fusión · Cañón de ráfagas · Lanzamisiles · Retrorreactores', tint: '#e0a02a',
+    text: 'El icono de la casta del Fuego: una exoarmadura modular con retrorreactores que salta al combate, descarga una combinación de armas elegida para cada misión y vuelve a ponerse a cubierto antes de la respuesta enemiga. Los comandantes la pilotan con variantes aún más letales.' },
+  { id: 'xv88-apocalipsis', code: 'XV88', name: 'Exoarmadura XV88 Apocalipsis', h: 2.29, m: '≈ 4,7 m', role: 'Apoyo pesado', arms: 'Cañón de riel pesado · Lanzamisiles de alto rendimiento · Sistema de misiles inteligentes', tint: '#d9cfae',
+    text: 'Construida sobre el chasis de la XV8 pero sin retrorreactores: cambia la movilidad por las armas más potentes a largo alcance de la Cadre. Un cañón de riel XV88 atraviesa un tanque imperial de lado a lado.' },
+  { id: 'xv85-sentenciador', code: 'XV85', name: 'Exoarmadura XV85 Sentenciador', h: 2.92, m: '≈ 6 m', role: 'Mando', arms: 'Variante de mando de la XV8 · Blindaje reforzado · Sistemas de apoyo', tint: '#6f8aa0',
+    text: 'La exoarmadura de los comandantes: más blindaje, más potencia y sistemas de mando que coordinan a toda la Cadre. Donde hay una Sentenciador, el resto de exoarmaduras luchan mejor.' },
+  { id: 'xv104-cataclismo', code: 'XV104', name: 'Exoarmadura XV104 Cataclismo', h: 3.76, m: '≈ 7,7 m', role: 'Titán ligero', arms: 'Cañón de iones pesado · Cañón de ráfagas pesado · Reactor nova · Drones escudo', tint: '#8a8a5a',
+    text: 'Un coloso que puede cambiar el curso de una batalla en segundos. Su reactor nova experimental fusiona materia oscura para sobrecargar armas, escudos o retrorreactores — con el riesgo de convertirse en una pequeña estrella. La pilotan parejas graduadas en las academias de Bork’an.' },
+]
+const BASE = 150 // px de altura del guerrero en la línea de escala
+
+// ---- Drones X901-94 ----
+const DRONES = [
+  ['dron-combate', 'Dron de combate', 'Carabina de inducción. La escolta más común.'],
+  ['dron-telemetrico', 'Dron telemétrico', 'Marca objetivos para el resto de la Cadre.'],
+  ['dron-reconocimiento', 'Dron de reconocimiento', 'Explora y transmite lo que ve a kilómetros.'],
+  ['dron-artillero', 'Dron artillero', 'Cañón de ráfagas doble: apoyo de fuego móvil.'],
+  ['dron-sigilo', 'Dron de sigilo', 'Campo de camuflaje para las XV25.'],
+  ['dron-defensa', 'Dron de defensa', 'Escudo que protege a la unidad que escolta.'],
+  ['dron-guardian', 'Dron guardián', 'Intercepta disparos dirigidos a su protegido.'],
+  ['dron-antigravedad', 'Dron antigravedad', 'Sostiene armas pesadas y las mueve por el campo.'],
+  ['dron-acelerador', 'Dron acelerador de inducción', 'Aumenta el alcance de los rifles de inducción.'],
+  ['dron-artillero-defensa', 'Dron artillero de defensa', 'Torreta móvil con cañones de ráfagas.'],
+  ['torreta-apoyo', 'Torreta de apoyo táctico', 'Lanzamisiles fijo desplegado por los guerreros.'],
+]
+
+// ---- Hangar ----
+const HANGAR = [
+  [IMG + 'hangar-devilfish.webp', 'Devilfish y Hammerhead', 'El transporte antigravitatorio de la Cadre y su tanque de batalla, juntos en la ofensiva.'],
+  [IMG + 'hammerhead.webp', 'Hammerhead', 'Cañón de riel montado en un casco antigravitatorio: el tanque que enseñó al Imperio a temer a los t’au.'],
+  [IMG + 'stormsurge.webp', 'KV128 Tormenta', 'Plataforma de asedio bípeda con más potencia de fuego que una batería de artillería.'],
+  [IMG + 'crisis-canon.webp', 'Crisis en vanguardia', 'Una XV8 con cañón de iones cubriendo el avance por un desfiladero.'],
+  [IMG + 'crisis-carga.webp', 'Salto de Crisis', 'La doctrina Mont’ka: aparecer, golpear con todo y desaparecer.'],
+  [IMG + 'sigilo-ruinas.webp', 'Cadre de Sigilo', 'Exoarmaduras XV25 y drones despejando unas ruinas.'],
+]
+
+// ---- Personajes ----
+const CHARS = [
+  ['Comandante Farsight', 'O’Shovah · Enclaves de Farsight', 'El mejor guerrero de la casta del Fuego y su mayor hereje. Empuña la Espada del Amanecer, una hoja de origen desconocido.', '#c4302b'],
+  ['Comandante Shadowsun', 'O’Shaserra · Septo T’au', 'Maestra de la Kauyon, la guerra paciente. Dirige la Tercera Expansión desde una XV22 invisible.', OCRE],
+  ['Aun’Va', 'Etéreo Supremo', 'El más venerado de los Etéreos, voz del Bien Supremo. Sus hologramas siguen guiando al Imperio desde Damocles.', '#e8d27a'],
+  ['Aun’Shi', 'Etéreo guerrero', 'El único Etéreo que combate en primera línea, con una alabarda de honor y una calma que desarma.', '#e8d27a'],
+  ['Darkstrider', 'Sub-comandante · Septo T’au', 'Un explorador heterodoxo que prefiere la infantería a las exoarmaduras. Sus superiores lo toleran porque gana.', TEAL],
+  ['Longstrike', 'Shas’la · Comandante de Hammerhead', 'El mejor artillero de la casta del Fuego; su Hammerhead no falla un disparo de cañón de riel.', '#4a7bb3'],
+]
+---
+<Layout>
+  <Fragment slot="head">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&display=swap" />
+    <title>Imperio T’au — Rubicón Primaris</title>
+  </Fragment>
+
+  <main class="tau relative min-h-screen w-full overflow-x-clip bg-surface font-sans text-white">
+    <!-- Definiciones SVG: rejilla hexagonal y símbolo t'au -->
+    <svg width="0" height="0" class="absolute" aria-hidden="true">
+      <defs>
+        <!-- teselado octógono + cuadrado: T=64, lado 26.5, a=18.75 -->
+        <pattern id="oct" width="64" height="64" patternUnits="userSpaceOnUse">
+          <path d="M18.75 0 H45.25 L64 18.75 V45.25 L45.25 64 H18.75 L0 45.25 V18.75 Z" fill="none" stroke="rgba(255,255,255,0.11)" stroke-width="1" />
+        </pattern>
+      </defs>
+    </svg>
+
+    <nav class="relative z-10 flex items-center justify-between border-b border-white/10 px-8 py-5 text-[11px] uppercase tracking-[.2em]">
+      <a href="/facciones/xenos#tau" class="text-ink-muted no-underline transition-colors hover:text-white">← Xenos</a>
+      <div class="flex gap-6">
+        {[['#castas', 'Castas'], ['#facciones', 'Facciones'], ['#arsenal', 'Arsenal'], ['#drones', 'Drones'], ['#hangar', 'Hangar'], ['#personajes', 'Personajes']].map(([h, t]) => (
+          <a href={h} class="hidden text-ink-muted no-underline transition-colors hover:text-white md:inline">{t}</a>
+        ))}
+        <a href="/" class="text-ink-muted no-underline transition-colors hover:text-white">Portada</a>
+      </div>
+    </nav>
+
+    <!-- Cabecera -->
+    <section class="relative overflow-hidden px-8 pb-20 pt-24 text-center">
+      <div class="absolute inset-0" style={`background:url('${IMG}crisis-carga.webp') center 40%/cover no-repeat;filter:saturate(.75) brightness(.5)`}></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-surface"></div>
+      <svg class="pointer-events-none absolute inset-0 z-0 h-full w-full" style="-webkit-mask-image:radial-gradient(70% 70% at 50% 45%,#000 30%,transparent 100%);mask-image:radial-gradient(70% 70% at 50% 45%,#000 30%,transparent 100%)" aria-hidden="true"><rect width="100%" height="100%" fill="url(#oct)" /></svg>
+      <svg class="tau-sym pointer-events-none absolute left-1/2 top-1/2 w-[min(50vw,380px)] -translate-x-1/2 -translate-y-1/2" viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="44" r="26" fill="none" stroke="currentColor" stroke-width="3" />
+        <circle cx="50" cy="44" r="9" fill="currentColor" />
+        <path d="M50 70v26M30 96h40" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+      </svg>
+      <span class="relative z-10 font-mono text-[11px] uppercase tracking-[.5em] text-secondary">✠ Xenos · El Bien Supremo ✠</span>
+      <h1 class="relative z-10 m-0 mt-6 font-display text-[clamp(38px,5vw,64px)] font-bold uppercase tracking-[.18em]">Imperio T’au</h1>
+      <p class="relative z-10 m-0 mt-3 font-display text-[clamp(14px,1.3vw,18px)] font-semibold uppercase tracking-[.32em] text-ink-muted">Tau’va</p>
+      <div class="relative z-10 mx-auto mt-8 flex max-w-[760px] flex-col gap-5">
+        <p class="m-0 text-base leading-[1.9] text-ink-muted [text-wrap:pretty]">
+          Un imperio joven, optimista y tecnológicamente brillante que se expande por el Fringe Oriental predicando el <strong class="font-semibold text-white">Bien Supremo</strong>: la causa mayor a la que todas las especies deberían servir. Donde el Imperio de la Humanidad ve herejía xenos, los t’au ven socios a los que aún no han convencido.
+        </p>
+        <p class="m-0 text-base leading-[1.9] text-ink-muted [text-wrap:pretty]">
+          Sus ejércitos, las <strong class="font-semibold text-white">Cadres de Caza</strong>, combinan infantería de la casta del Fuego, exoarmaduras, drones inteligentes y vehículos antigravitatorios en una doctrina sencilla: golpear desde lejos, moverse antes de la respuesta y nunca, jamás, luchar en igualdad de condiciones.
+        </p>
+      </div>
+    </section>
+
+    <!-- Castas -->
+    <section id="castas" class="px-8 py-16">
+      <div class="mx-auto max-w-[1300px]">
+        <div class="mb-10 text-center">
+          <span class="font-mono text-[11px] uppercase tracking-[.5em] text-secondary">Las Cinco Castas</span>
+          <h2 class="m-0 mt-4 font-display text-[clamp(26px,3vw,40px)] font-bold uppercase tracking-[.12em]">Un lugar para cada t’au</h2>
+        </div>
+        <div class="grid grid-cols-2 gap-4 md:grid-cols-5">
+          {CASTAS.map((c) => (
+            <div class="caste rounded-lg border border-white/10 bg-surface-raised px-5 py-6 text-center" style={`--tint:${c.tint}`}>
+              <svg class="mx-auto block h-16 w-16" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" set:html={c.svg} />
+              <div class="mt-4 font-mono text-[10px] uppercase tracking-[.3em] text-ink-faint">{c.tau} · {c.role}</div>
+              <div class="mt-1 font-display text-[15px] font-bold uppercase tracking-[.12em] text-white">{c.name}</div>
+              <p class="m-0 mt-3 text-[12.5px] leading-[1.7] text-ink-muted [text-wrap:pretty]">{c.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Facciones -->
+    <section id="facciones" class="px-8 pb-8 pt-10">
+      <div class="mx-auto max-w-[1600px]">
+        <div class="mb-10 text-center">
+          <span class="font-mono text-[11px] uppercase tracking-[.5em] text-secondary">Facciones del Imperio</span>
+          <h2 class="m-0 mt-4 font-display text-[clamp(26px,3vw,40px)] font-bold uppercase tracking-[.12em]">Quién lucha por el Bien Supremo</h2>
+        </div>
+        <div class="fcard-row">
+          {FACTIONS.map((c) => (
+            <a href={`#${c.id}`} class="fcard" data-sec={c.id} style={`--tint:${c.tint}`}>
+              <span class="fbg" style={`background:url('${c.image}') ${c.pos || 'center'}/cover no-repeat #141311`}></span>
+              <span class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/[.92] to-transparent"></span>
+              <span class="absolute inset-x-0 bottom-9 flex flex-col items-center gap-2 px-10">
+                <span class="text-center font-display text-[clamp(15px,1.3vw,21px)] font-bold uppercase tracking-[.16em] leading-tight text-white">{c.name}</span>
+                <span class="text-center text-[10.5px] font-semibold uppercase tracking-[.16em] text-ink-muted">{c.sub}</span>
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="lore" class="relative min-h-[60vh] overflow-hidden border-t border-white/10">
+      {FACTIONS.map((c) => (
+        <div class="lore-bg absolute inset-0 opacity-0 transition-opacity duration-700" data-bg={c.id} style={`background:radial-gradient(70% 90% at 20% 50%,${c.tint}33,transparent 70%),#050605`}></div>
+      ))}
+      <svg class="pointer-events-none absolute inset-0 z-0 h-full w-full opacity-60" aria-hidden="true"><rect width="100%" height="100%" fill="url(#oct)" /></svg>
+      <div class="relative z-10">
+        {FACTIONS.map((c) => (
+          <article class="lore-item" data-lore={c.id} hidden>
+            <div class="mx-auto flex max-w-[1300px] flex-col items-start gap-12 px-8 py-20 md:flex-row">
+              <div class="min-w-0 max-w-[660px] flex-1">
+                <span class="font-mono text-[11px] uppercase tracking-[.4em]" style={`color:${c.tint}`}>{c.sub}</span>
+                <h2 class="m-0 mt-4 font-display text-[clamp(30px,3.6vw,48px)] font-bold uppercase tracking-[.1em] text-white">{c.name}</h2>
+                <span class="mt-6 block h-px w-24" style={`background:linear-gradient(90deg,${c.tint},transparent)`}></span>
+                <p class="mt-5 font-mono text-[10px] uppercase tracking-[.22em] text-ink-faint">{c.thing}</p>
+                <div class="mt-6 flex flex-col gap-5">
+                  {c.lore.map((p) => (<p class="m-0 text-[15px] leading-[1.9] text-ink-muted [text-wrap:pretty]">{p}</p>))}
+                </div>
+                <div class="mt-10 grid gap-4 sm:grid-cols-2">
+                  <div class="rounded-lg border border-white/10 bg-surface-raised px-5 py-4">
+                    <span class="font-mono text-[10px] uppercase tracking-[.3em] text-ink-faint">Personajes y lugares</span>
+                    <ul class="m-0 mt-3 list-none p-0 text-[13.5px] leading-[1.8] text-ink-muted">
+                      {c.chars.map((x) => (<li class="flex gap-3"><span style={`color:${c.tint}`}>◆</span>{x}</li>))}
+                    </ul>
+                  </div>
+                  <div class="rounded-lg border border-white/10 bg-surface-raised px-5 py-4">
+                    <span class="font-mono text-[10px] uppercase tracking-[.3em] text-ink-faint">Colores oficiales</span>
+                    <ul class="m-0 mt-3 flex list-none flex-wrap gap-3 p-0">
+                      {c.colors.map(([name, hex]) => (
+                        <li class="flex items-center gap-2 text-[12px] text-ink-muted">
+                          <span class="block h-6 w-6 rounded-md border border-white/15" style={`background:${hex}`}></span>{name}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+                <div class="mt-10 font-mono text-[9px] uppercase tracking-[.24em] text-ink-faint">Archivo Ordo Xenos · Imperio T’au · {c.name} · M42</div>
+              </div>
+              <div class="gallery flex w-full shrink-0 gap-4 md:w-auto md:flex-col" style={`--tint:${c.tint}`}>
+                {c.gallery.map((src, i) => (<figure class="m-0"><img src={src} alt={`${c.name} · ${i + 1}`} loading="lazy" /></figure>))}
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- Arsenal: línea de escala -->
+    <section id="arsenal" class="relative overflow-hidden border-t border-white/10 px-8 py-20">
+      <svg class="pointer-events-none absolute inset-0 z-0 h-full w-full opacity-70" style="-webkit-mask-image:radial-gradient(70% 70% at 50% 45%,#000 30%,transparent 100%);mask-image:radial-gradient(70% 70% at 50% 45%,#000 30%,transparent 100%)" aria-hidden="true"><rect width="100%" height="100%" fill="url(#oct)" /></svg>
+      <div class="relative z-10 mx-auto max-w-[1500px]">
+        <div class="mb-6 text-center">
+          <span class="font-mono text-[11px] uppercase tracking-[.5em] text-secondary">Arsenal de la Casta del Fuego</span>
+          <h2 class="m-0 mt-4 font-display text-[clamp(26px,3vw,40px)] font-bold uppercase tracking-[.12em]">Exoarmaduras a escala</h2>
+          <p class="mx-auto mt-4 max-w-[640px] text-[14px] leading-[1.8] text-ink-muted">Ilustraciones del códex recortadas y alineadas por altura real. Pulsa una exoarmadura para ver su ficha.</p>
+        </div>
+
+        <div class="lineup" style={`--base:${BASE}px`}>
+          <!-- Regla de escala (SVG) -->
+          <svg class="ruler" viewBox="0 0 40 600" preserveAspectRatio="none" aria-hidden="true">
+            {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((m) => (
+              <g>
+                <line x1="30" x2="40" y1={600 - m * 75} y2={600 - m * 75} stroke="currentColor" stroke-width="1" />
+                <text x="26" y={604 - m * 75} font-size="9" text-anchor="end" fill="currentColor" font-family="ui-monospace, monospace">{m} m</text>
+              </g>
+            ))}
+            <line x1="40" x2="40" y1="0" y2="600" stroke="currentColor" stroke-width="1" />
+          </svg>
+          <div class="units">
+            {UNITS.map((u) => (
+              <button class="unit" data-unit={u.id} style={`--h:${u.h};--tint:${u.tint}`} type="button" aria-label={u.name}>
+                <img src={`${IMG}units/${u.id}.webp`} alt={u.name} loading="lazy" />
+                <span class="ucode">{u.code}</span>
+              </button>
+            ))}
+          </div>
+          <div class="ground"></div>
+        </div>
+
+        <!-- Ficha de unidad -->
+        <div class="mx-auto mt-10 max-w-[900px]">
+          {UNITS.map((u) => (
+            <div class="ufile rounded-lg border border-white/10 bg-surface-raised" data-file={u.id} style={`--tint:${u.tint}`} hidden>
+              <div class="ucorner ucorner-tl"></div><div class="ucorner ucorner-tr"></div><div class="ucorner ucorner-bl"></div><div class="ucorner ucorner-br"></div>
+              <div class="grid gap-6 px-6 py-6 md:grid-cols-[auto_1fr] md:px-8">
+                <div class="flex items-end justify-center md:w-[180px]">
+                  <img src={`${IMG}units/${u.id}.webp`} alt="" class="max-h-[260px] w-auto" loading="lazy" />
+                </div>
+                <div>
+                  <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                    <span class="font-mono text-[11px] uppercase tracking-[.4em]" style={`color:${u.tint}`}>{u.code}</span>
+                    <span class="font-mono text-[10px] uppercase tracking-[.24em] text-ink-faint">{u.role} · altura {u.m}</span>
+                  </div>
+                  <h3 class="m-0 mt-2 font-display text-[clamp(20px,2.2vw,28px)] font-bold uppercase tracking-[.1em] text-white">{u.name}</h3>
+                  <span class="mt-4 block h-px w-20" style={`background:linear-gradient(90deg,${u.tint},transparent)`}></span>
+                  <p class="m-0 mt-4 text-[14px] leading-[1.85] text-ink-muted [text-wrap:pretty]">{u.text}</p>
+                  <div class="mt-5 flex flex-wrap gap-2">
+                    {u.arms.split(' · ').map((a) => (
+                      <span class="inline-flex items-center rounded-full border border-white/15 bg-surface-overlay px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider text-ink-muted">{a}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Drones -->
+    <section id="drones" class="border-t border-white/10 px-8 py-20">
+      <div class="mx-auto max-w-[1300px]">
+        <div class="mb-10 text-center">
+          <span class="font-mono text-[11px] uppercase tracking-[.5em] text-secondary">Catálogo X901-94</span>
+          <h2 class="m-0 mt-4 font-display text-[clamp(26px,3vw,40px)] font-bold uppercase tracking-[.12em]">Drones T’au</h2>
+          <p class="mx-auto mt-4 max-w-[640px] text-[14px] leading-[1.8] text-ink-muted">Máquinas con un núcleo de IA en un casco antigravitatorio. Acompañan a cada unidad de la Cadre y, cuando la doctrina lo exige, mueren por ella.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          {DRONES.map(([id, name, text]) => (
+            <div class="drone rounded-lg border border-white/10 bg-surface-raised p-5 text-center">
+              <img src={`${IMG}drones/${id}.webp`} alt={name} class="mx-auto block h-[120px] w-auto max-w-full object-contain" loading="lazy" />
+              <div class="mt-4 font-display text-[13px] font-bold uppercase tracking-[.12em] text-white">{name}</div>
+              <p class="m-0 mt-2 text-[12px] leading-[1.6] text-ink-muted">{text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Hangar -->
+    <section id="hangar" class="border-t border-white/10 px-8 py-20">
+      <div class="mx-auto max-w-[1400px]">
+        <div class="mb-10 text-center">
+          <span class="font-mono text-[11px] uppercase tracking-[.5em] text-secondary">Hangar de la Cadre</span>
+          <h2 class="m-0 mt-4 font-display text-[clamp(26px,3vw,40px)] font-bold uppercase tracking-[.12em]">Vehículos y vanguardia</h2>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {HANGAR.map(([src, name, text]) => (
+            <figure class="hcard relative m-0 overflow-hidden rounded-lg border border-white/10 bg-surface-raised">
+              <img src={src} alt={name} class="block h-[240px] w-full object-cover" loading="lazy" />
+              <figcaption class="px-5 py-4">
+                <div class="font-display text-[14px] font-bold uppercase tracking-[.12em] text-white">{name}</div>
+                <p class="m-0 mt-1 text-[12.5px] leading-[1.6] text-ink-muted">{text}</p>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Personajes -->
+    <section id="personajes" class="border-t border-white/10 px-8 py-20">
+      <div class="mx-auto max-w-[1300px]">
+        <div class="mb-10 text-center">
+          <span class="font-mono text-[11px] uppercase tracking-[.5em] text-secondary">Héroes del Bien Supremo</span>
+          <h2 class="m-0 mt-4 font-display text-[clamp(26px,3vw,40px)] font-bold uppercase tracking-[.12em]">Personajes</h2>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {CHARS.map(([name, sub, text, tint]) => (
+            <div class="rounded-lg border border-white/10 bg-surface-raised px-5 py-5" style={`border-top:3px solid ${tint}`}>
+              <div class="font-mono text-[10px] uppercase tracking-[.3em]" style={`color:${tint}`}>{sub}</div>
+              <div class="mt-2 font-display text-[16px] font-bold uppercase tracking-[.1em] text-white">{name}</div>
+              <p class="m-0 mt-3 text-[13px] leading-[1.7] text-ink-muted [text-wrap:pretty]">{text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <footer class="border-t border-white/10 px-12 py-10 text-center">
+      <span class="font-mono text-[10px] uppercase tracking-[.24em] text-ink-faint">Por el Bien Supremo · M42</span>
+    </footer>
+  </main>
+</Layout>
+
+<style is:global>
+  body.flex { display: block; }
+  html { scroll-behavior: smooth; }
+  .tau-sym { color: #d08a4a; opacity: 0.14; }
+
+  .caste { color: var(--tint); transition: transform .3s ease, border-color .3s ease; }
+  .caste:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--tint) 50%, transparent); }
+
+  .fcard { position: relative; display: block; overflow: hidden; text-decoration: none; }
+  .fcard .fbg { position: absolute; inset: 0; transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1); filter: saturate(.85); }
+  .fcard:hover .fbg, .fcard.on .fbg { transform: scale(1.06); filter: saturate(1.05); }
+  .fcard.on { box-shadow: inset 0 -3px 0 var(--tint); }
+  .fcard-row { display: flex; justify-content: center; }
+  .fcard-row .fcard { flex: 1 1 0%; margin-right: -48px; height: clamp(280px, 40vh, 380px); clip-path: polygon(56px 0, 100% 0, calc(100% - 56px) 100%, 0 100%); transition: flex 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+  .fcard-row .fcard:last-child { margin-right: 0; }
+  .fcard-row:hover .fcard { flex: 0.75 1 0%; }
+  .fcard-row .fcard:hover { flex: 1.5 1 0%; }
+  .lore-bg.on { opacity: 1; }
+  .lore-item[hidden] { display: none; }
+  .gallery figure { width: 260px; border: 1px solid color-mix(in srgb, var(--tint) 45%, transparent); box-shadow: 0 0 28px color-mix(in srgb, var(--tint) 25%, transparent); background: #000; }
+  .gallery img { display: block; width: 100%; height: 220px; object-fit: cover; }
+  @media (max-width: 767px) { .gallery figure { flex: 1; width: auto; } .gallery img { height: 180px; } }
+
+  /* Línea de escala */
+  .lineup { position: relative; display: flex; align-items: flex-end; gap: 0; height: calc(var(--base) * 4.1); margin-top: 28px; padding-left: 44px; overflow-x: auto; overflow-y: hidden; }
+  .lineup .ruler { position: absolute; left: 0; bottom: 0; width: 44px; height: calc(var(--base) * 4); color: rgba(255,255,255,.35); }
+  .lineup .units { display: flex; align-items: flex-end; gap: clamp(8px, 2vw, 28px); padding: 0 16px; margin: 0 auto; }
+  .lineup .ground { position: absolute; left: 44px; right: 0; bottom: 0; height: 1px; background: linear-gradient(90deg, rgba(255,255,255,.35), rgba(255,255,255,.08)); }
+  .unit { position: relative; display: block; padding: 0 0 14px; background: none; border: 0; cursor: pointer; }
+  .unit img { display: block; height: calc(var(--base) * var(--h)); width: auto; filter: saturate(.85) drop-shadow(0 8px 14px rgba(0,0,0,.6)); transition: transform .35s cubic-bezier(.22,1,.36,1), filter .35s ease; transform-origin: bottom center; }
+  .unit:hover img, .unit.on img { transform: scale(1.04); filter: saturate(1.05) drop-shadow(0 0 18px color-mix(in srgb, var(--tint) 70%, transparent)) drop-shadow(0 8px 14px rgba(0,0,0,.6)); }
+  .unit .ucode { position: absolute; left: 50%; bottom: -6px; transform: translateX(-50%); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 9px; letter-spacing: .22em; text-transform: uppercase; color: #a8a29e; white-space: nowrap; }
+  .unit.on .ucode { color: var(--tint); }
+  .ufile { position: relative; }
+  .ufile[hidden] { display: none; }
+  .ucorner { position: absolute; width: 14px; height: 14px; border-color: var(--tint); border-style: solid; border-width: 0; }
+  .ucorner-tl { top: -1px; left: -1px; border-top-width: 2px; border-left-width: 2px; }
+  .ucorner-tr { top: -1px; right: -1px; border-top-width: 2px; border-right-width: 2px; }
+  .ucorner-bl { bottom: -1px; left: -1px; border-bottom-width: 2px; border-left-width: 2px; }
+  .ucorner-br { bottom: -1px; right: -1px; border-bottom-width: 2px; border-right-width: 2px; }
+
+  .drone img { filter: drop-shadow(0 6px 10px rgba(0,0,0,.5)); transition: transform .35s ease; }
+  .drone:hover img { transform: translateY(-4px) rotate(-2deg); }
+  .hcard img { filter: saturate(.85); transition: transform .6s cubic-bezier(.22,1,.36,1), filter .4s ease; }
+  .hcard:hover img { transform: scale(1.04); filter: saturate(1.05); }
+
+  @media (max-width: 860px) {
+    .fcard-row { flex-direction: column; gap: 14px; }
+    .fcard-row .fcard { height: 150px; margin-right: 0; clip-path: polygon(36px 0, 100% 0, calc(100% - 36px) 100%, 0 100%); }
+    .fcard-row:hover .fcard, .fcard-row .fcard:hover { flex: 1 1 0%; }
+    .lineup { --base: 90px; }
+  }
+</style>
+
+<script>
+  // Facciones: card → lore
+  const items = [...document.querySelectorAll('.lore-item')]
+  const bgs = [...document.querySelectorAll('.lore-bg')]
+  const cards = [...document.querySelectorAll('.fcard')]
+  function select (id, opts) {
+    if (!items.some((el) => el.dataset.lore === id)) return
+    items.forEach((el) => { el.hidden = el.dataset.lore !== id })
+    bgs.forEach((el) => el.classList.toggle('on', el.dataset.bg === id))
+    cards.forEach((el) => el.classList.toggle('on', el.dataset.sec === id))
+    if (opts && opts.hash) history.replaceState(null, '', '#' + id)
+    if (opts && opts.scroll) document.getElementById('lore').scrollIntoView({ behavior: 'smooth' })
+  }
+  cards.forEach((c) => c.addEventListener('click', (e) => { e.preventDefault(); select(c.dataset.sec, { hash: true, scroll: true }) }))
+
+  // Arsenal: exoarmadura → ficha
+  const units = [...document.querySelectorAll('.unit')]
+  const files = [...document.querySelectorAll('.ufile')]
+  function selectUnit (id, opts) {
+    units.forEach((u) => u.classList.toggle('on', u.dataset.unit === id))
+    files.forEach((f) => { f.hidden = f.dataset.file !== id })
+    if (opts && opts.hash) history.replaceState(null, '', '#' + id)
+  }
+  units.forEach((u) => u.addEventListener('click', () => selectUnit(u.dataset.unit, { hash: true })))
+
+  const initial = location.hash.slice(1)
+  if (initial && items.some((el) => el.dataset.lore === initial)) {
+    select(initial, { hash: true }); document.getElementById('lore').scrollIntoView({ behavior: 'instant' })
+  } else if (items[0]) select(items[0].dataset.lore)
+  if (initial && units.some((u) => u.dataset.unit === initial)) {
+    selectUnit(initial); document.getElementById('arsenal').scrollIntoView({ behavior: 'instant' })
+  } else selectUnit('xv8-crisis')
+</script>
