@@ -1,0 +1,283 @@
+---
+// Necrones: página de dinastías. Columna de glifos necrones fija a la izquierda
+// (recorte del códex en PNG con alfa, repetido en vertical) y cards con forma
+// de sarcófago recortadas del códex (PNG con alfa) que brillan en el color de su
+// dinastía al pasar el ratón. El clic abre el lore de la dinastía debajo.
+import Layout from '../layouts/Layout.astro'
+
+const DYNASTIES = [
+  {
+    id: 'szarekhan', name: 'Szarekhan', sub: 'Orgullosa preeminencia', tint: '#46b36a', image: '/images/necrones/szarekhan.webp',
+    crown: 'Mundo corona: desconocido · Faerón: Szarekh, el Rey Silente',
+    gallery: ['/images/necrones/nec-szarekhan.webp','/images/necrones/nec-szarekhan-2.webp'],
+    chars: ['Szarekh, el Rey Silente', 'Los Pretorianos de la Triarca', 'Los Cortesanos Silentes (Adivinos de la Triarca)'],
+    colors: [['Verde Szarekhan','#1f4a2c'],['Hueso','#d9cfae'],['Oro','#b8912f'],['Brillo','#5ef0a0']],
+    lore: [
+      'La dinastía del propio Rey Silente. Fue Szarekh quien selló el pacto con los C’tan y condujo a toda la raza a la biotransferencia — y fue él quien, al comprender el precio, volvió las armas contra los dioses estelares y ordenó el Gran Sueño. Ninguna otra dinastía carga con esa culpa ni con esa autoridad.',
+      'Los Szarekhan despertaron dispersos y menguados, pero el regreso de su señor los ha colocado de nuevo en la cúspide. Sus Pretorianos de la Triarca, sus criptotecnólogos y la perfección fría de sus ejércitos recuerdan a las demás casas cuál era el orden antiguo. Para los Szarekhan no hay rivales: hay subordinados que aún no lo saben.',
+    ],
+  },
+  {
+    id: 'sautekh', name: 'Sautekh', sub: 'Legiones del Señor de la Tormenta', tint: '#3fa53a', image: '/images/necrones/sautekh.webp',
+    crown: 'Mundo corona: Mandrágora · Faerón: Imotekh, el Señor de la Tormenta',
+    gallery: ['/images/necrones/nec-sautekh.webp','/images/necrones/nec-sautekh-2.webp'],
+    chars: ['Imotekh, el Señor de la Tormenta', 'Nemesor Zahndrekh', 'Vargard Obyron', 'Orikan el Adivino'],
+    colors: [['Plata Leadbelcher','#8f8f93'],['Bronce oscuro','#5a4a2e'],['Verde Tesseract','#3de08a'],['Negro','#151515']],
+    lore: [
+      'La más agresiva y expansionista de las dinastías, hasta el punto de que muchos enemigos del Imperio confunden sus colores con los de toda la raza. Desde Mandrágora, una necrópolis fortificada de belleza sepulcral, las legiones Sautekh han reconquistado más sistemas que cualquier otra casa desde el despertar.',
+      'Su faerón, Imotekh, no es un noble de sangre: es un estratega que se ganó el trono con victorias y lo mantiene con la disciplina de un ejército que jamás se detiene. Absorbe a las dinastías menores como vasallos y aplasta a las que se resisten, y aunque el regreso del Rey Silente ha puesto límites a su ambición, nadie apuesta a que los respete durante mucho tiempo.',
+    ],
+  },
+  {
+    id: 'nephrekh', name: 'Nephrekh', sub: 'Guerreros de las estrellas doradas', tint: '#c9a227', image: '/images/necrones/nephrekh.webp',
+    crown: 'Mundo corona: Aryand · Faerón: Sylphek',
+    gallery: ['/images/necrones/nec-nephrekh.webp','/images/necrones/nec-nephrekh-2.webp'],
+    chars: ['Sylphek, faerón de Aryand', 'Los Destructores del Sol Triple', 'Las legiones de Altymhor (dinastía rival)'],
+    colors: [['Oro Retributor','#c9a227'],['Oro claro','#e8d27a'],['Turquesa','#2f9e8a'],['Brillo solar','#fff2a8']],
+    lore: [
+      'Las tres estrellas de Aryand bañan el mundo corona Nephrekh en una energía solar que la dinastía ha aprendido a domar. Sus guerreros se recubren de metal dorado y avanzan como haces de luz viva: la tecnología de translocación Nephrekh les permite cruzar distancias imposibles en un parpadeo.',
+      'Despertaron para descubrir a intrusos saqueando su sistema, y el faerón Sylphek respondió con una venganza tan rápida como un rayo. Desde entonces, la obsesión de la dinastía por la luz roza el delirio divino, y una paranoia persistente hacia cualquier raza que ambicione sus soles — aeldari, parientes votann o hechiceros — mantiene a sus legiones en guardia permanente.',
+    ],
+  },
+  {
+    id: 'nihilakh', name: 'Nihilakh', sub: 'Destinados a conquistar', tint: '#2fa88a', image: '/images/necrones/nihilakh.webp',
+    crown: 'Mundo corona: Gheden · Guiados por el Vidente Yth',
+    gallery: ['/images/necrones/nec-nihilakh.webp','/images/necrones/nec-nihilakh-2.webp'],
+    chars: ['Trazyn el Infinito, señor de Solemnace', 'El Vidente Yth', 'Los Inmortales de Gheden'],
+    colors: [['Óxido Nihilakh','#4fa39a'],['Oro','#c7a24a'],['Verde oscuro','#1b3a33'],['Brillo','#7cf0c4']],
+    lore: [
+      'Los Nihilakh tienen fama de conquistadores implacables, y sin embargo su guerra es, ante todo, defensiva: guardan sus territorios con una paciencia pétrea y solo marchan cuando los oráculos lo dictan. Cuando lo hacen, sus legiones avanzan en formaciones de una precisión aterradora, sin prisa y sin un paso en falso.',
+      'Coleccionan los tesoros de las razas menores como trofeos de un imperio que consideran ya suyo, y la apertura de la Gran Grieta los ha empujado a expandirse más allá de sus fronteras. Guiados por las visiones del Vidente Yth, los nobles Nihilakh creen que el destino ya está escrito: solo falta que la galaxia lo acepte.',
+    ],
+  },
+  {
+    id: 'mephrit', name: 'Mephrit', sub: 'Ejecutores solares', tint: '#d9772a', image: '/images/necrones/mephrit.webp',
+    crown: 'Sin mundo corona reconocido · Trono en disputa',
+    gallery: ['/images/necrones/nec-mephrit.webp','/images/necrones/nec-mephrit-2.webp'],
+    chars: ['Zarathusa el Inefable', 'Eknothet el Glorioso', 'Anubtar el Mil Victorias', 'Khyrek el Eterno (faerón asesinado)'],
+    colors: [['Metal negro','#2a2a2e'],['Naranja solar','#e0742a'],['Bronce','#8a5a2b'],['Brillo','#ffb257']],
+    lore: [
+      'Antes del Gran Sueño, los Mephrit eran la dinastía a la que se llamaba cuando un sistema entero debía dejar de existir: sus criptotecnólogos dominaban la energía de las estrellas y la usaban para aniquilar mundos con precisión quirúrgica. Esa fama de exceso destructivo los precede todavía.',
+      'Despertaron con su faerón asesinado y su poder repartido entre nobles ambiciosos que se disputan el trono a golpe de guerra y conjura. Mientras las demás casas reconstruyen imperios, los Mephrit luchan entre sí — y cualquier mundo que quede en medio de esa disputa descubre lo que significa un ejecutor solar.',
+    ],
+  },
+  {
+    id: 'novokh', name: 'Novokh', sub: 'Carniceros salpicados de sangre', tint: '#c12b2b', image: '/images/necrones/novokh.webp',
+    crown: 'Mundo corona: Dhol VI · Faerón: Galmakh',
+    gallery: ['/images/necrones/nec-novokh.webp','/images/necrones/nec-novokh-2.webp'],
+    chars: ['Galmakh, faerón de Dhol VI', 'Los Destructores de Novokh', 'Los Kataphrones de los Rituales de Sangre'],
+    colors: [['Rojo Khorne','#7a1c1c'],['Rojo Mephiston','#b3262b'],['Plata','#9a9a9e'],['Brillo','#57e08a']],
+    lore: [
+      'Antes de la biotransferencia, los Novokh eran famosos por sus rituales de sangre y sus guerreros de cuerpo a cuerpo; tras ella, conservaron la sed pero perdieron la carne. Sus legiones se lanzan al combate cercano con una ferocidad que otras dinastías consideran indigna — hasta que la sufren.',
+      'Sus engramas se activan con la sangre enemiga: cada batalla los vuelve más rápidos y más brutales, y sus cuerpos de metal viviente acaban cubiertos de vísceras como en las matanzas de antaño. Bajo el faerón Galmakh, los Novokh no buscan territorio ni tributo. Buscan el siguiente enemigo.',
+    ],
+  },
+]
+
+---
+<Layout>
+  <Fragment slot="head">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&display=swap" />
+    <title>Necrones · Dinastías — Rubicón Primaris</title>
+  </Fragment>
+
+  <main class="relative min-h-screen w-full overflow-x-clip bg-surface font-sans text-white">
+    <!-- Columna de glifos necrones (SVG) a lo largo de toda la página -->
+    <aside class="glyphs" aria-hidden="true"></aside>
+
+    <nav class="flex items-center justify-between border-b border-white/10 px-8 py-5 pl-24 text-[11px] uppercase tracking-[.2em] md:pl-32">
+      <a href="/facciones/xenos#necrones" class="text-ink-muted no-underline transition-colors hover:text-white">← Xenos</a>
+      <a href="/" class="text-ink-muted no-underline transition-colors hover:text-white">Portada</a>
+    </nav>
+
+    <section class="px-8 pb-14 pl-24 pt-20 text-center md:pl-32">
+      <span class="font-mono text-[11px] uppercase tracking-[.5em] text-[#7ddc9a]">✠ Xenos · Las Dinastías Eternas ✠</span>
+      <h1 class="m-0 mt-6 font-display text-[clamp(38px,5vw,64px)] font-bold uppercase tracking-[.18em]">Necrones</h1>
+      <div class="mx-auto mt-8 flex max-w-[760px] flex-col gap-5 text-left md:text-center">
+        <p class="m-0 text-base leading-[1.9] text-ink-muted [text-wrap:pretty]">
+          Hace sesenta millones de años los necrontyr cambiaron su carne por metal viviente para ganar la Guerra en el Cielo contra los Antiguos. Ganaron — y perdieron sus almas en el trato. Cuando comprendieron el engaño de los C’tan, destrozaron a sus dioses y se encerraron en sus mundos tumba a esperar un despertar que debía durar sesenta milenios.
+        </p>
+        <p class="m-0 text-base leading-[1.9] text-ink-muted [text-wrap:pretty]">
+          El imperio necrón nunca fue uno solo: era una red de <strong class="font-semibold text-white">dinastías</strong>, casas nobles con su mundo corona, su faerón y sus propias legiones, unidas solo por la autoridad del Rey Silente. Esas dinastías despiertan ahora una a una, cada cual con sus tradiciones, sus rencores y sus planes para una galaxia que consideran suya por derecho.
+        </p>
+      </div>
+    </section>
+
+    <!-- Sarcófagos: uno por dinastía -->
+    <section class="px-8 pb-24 pl-24 md:pl-32">
+      <div class="mx-auto grid max-w-[1500px] grid-cols-2 gap-x-6 gap-y-14 sm:grid-cols-3 lg:grid-cols-6">
+        {DYNASTIES.map((d) => (
+          <a href={`#${d.id}`} class="sarco group" data-dyn={d.id} style={`--tint:${d.tint}`}>
+            <span class="panel">
+              <img class="art" src={d.image} alt={`Dinastía ${d.name}`} loading="lazy" />
+              <span class="shine" style={`-webkit-mask-image:url('${d.image}');mask-image:url('${d.image}')`}></span>
+            </span>
+            <span class="mt-5 block text-center font-display text-[clamp(15px,1.25vw,20px)] font-bold uppercase tracking-[.18em] leading-tight text-white">{d.name}</span>
+            <span class="mt-2 block text-center text-[10px] font-semibold uppercase tracking-[.16em] text-ink-muted">{d.sub}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Lore de la dinastía seleccionada -->
+    <section id="lore" class="relative min-h-[70vh] overflow-hidden border-t border-white/10 pl-16 md:pl-24">
+      {DYNASTIES.map((d) => (
+        <div class="lore-bg absolute inset-0 opacity-0 transition-opacity duration-700" data-bg={d.id} style={`background:radial-gradient(70% 90% at 20% 50%,${d.tint}33,transparent 70%),#050605`}></div>
+      ))}
+      <div class="relative z-10 mx-auto flex min-h-[70vh] max-w-[1400px] items-center gap-16 px-8 py-24">
+        {DYNASTIES.map((d) => (
+          <article class="lore-item flex w-full flex-col items-center gap-12 md:flex-row md:items-start" data-lore={d.id} hidden>
+            <img src={d.image} alt={`Dinastía ${d.name}`} class="hidden h-[640px] w-auto shrink-0 md:block" loading="lazy" style={`filter:drop-shadow(0 0 24px ${d.tint}66)`} />
+            <div class="min-w-0 max-w-[640px] flex-1">
+              <span class="font-mono text-[11px] uppercase tracking-[.4em]" style={`color:${d.tint}`}>{d.sub}</span>
+              <h2 class="m-0 mt-4 font-display text-[clamp(30px,3.6vw,48px)] font-bold uppercase tracking-[.1em] text-white">Dinastía {d.name}</h2>
+              <span class="mt-6 block h-px w-24" style={`background:linear-gradient(90deg,${d.tint},transparent)`}></span>
+              <p class="mt-5 font-mono text-[10px] uppercase tracking-[.22em] text-ink-faint">{d.crown}</p>
+              <div class="mt-6 flex flex-col gap-5">
+                {d.lore.map((p) => (
+                  <p class="m-0 text-[15px] leading-[1.9] text-ink-muted [text-wrap:pretty]">{p}</p>
+                ))}
+              </div>
+              <div class="mt-10 grid gap-8 sm:grid-cols-2">
+                <div>
+                  <span class="font-mono text-[10px] uppercase tracking-[.3em] text-ink-faint">Personajes</span>
+                  <ul class="m-0 mt-3 list-none p-0 text-[13.5px] leading-[1.8] text-ink-muted">
+                    {d.chars.map((c) => (<li class="flex gap-3"><span style={`color:${d.tint}`}>◆</span>{c}</li>))}
+                  </ul>
+                </div>
+                <div>
+                  <span class="font-mono text-[10px] uppercase tracking-[.3em] text-ink-faint">Colores oficiales</span>
+                  <ul class="m-0 mt-3 flex list-none flex-wrap gap-3 p-0">
+                    {d.colors.map(([name, hex]) => (
+                      <li class="flex items-center gap-2 text-[12px] text-ink-muted">
+                        <span class="block h-6 w-6 border border-white/20" style={`background:${hex}`}></span>{name}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              <div class="mt-10 font-mono text-[9px] uppercase tracking-[.24em] text-ink-faint">Archivo Administratum · Xenos · Necrones · M42</div>
+            </div>
+            <div class="gallery flex shrink-0 gap-4 md:flex-col" style={`--tint:${d.tint}`}>
+              {d.gallery.map((src, i) => (
+                <figure class="m-0">
+                  <img src={src} alt={`Dinastía ${d.name} · ${i + 1}`} loading="lazy" />
+                </figure>
+              ))}
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <footer class="border-t border-white/10 px-12 py-10 pl-24 text-center md:pl-32">
+      <span class="font-mono text-[10px] uppercase tracking-[.24em] text-ink-faint">Los Señores Eternos despiertan · M42</span>
+    </footer>
+  </main>
+</Layout>
+
+<style is:global>
+  body.flex { display: block; }
+  html { scroll-behavior: smooth; }
+
+  /* Columna de glifos: imagen con alfa, repetida en vertical, con halo verde */
+  .glyphs {
+    position: absolute;
+    top: 0; bottom: 0; left: 0;
+    width: 64px;
+    z-index: 20;
+    pointer-events: none;
+    background: url('/images/necrones/glifos.svg') center top / 44px auto repeat-y;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.35));
+    opacity: 0.85;
+  }
+  @media (min-width: 768px) { .glyphs { width: 96px; left: 16px; } }
+
+  /* Sarcófago de dinastía */
+  .sarco {
+    display: block;
+    text-decoration: none;
+    --glow: 0;
+  }
+  .sarco .panel {
+    position: relative;
+    display: block;
+    transition: filter 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .sarco .art {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 552 / 1600;
+    object-fit: contain;
+    filter: saturate(0.85) brightness(0.85);
+    transition: filter 0.5s ease;
+  }
+  .sarco .shine {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(180deg, var(--tint), transparent 22%, transparent 78%, var(--tint)),
+      linear-gradient(90deg, var(--tint), transparent 35%, transparent 65%, var(--tint));
+    -webkit-mask-size: contain; mask-size: contain;
+    -webkit-mask-position: center; mask-position: center;
+    -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+    mix-blend-mode: screen;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .sarco:hover .panel, .sarco.on .panel {
+    filter: drop-shadow(0 0 14px color-mix(in srgb, var(--tint) 75%, transparent)) drop-shadow(0 0 42px color-mix(in srgb, var(--tint) 45%, transparent));
+    transform: translateY(-6px);
+  }
+  .sarco:hover .art, .sarco.on .art { filter: saturate(1.05) brightness(1); }
+  .sarco:hover .shine, .sarco.on .shine { opacity: 0.55; }
+  /* Pulso del brillo mientras está en hover */
+  .sarco:hover .panel { animation: sarco-pulse 2.4s ease-in-out infinite; }
+  @keyframes sarco-pulse {
+    0%, 100% { filter: drop-shadow(0 0 14px color-mix(in srgb, var(--tint) 75%, transparent)) drop-shadow(0 0 42px color-mix(in srgb, var(--tint) 45%, transparent)); }
+    50% { filter: drop-shadow(0 0 22px color-mix(in srgb, var(--tint) 95%, transparent)) drop-shadow(0 0 64px color-mix(in srgb, var(--tint) 60%, transparent)); }
+  }
+
+  .gallery figure {
+    width: 240px;
+    border: 1px solid color-mix(in srgb, var(--tint) 45%, transparent);
+    box-shadow: 0 0 28px color-mix(in srgb, var(--tint) 25%, transparent);
+    background: #000;
+  }
+  .gallery img { display: block; width: 100%; height: 300px; object-fit: cover; filter: saturate(0.9); transition: filter 0.4s ease; }
+  .gallery figure:hover img { filter: saturate(1.05) brightness(1.05); }
+  @media (max-width: 767px) { .gallery { width: 100%; } .gallery figure { flex: 1; } .gallery img { height: 220px; } }
+  .lore-item[hidden] { display: none; }
+  .lore-bg.on { opacity: 1; }
+</style>
+
+<script>
+  const items = [...document.querySelectorAll('.lore-item')]
+  const bgs = [...document.querySelectorAll('.lore-bg')]
+  const cards = [...document.querySelectorAll('.sarco')]
+
+  function select (id, opts) {
+    if (!items.some((el) => el.dataset.lore === id)) return
+    items.forEach((el) => { el.hidden = el.dataset.lore !== id })
+    bgs.forEach((el) => el.classList.toggle('on', el.dataset.bg === id))
+    cards.forEach((el) => el.classList.toggle('on', el.dataset.dyn === id))
+    if (opts && opts.hash) history.replaceState(null, '', '#' + id)
+    if (opts && opts.scroll) document.getElementById('lore').scrollIntoView({ behavior: 'smooth' })
+  }
+
+  cards.forEach((c) => {
+    c.addEventListener('click', (e) => {
+      e.preventDefault()
+      select(c.dataset.dyn, { hash: true, scroll: true })
+    })
+  })
+
+  const initial = location.hash.slice(1)
+  if (initial && items.some((el) => el.dataset.lore === initial)) {
+    select(initial, { hash: true })
+    document.getElementById('lore').scrollIntoView({ behavior: 'instant' })
+  } else if (items[0]) {
+    select(items[0].dataset.lore)
+  }
+</script>

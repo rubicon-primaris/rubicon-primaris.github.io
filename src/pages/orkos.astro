@@ -1,0 +1,412 @@
+---
+// Orkos: página por klanes. Estética chatarrera: placas de metal remachado con el
+// patrón de cada klan (cuadros Goff, llamas Evil Sunz, lunas Bad Moons…), glifos
+// orkos en SVG, WAAAGH!-metro que se llena con el scroll y "dakka" al pasar el ratón.
+// Sin imágenes por ahora: todo es CSS/SVG; cada klan admite `image` cuando la haya.
+import Layout from '../layouts/Layout.astro'
+
+const CLANS = [
+  {
+    id: 'goffs', name: 'Goffs', sub: 'Los más grandes y los más brutos', tint: '#d8d8d8', ink: '#111', pattern: 'checks',
+    glyph: 'horns', boss: 'Kaudillo: Ghazghkull Mag Uruk Thraka · la Bestia de Armageddon',
+    lore: [
+      'Los Goffs son orkos en estado puro: no les interesan los kamiones ni los kañones raros, solo llegar el primero al cuerpo a cuerpo y pegar más fuerte que nadie. Son los más numerosos, los más grandes y los que más presumen de ello.',
+      'Visten de negro con cuadros blancos y negros porque «los colores chillones son para pijos». De sus filas salió Ghazghkull Thraka, el profeta de Gork y Mork, que ha convertido su Waaagh! en la mayor que ha visto la galaxia en diez mil años.',
+    ],
+  },
+  {
+    id: 'evil-sunz', name: 'Evil Sunz', sub: '¡El rojo va más rápido!', tint: '#e0382a', ink: '#fff', pattern: 'flames',
+    glyph: 'sun', boss: 'Lo suyo: kamiones, motos, karros de guerra y cualquier cosa con motor',
+    lore: [
+      'Si tiene ruedas, cohetes o hélices, un Evil Sun ya se ha subido encima. Este klan vive por la velocidad: sus mekánikos trucan los motores hasta que explotan y sus chikos consideran que llegar a la batalla sin marearse es de cobardes.',
+      'Pintan todo de rojo porque todo orko sabe que el rojo va más rápido — y, como creen en ello tan fuerte, resulta que es verdad.',
+    ],
+  },
+  {
+    id: 'bad-moons', name: 'Bad Moons', sub: 'Los más ricos y los más ruidosos', tint: '#f2c21b', ink: '#111', pattern: 'moons',
+    glyph: 'moon', boss: 'Lo suyo: dakka. Mucho dakka. Nunca hay suficiente dakka',
+    lore: [
+      'A los Bad Moons los dientes les crecen más rápido que a los demás orkos, y como los dientes son la moneda de los orkos, son asquerosamente ricos. Eso compra las armas más grandes, los trajes más chillones y los mekánikos más locos.',
+      'Los otros klanes los tachan de blandos, pero nadie dice eso cerca de una brigada Bad Moon con akribilladoras: el volumen de fuego ahoga cualquier opinión.',
+    ],
+  },
+  {
+    id: 'deathskulls', name: 'Deathskulls', sub: 'Saqueadores con suerte', tint: '#3b7bd4', ink: '#fff', pattern: 'skulls',
+    glyph: 'skull', boss: 'Lo suyo: robar cualquier cosa que no esté clavada (y las clavadas también)',
+    lore: [
+      'Los Deathskulls roban. Roban a los enemigos, roban a los otros klanes y se roban entre ellos. Sus mekánikos son capaces de montar un karro de guerra con piezas de cuatro ejércitos distintos — y de que, contra toda lógica, funcione.',
+      'Se pintan de azul porque el azul da suerte, y su suerte es legendaria: siempre cae en sus manos el trofeo más gordo y siempre sobrevive el que nadie esperaba.',
+    ],
+  },
+  {
+    id: 'blood-axes', name: 'Blood Axes', sub: 'Demasiado listos para ser de fiar', tint: '#6b7d3c', ink: '#fff', pattern: 'camo',
+    glyph: 'axe', boss: 'Lo suyo: "táktika" — emboscadas, kamuflaje y retiradas que nadie entiende',
+    lore: [
+      'Los Blood Axes han aprendido de los humanos: usan camuflaje, planifican, se retiran para volver a atacar e incluso, ocasionalmente, negocian. Para el resto de los orkos esto es sospechoso en el mejor de los casos y directamente traicionero en el peor.',
+      'Pero nadie puede negar que funciona. Sus komandos se cuelan donde nadie espera a un orko y sus kaudillos ganan batallas que los demás perderían a lo grande.',
+    ],
+  },
+  {
+    id: 'snakebites', name: 'Snakebites', sub: 'Salvajes de la vieja escuela', tint: '#8a5a2b', ink: '#fff', pattern: 'tusks',
+    glyph: 'fang', boss: 'Lo suyo: squigs, jabalís de guerra, garrapatos y tradición',
+    lore: [
+      'Los Snakebites desconfían de la tecnología nueva: montan jabalís, domestican squigs y llevan tatuajes y huesos en lugar de placas de metal. Son los más conservadores de los klanes y se consideran los únicos orkos «de verdad».',
+      'Su fuerza bruta no es menor que la de los Goffs, y sus criadores traen a la batalla bestias que la ciencia del Imperio ni siquiera ha catalogado.',
+    ],
+  },
+  {
+    id: 'freebooterz', name: 'Freebooterz', sub: 'Piratas del vacío', tint: '#2c9e8c', ink: '#fff', pattern: 'bones',
+    glyph: 'flag', boss: 'Lo suyo: saqueo a sueldo y flotas de pecios espaciales',
+    lore: [
+      'Orkos expulsados de su klan o simplemente aburridos de él, unidos bajo kapitanes piratas que venden su dakka al mejor postor. Sus flotas de pecios remendados aparecen de la nada, arrasan y se marchan cargados de botín.',
+      'No tienen color propio: llevan lo que roban, con preferencia por sombreros enormes, loros-squig y más armas de las que un orko puede sostener.',
+    ],
+  },
+]
+
+// Glifos orkos (SVG simple, trazo grueso)
+const GLYPHS = {
+  horns: '<path d="M14 12c4 12 10 18 18 20 8-2 14-8 18-20M32 32v20M22 46h20" />',
+  sun: '<circle cx="32" cy="32" r="9"/><path d="M32 8v8M32 48v8M8 32h8M48 32h8M15 15l6 6M43 43l6 6M49 15l-6 6M21 43l-6 6"/>',
+  moon: '<path d="M40 10a22 22 0 1 0 0 44 17 17 0 0 1 0-44z"/>',
+  skull: '<path d="M32 8c-12 0-20 9-20 20 0 7 3 11 7 14v10h26V42c4-3 7-7 7-14 0-11-8-20-20-20z"/><circle cx="25" cy="29" r="4"/><circle cx="39" cy="29" r="4"/><path d="M28 44v6M32 44v6M36 44v6"/>',
+  axe: '<path d="M18 46 46 18M40 10c8 0 14 6 14 14l-12 4-6-6z"/><path d="M16 44l4 4"/>',
+  fang: '<path d="M20 10l8 40 4-14 4 14 8-40"/><path d="M18 10h28"/>',
+  flag: '<path d="M16 8v48M16 10h30l-8 10 8 10H16"/><circle cx="31" cy="20" r="3"/>',
+}
+
+const FONT = 'https://fonts.googleapis.com/css2?family=Bangers&family=Cinzel:wght@400;600;700&display=swap'
+---
+<Layout>
+  <Fragment slot="head">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href={FONT} />
+    <title>Orkos · Klanes — Rubicón Primaris</title>
+  </Fragment>
+
+  <main class="ork relative min-h-screen w-full overflow-x-clip bg-surface font-sans text-white">
+    <nav class="relative z-10 flex items-center justify-between border-b border-white/10 px-8 py-5 text-[11px] uppercase tracking-[.2em]">
+      <a href="/facciones/xenos#orkos" class="text-ink-muted no-underline transition-colors hover:text-white">← Xenos</a>
+      <a href="/" class="text-ink-muted no-underline transition-colors hover:text-white">Portada</a>
+    </nav>
+
+    <!-- Hero: WAAAGH! con fondo de chatarra -->
+    <section class="scrap relative overflow-hidden px-8 pb-16 pt-24 text-center">
+      <span class="relative z-10 font-mono text-[11px] uppercase tracking-[.5em] text-[#9ad24a]">✠ Xenos · Los Klanes ✠</span>
+      <h1 class="waaagh relative z-10 m-0 mt-4">WAAAGH!</h1>
+      <p class="relative z-10 m-0 mt-2 font-display text-[clamp(16px,1.6vw,22px)] font-semibold uppercase tracking-[.28em]">Orkos</p>
+      <div class="relative z-10 mx-auto mt-10 flex max-w-[760px] flex-col gap-5">
+        <p class="m-0 text-base leading-[1.9] text-ink-muted [text-wrap:pretty]">
+          Los orkos son la especie más extendida de la galaxia y la más feliz: nacen de esporas, crecen peleando y mueren riéndose. No tienen imperio ni doctrina. Tienen kaudillos, y cuando uno crece lo bastante, el campo psíquico colectivo de millones de orkos estalla en una <strong class="font-semibold text-white">Waaagh!</strong> que arrastra sistemas enteros.
+        </p>
+        <p class="m-0 text-base leading-[1.9] text-ink-muted [text-wrap:pretty]">
+          Cada orko pertenece a un <strong class="font-semibold text-white">klan</strong>: una cultura con sus colores, sus manías y su forma favorita de pegar. Se odian entre ellos con cariño — hasta que alguien como Ghazghkull Thraka los mete a todos en la misma Waaagh! y apunta a Armageddon.
+        </p>
+      </div>
+    </section>
+
+    <!-- Placas de klan -->
+    <section class="px-8 pb-28">
+      <div class="mx-auto grid max-w-[1500px] grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
+        {CLANS.map((c, i) => (
+          <a href={`#${c.id}`} class={`plate pat-${c.pattern}`} data-clan={c.id} style={`--tint:${c.tint};--ink:${c.ink};--rot:${((i % 3) - 1) * 1.4}deg`}>
+            <span class="rivet rv-tl"></span><span class="rivet rv-tr"></span><span class="rivet rv-bl"></span><span class="rivet rv-br"></span>
+            <span class="trim"></span>
+            <svg class="glyph" viewBox="0 0 64 64" aria-hidden="true" set:html={GLYPHS[c.glyph]} />
+            <span class="pname">{c.name}</span>
+            <span class="psub">{c.sub}</span>
+            <span class="dakka" aria-hidden="true">DAKKA!</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Lore del klan seleccionado -->
+    <section id="lore" class="relative min-h-[70vh] overflow-hidden border-t border-white/10">
+      {CLANS.map((c) => (
+        <div class={`lore-bg pat-${c.pattern} absolute inset-0 opacity-0 transition-opacity duration-700`} data-bg={c.id} style={`--tint:${c.tint};--ink:${c.ink}`}></div>
+      ))}
+      <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/[.9] via-black/75 to-black/55"></div>
+      <div class="relative z-10 mx-auto flex min-h-[70vh] max-w-[1100px] items-center px-8 py-24">
+        {CLANS.map((c) => (
+          <article class="lore-item max-w-[680px]" data-lore={c.id} hidden>
+            <span class="font-mono text-[11px] uppercase tracking-[.4em]" style={`color:${c.tint}`}>{c.sub}</span>
+            <h2 class="m-0 mt-4 font-ork text-[clamp(44px,6vw,84px)] leading-none tracking-[.04em] text-white" style={`text-shadow:4px 4px 0 ${c.tint}`}>{c.name}</h2>
+            <span class="mt-6 block h-1 w-32" style={`background:repeating-linear-gradient(90deg,${c.tint} 0 10px,#000 10px 20px)`}></span>
+            <p class="mt-5 font-mono text-[10px] uppercase tracking-[.22em] text-ink-faint">{c.boss}</p>
+            <div class="mt-6 flex flex-col gap-5">
+              {c.lore.map((p) => (
+                <p class="m-0 text-[15px] leading-[1.9] text-ink-muted [text-wrap:pretty]">{p}</p>
+              ))}
+            </div>
+            <div class="mt-10 font-mono text-[9px] uppercase tracking-[.24em] text-ink-faint">Archivo Ordo Xenos · Orkos · klan {c.name} · M42</div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- WAAAGH!-metro: se llena con el scroll -->
+    <div class="meter" aria-hidden="true">
+      <span class="meter-label">WAAAGH!</span>
+      <span class="meter-bar"><span class="meter-fill"></span></span>
+      <span class="meter-pct">0%</span>
+    </div>
+
+    <footer class="border-t border-white/10 px-12 py-10 pb-24 text-center">
+      <span class="font-mono text-[10px] uppercase tracking-[.24em] text-ink-faint">¡Gork y Mork os miran! · M42</span>
+    </footer>
+  </main>
+</Layout>
+
+<style is:global>
+  body.flex { display: block; }
+  html { scroll-behavior: smooth; }
+  .font-ork { font-family: 'Bangers', 'Impact', sans-serif; }
+
+  .waaagh {
+    font-family: 'Bangers', 'Impact', sans-serif;
+    font-size: clamp(72px, 13vw, 190px);
+    line-height: 0.9;
+    letter-spacing: 0.04em;
+    color: #9ad24a;
+    text-shadow: 5px 5px 0 #1d3a0a, 10px 10px 0 #000, 0 0 40px rgba(154, 210, 74, 0.35);
+    transform: rotate(-2deg);
+    animation: waaagh-shake 3.2s ease-in-out infinite;
+  }
+  @keyframes waaagh-shake {
+    0%, 92%, 100% { transform: rotate(-2deg) scale(1); }
+    94% { transform: rotate(-1deg) scale(1.03); }
+    96% { transform: rotate(-3deg) scale(0.99); }
+    98% { transform: rotate(-1.5deg) scale(1.02); }
+  }
+
+  /* Fondo de chatarra: planchas oxidadas + manchas */
+  .scrap::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(60% 40% at 20% 30%, rgba(154, 210, 74, 0.08), transparent 70%),
+      radial-gradient(40% 30% at 80% 70%, rgba(224, 56, 42, 0.08), transparent 70%),
+      repeating-linear-gradient(0deg, transparent 0 118px, rgba(255,255,255,0.05) 118px 120px),
+      repeating-linear-gradient(90deg, transparent 0 178px, rgba(255,255,255,0.05) 178px 180px),
+      #050505;
+  }
+
+  /* Placas de klan */
+  .plate {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    aspect-ratio: 3 / 4;
+    padding: 28px 16px;
+    text-decoration: none;
+    background:
+      linear-gradient(160deg, rgba(255,255,255,0.10), transparent 40%, rgba(0,0,0,0.5)),
+      #2a2723;
+    border: 3px solid #0b0a09;
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,0.06), 0 14px 30px rgba(0,0,0,0.6);
+    clip-path: polygon(3% 0, 97% 1%, 100% 6%, 99% 95%, 96% 100%, 4% 99%, 0 94%, 1% 5%);
+    transform: rotate(var(--rot));
+    transition: transform 0.25s cubic-bezier(0.2, 1.4, 0.4, 1), box-shadow 0.25s ease;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .plate .trim {
+    position: absolute; inset: 0;
+    opacity: 0.9;
+    z-index: -1;
+  }
+  .plate .rivet {
+    position: absolute;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #cfc8ba, #5a544a 60%, #1a1815);
+    box-shadow: 0 1px 2px #000;
+    z-index: 2;
+  }
+  .rv-tl { top: 10px; left: 10px; } .rv-tr { top: 10px; right: 10px; }
+  .rv-bl { bottom: 10px; left: 10px; } .rv-br { bottom: 10px; right: 10px; }
+  .plate .glyph {
+    width: clamp(56px, 6vw, 88px); height: auto;
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.5));
+    z-index: 1;
+  }
+  .plate .pname {
+    font-family: 'Bangers', 'Impact', sans-serif;
+    font-size: clamp(22px, 2.2vw, 34px);
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.45);
+    z-index: 1;
+  }
+  .plate .psub {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    text-align: center;
+    color: var(--ink);
+    opacity: 0.8;
+    z-index: 1;
+  }
+  .plate .dakka {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    font-family: 'Bangers', 'Impact', sans-serif;
+    font-size: clamp(34px, 4vw, 60px);
+    color: #fff;
+    -webkit-text-stroke: 2px #000;
+    background: rgba(255, 230, 80, 0.0);
+    opacity: 0;
+    transform: rotate(-12deg) scale(0.6);
+    pointer-events: none;
+    z-index: 3;
+  }
+  .plate:hover, .plate.on {
+    transform: rotate(0deg) scale(1.05);
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,0.12), 0 0 0 3px var(--tint), 0 0 40px color-mix(in srgb, var(--tint) 70%, transparent), 0 18px 40px rgba(0,0,0,0.7);
+  }
+  .plate:hover .glyph { animation: rattle 0.35s linear infinite; }
+  .plate:hover .dakka { animation: dakka 0.9s steps(1) infinite; }
+  @keyframes rattle {
+    0% { transform: translate(0,0); } 25% { transform: translate(2px,-1px); }
+    50% { transform: translate(-2px,1px); } 75% { transform: translate(1px,2px); } 100% { transform: translate(0,0); }
+  }
+  @keyframes dakka {
+    0%, 60% { opacity: 0; }
+    62%, 70% { opacity: 1; transform: rotate(-12deg) scale(1); background: rgba(255, 230, 80, 0.18); }
+    72%, 100% { opacity: 0; }
+  }
+
+  /* Patrones por klan (placa y fondo de lore) */
+  .pat-checks .trim, .lore-bg.pat-checks {
+    background: repeating-conic-gradient(var(--tint) 0 25%, #111 0 50%) 0 0 / 44px 44px;
+  }
+  .pat-flames .trim, .lore-bg.pat-flames {
+    background:
+      radial-gradient(80px 140px at 20% 110%, #ffb300, transparent 70%),
+      radial-gradient(120px 200px at 50% 120%, #ff6a00, transparent 70%),
+      radial-gradient(80px 140px at 80% 110%, #ffb300, transparent 70%),
+      var(--tint);
+  }
+  .pat-moons .trim, .lore-bg.pat-moons {
+    background:
+      radial-gradient(circle at 30% 30%, transparent 22px, var(--tint) 23px) 0 0 / 70px 70px,
+      #1a1a1a;
+    background-color: var(--tint);
+  }
+  .pat-skulls .trim, .lore-bg.pat-skulls {
+    background:
+      radial-gradient(circle at 50% 40%, rgba(255,255,255,0.22) 10px, transparent 11px) 0 0 / 60px 60px,
+      repeating-linear-gradient(45deg, transparent 0 18px, rgba(0,0,0,0.18) 18px 20px),
+      var(--tint);
+  }
+  .pat-camo .trim, .lore-bg.pat-camo {
+    background:
+      radial-gradient(ellipse 60px 35px at 20% 25%, #3f4a24 98%, transparent),
+      radial-gradient(ellipse 70px 40px at 75% 60%, #2a2f19 98%, transparent),
+      radial-gradient(ellipse 50px 30px at 40% 80%, #8a8f5c 98%, transparent),
+      radial-gradient(ellipse 60px 35px at 85% 15%, #5b6638 98%, transparent),
+      var(--tint);
+  }
+  .pat-tusks .trim, .lore-bg.pat-tusks {
+    background:
+      repeating-linear-gradient(-35deg, transparent 0 22px, rgba(255,255,255,0.10) 22px 26px),
+      radial-gradient(circle at 50% 50%, rgba(0,0,0,0.35), transparent 70%),
+      var(--tint);
+  }
+  .pat-bones .trim, .lore-bg.pat-bones {
+    background:
+      repeating-linear-gradient(90deg, transparent 0 30px, rgba(255,255,255,0.12) 30px 34px),
+      repeating-linear-gradient(0deg, transparent 0 30px, rgba(255,255,255,0.12) 30px 34px),
+      var(--tint);
+  }
+  .lore-bg { filter: saturate(0.8) brightness(0.55); }
+  .lore-bg.on { opacity: 1; }
+  .lore-item[hidden] { display: none; }
+
+  /* WAAAGH!-metro */
+  .meter {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 18px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.6), #000);
+    border-top: 2px solid #1d3a0a;
+    font-family: 'Bangers', 'Impact', sans-serif;
+    letter-spacing: 0.08em;
+  }
+  .meter-label { font-size: 22px; color: #9ad24a; }
+  .meter-pct { font-size: 18px; color: #fff; min-width: 52px; text-align: right; }
+  .meter-bar {
+    flex: 1;
+    height: 14px;
+    background: #111;
+    border: 2px solid #2a2723;
+    clip-path: polygon(0 0, 100% 0, 99% 100%, 1% 100%);
+    overflow: hidden;
+  }
+  .meter-fill {
+    display: block;
+    height: 100%;
+    width: 0%;
+    background: repeating-linear-gradient(-45deg, #9ad24a 0 12px, #5e8f22 12px 24px);
+    transition: width 0.15s linear;
+  }
+  .meter.full .meter-label { animation: rattle 0.25s linear infinite; text-shadow: 0 0 14px #9ad24a; }
+
+  @media (max-width: 640px) {
+    .plate { aspect-ratio: 4 / 5; }
+    .meter-label { font-size: 18px; }
+  }
+</style>
+
+<script>
+  const items = [...document.querySelectorAll('.lore-item')]
+  const bgs = [...document.querySelectorAll('.lore-bg')]
+  const plates = [...document.querySelectorAll('.plate')]
+
+  function select (id, opts) {
+    if (!items.some((el) => el.dataset.lore === id)) return
+    items.forEach((el) => { el.hidden = el.dataset.lore !== id })
+    bgs.forEach((el) => el.classList.toggle('on', el.dataset.bg === id))
+    plates.forEach((el) => el.classList.toggle('on', el.dataset.clan === id))
+    if (opts && opts.hash) history.replaceState(null, '', '#' + id)
+    if (opts && opts.scroll) document.getElementById('lore').scrollIntoView({ behavior: 'smooth' })
+  }
+  plates.forEach((p) => p.addEventListener('click', (e) => {
+    e.preventDefault()
+    select(p.dataset.clan, { hash: true, scroll: true })
+  }))
+  const initial = location.hash.slice(1)
+  if (initial && items.some((el) => el.dataset.lore === initial)) {
+    select(initial, { hash: true })
+    document.getElementById('lore').scrollIntoView({ behavior: 'instant' })
+  } else if (items[0]) select(items[0].dataset.lore)
+
+  // WAAAGH!-metro: porcentaje de scroll
+  const meter = document.querySelector('.meter')
+  const fill = document.querySelector('.meter-fill')
+  const pct = document.querySelector('.meter-pct')
+  function update () {
+    const max = document.documentElement.scrollHeight - window.innerHeight
+    const p = max > 0 ? Math.min(100, Math.round((window.scrollY / max) * 100)) : 100
+    fill.style.width = p + '%'
+    pct.textContent = p + '%'
+    meter.classList.toggle('full', p >= 100)
+  }
+  window.addEventListener('scroll', update, { passive: true })
+  window.addEventListener('resize', update)
+  update()
+</script>
